@@ -1,0 +1,10 @@
+work/
+references/
+cache/
+runs/
+.nextflow/
+.nextflow.log*
+datasets/
+filtered/
+nxf_work/
+temp_clone/
