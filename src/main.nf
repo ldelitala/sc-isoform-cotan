@@ -158,6 +158,9 @@ workflow {
         if (params.transcript_level.toString().toBoolean()) {
             output_index_channel = APPLY_TRANSCRIPT_CHEAT(output_index_channel, file(params.index_dir).getParent())
         }
+
+        // Map output channel to its absolute path string to bypass exec: staging limitations
+        output_index_channel = output_index_channel.map { it.toAbsolutePath().toString() }
     }
 
     // 3. ALIGNMENT step
