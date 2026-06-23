@@ -98,18 +98,6 @@ process APPLY_TRANSCRIPT_CHEAT {
     path("transcript_index"), emit: transcript_index_dir
 
     script:
-    
-    // This runs on the HEAD node before the job is submitted to the worker
-    def index_path = file(index_dir)
-    def nested_index = file("${index_dir}/index")
-    def has_t2g = file("${index_path}/t2g_3col.tsv").exists() || file("${nested_index}/t2g_3col.tsv").exists()
-    def has_piscem = file("${index_path}/piscem_idx.ssi").exists() || file("${nested_index}/piscem_idx.ssi").exists()
-    def has_salmon = file("${index_path}/ref_core.hash").exists() || file("${nested_index}/ref_core.hash").exists()
-
-    if (!has_t2g || !(has_piscem || has_salmon)) {
-        error("Validation Failed: The index at ${index_dir} is missing required index files. It is not a valid simpleaf index.")
-    }
-    
     """
     set -eo pipefail
     
