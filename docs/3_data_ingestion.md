@@ -11,7 +11,7 @@ When fetching datasets using SRA SRR IDs, the project encounters two primary lay
 ### Format A: Standard Paired-End FASTQ Ingestion
 * **Format**: The SRA run contains separate Read 1 (barcodes/UMIs) and Read 2 (cDNA transcript sequence) streams.
 * **Execution**: Running standard `fasterq-dump --split-files` yields two files: `_1.fastq.gz` and `_2.fastq.gz`.
-* **Automation**: Nextflow process `INGEST_SRA` runs [download_fastq.sh](file:///home/deli/athena_mount/bin/download_fastq.sh). The raw SRA file is downloaded directly to the RAM disk `/dev/shm`, extracted, compressed with `pigz`, and the RAM folder is immediately cleaned up.
+* **Automation**: The `DOWNLOAD_FASTQ` process runs standard `fasterq-dump` and `pigz` utilities inline. The raw SRA file is downloaded directly to the RAM disk `/dev/shm` (or task workspace), extracted, compressed, and cleaned up.
 
 ### Format B: BAM-to-FASTQ Reconstructed Ingestion
 * **Format**: The authors uploaded pre-aligned Cell Ranger BAM files to SRA. Cell barcodes and UMIs are stored as metadata tags (`CB` and `UB`) instead of standard read sequence streams.
@@ -22,7 +22,7 @@ When fetching datasets using SRA SRR IDs, the project encounters two primary lay
      prefetch --type TenX <srr_id>
      ```
   2. Use the official 10x Genomics **`bamtofastq`** tool to convert the BAM file back to standard `_R1` (barcodes + UMIs) and `_R2` (cDNA transcripts) FASTQ files.
-* **Automation**: Nextflow process `INGEST_SRA` automatically queries layout types from the ENA API and executes [download_bam.sh](file:///home/deli/athena_mount/bin/download_bam.sh).
+* **Automation**: The workflow branches dynamically based on layout results from the ENA API via `CHECK_LAYOUT`. If BAM layout, it invokes `DOWNLOAD_BAM` inline to run `prefetch` and `bamtofastq` conversions.
 
 ---
 
@@ -40,9 +40,9 @@ Because this analysis is conducted on a **shared university server** with other 
 
 ### Policy Protocol
 To minimize storage footprint and avoid disk I/O bottlenecks:
-1. **Zero Persistent Spikes**: Both [download_fastq.sh](file:///home/deli/athena_mount/bin/download_fastq.sh) and [download_bam.sh](file:///home/deli/athena_mount/bin/download_bam.sh) perform `prefetch` directly into `/dev/shm` (RAM disk). No raw BAM or SRA files are ever written to the persistent hard drives.
-2. **Immediate Conversion**: Reconstructed FASTQs are extracted and compressed inside the RAM disk before being saved to the final datasets folder.
-3. **Guaranteed Cleanup**: The exit trap cleanup handlers in the bash scripts guarantee that the RAM disk cache directories are completely wiped under any exit scenario.
+1. **Zero Persistent Spikes**: Both `DOWNLOAD_BAM` and `DOWNLOAD_FASTQ` processes are configured with scratch paths (`scratch '/dev/shm'`) to perform calculations and stage raw SRA/BAM files directly inside the RAM disk. No raw BAM or SRA files are ever written to the persistent hard drives.
+2. **Immediate Conversion**: Reconstructed FASTQs are extracted and compressed inside the RAM disk before being saved to the final datasets folder via Nextflow's `storeDir`.
+3. **Guaranteed Cleanup**: Nextflow's native task scratch directory cleanup ensures all temporary RAM disk files are completely wiped when tasks terminate.
 
 ---
 

@@ -7,12 +7,12 @@ This document details the quality control (QC) filtering logic implemented in R 
 ## 1. Quality Control Script Logic
 
 Raw expression matrices are filtered to remove low-quality cells, doublets, and dying cells using two modular R scripts:
-* **[filter_matrix.R](file:///home/deli/athena_mount/bin/filter_matrix.R)**: Driver script that parses command line arguments and drives the QC execution.
-* **[lib_qc.R](file:///home/deli/athena_mount/bin/lib_qc.R)**: Contains helper functions to compute cell metrics, check mitochondrial mappings, and filter cell barcodes.
-* **[lib_io.R](file:///home/deli/athena_mount/bin/lib_io.R)**: Handles loading of raw input RDS files (Seurat or SCE) and alevin outputs.
+* **[filter_matrix.R](../bin/filter_matrix.R)**: Driver script that parses command line arguments and drives the QC execution.
+* **[lib_qc.R](../bin/lib_qc.R)**: Contains helper functions to compute cell metrics, check mitochondrial mappings, and filter cell barcodes.
+* **[lib_io.R](../bin/lib_io.R)**: Handles loading of raw input RDS files (Seurat or SCE) and alevin outputs.
 
 ### CLI Parameters & Thresholds
-Default parameters are declared in [nextflow.config](file:///home/deli/athena_mount/nextflow.config) and passed directly to the R driver script during workflow execution:
+Default parameters are declared in [nextflow.config](../nextflow.config) and passed directly to the R driver script during workflow execution:
 * `--min_features`: Minimum number of detected transcripts per cell (default = 200).
 * `--max_features`: Maximum number of detected transcripts per cell (default = 8000, helps remove doublets).
 * `--min_counts`: Minimum total UMI count per cell (default = 500).
@@ -42,10 +42,10 @@ To resolve this issue, we decoupled mitochondrial gene detection from regex and 
 
 ### Step 1: Pre-mapped Mitochondrial Transcripts File
 * We query the reference GTF file before index modifications and locate all transcript IDs corresponding to the mitochondrial chromosome (`MT`).
-* These IDs are written to a static configuration file at [config/mt_transcripts.txt](file:///home/deli/athena_mount/config/mt_transcripts.txt).
+* These IDs are written to a static configuration file at [config/mt_transcripts.txt](../config/mt_transcripts.txt).
 
 ### Step 2: Integrated R QC Filter Logic
-The mitochondrial detection logic in [lib_qc.R](file:///home/deli/athena_mount/bin/lib_qc.R) is updated to read these IDs and perform an intersection with the matrix rows:
+The mitochondrial detection logic in [lib_qc.R](../bin/lib_qc.R) is updated to read these IDs and perform an intersection with the matrix rows:
 ```r
 # Calculate cell QC metrics (nFeatures, nCounts, percent_mt)
 calculate_qc_metrics <- function(raw_matrix, mt_ids = NULL) {

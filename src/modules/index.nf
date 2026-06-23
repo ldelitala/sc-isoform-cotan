@@ -1,0 +1,130 @@
+nextflow.enable.dsl = 2
+
+/**
+ * DOWNLOAD_REFERENCE
+ * Downloads FASTA and GTF files from Ensembl.
+ * Uses 'storeDir' to cache raw reference files permanently.
+ */
+process DOWNLOAD_REFERENCE {
+    storeDir { "${reference_dir}/" }
+
+    input:
+    val reference_dir
+    val reference_urls
+    val genome_species
+    val genome_assembly
+    val ensembl_release
+
+    output:
+    tuple path("*.fa.gz"), path("*.gtf.gz")
+
+    script:
+    genome_assembly ?: error("Missing required parameter: genome_assembly")
+    def urls = reference_urls ? reference_urls[genome_assembly] : null
+    if (!urls) {
+        if (genome_species && genome_assembly) {
+            def species = genome_species.toLowerCase().trim()
+            def assembly = genome_assembly.trim()
+            def release = ensembl_release
+            def species_cap = species.substring(0, 1).toUpperCase() + species.substring(1)
+            urls = [fasta: "http://ftp.ensembl.org/pub/release-${release}/fasta/${species}/dna/${species_cap}.${assembly}.dna.primary_assembly.fa.gz", gtf: "http://ftp.ensembl.org/pub/release-${release}/gtf/${species}/${species_cap}.${assembly}.${release}.gtf.gz"]
+        }
+        else {
+            error("No reference URLs configured for genome: ${genome_assembly}. Use '--genome_species <species>' and '--genome_assembly <assembly>' to resolve dynamically.")
+        }
+    }
+    def fasta_url = urls.fasta
+    def gtf_url = urls.gtf
+    def fasta_file = fasta_url.substring(fasta_url.lastIndexOf('/') + 1)
+    def gtf_file = gtf_url.substring(gtf_url.lastIndexOf('/') + 1)
+
+    """
+    set -eo pipefail
+    
+    if wget -q --spider "${fasta_url}"; then
+        wget -q -O "${fasta_file}" "${fasta_url}"
+    else
+        fallback_url=\$(echo "${fasta_url}" | sed 's/primary_assembly/toplevel/')
+        wget -q -O "${fasta_file}" "\${fallback_url}"
+    fi
+
+    wget -q -O "${gtf_file}" "${gtf_url}"
+    """
+}
+
+/**
+ * BUILD_INDEX
+ * Generates a simpleaf index from FASTA/GTF files.
+ * Uses dynamic storeDir to place the index folder exactly at the provided path.
+ */
+process BUILD_INDEX {
+    container 'https://depot.galaxyproject.org/singularity/simpleaf:0.22.0--hd612981_0'
+    storeDir { file(gene_index_dir).getParent() }
+
+    input:
+    tuple path(fasta_file), path(gtf_file)
+    val gene_index_dir
+
+    output:
+    path(file(gene_index_dir).getName()), emit: gene_index_dir
+
+    script:
+    gene_index_dir ?: error("Missing required parameter: gene_index_dir")
+    def folder_name = file(gene_index_dir).getName()
+    """
+    set -eo pipefail
+    export ALEVIN_FRY_HOME="\$PWD"
+    simpleaf set-paths
+    simpleaf index \\
+        -f "${fasta_file}" \\
+        -g "${gtf_file}" \\
+        -o "${folder_name}" \\
+        -t ${task.cpus}
+    """
+}
+
+/**
+ * APPLY_TRANSCRIPT_CHEAT
+ * Creates an idempotent, modified transcript index by mapping transcripts to themselves.
+ * Outputs a folder 'transcript_index' side-by-side with the original input index.
+ */
+process APPLY_TRANSCRIPT_CHEAT {
+    storeDir { index_dir.getParent() }
+
+    input:
+    path(index_dir)
+
+    output:
+    path("transcript_index"), emit: transcript_index_dir
+
+    script:
+    
+    // This runs on the HEAD node before the job is submitted to the worker
+    def index_path = file(index_dir)
+    def nested_index = file("${index_dir}/index")
+    def has_t2g = file("${index_path}/t2g_3col.tsv").exists() || file("${nested_index}/t2g_3col.tsv").exists()
+    def has_piscem = file("${index_path}/piscem_idx.ssi").exists() || file("${nested_index}/piscem_idx.ssi").exists()
+    def has_salmon = file("${index_path}/ref_core.hash").exists() || file("${nested_index}/ref_core.hash").exists()
+
+    if (!has_t2g || !(has_piscem || has_salmon)) {
+        error("Validation Failed: The index at ${index_dir} is missing required index files. It is not a valid simpleaf index.")
+    }
+    
+    """
+    set -eo pipefail
+    
+    # 1. Create workspace and copy original index contents
+    mkdir -p transcript_index
+    cp -rL "${index_dir}/"* transcript_index/
+    
+    # 2. Idempotently modify t2g_3col.tsv
+    T2G_FILE=\$(find transcript_index -name "t2g_3col.tsv" | head -n 1)
+    if [ -f "\${T2G_FILE}" ]; then
+        awk -F'\t' 'BEGIN {OFS="\t"} {if (NF>=3) print \$1, \$1, \$3; else print \$1, \$1}' "\${T2G_FILE}" > "\${T2G_FILE}.tmp"
+        mv -f "\${T2G_FILE}.tmp" "\${T2G_FILE}"
+    fi
+
+    # 3. Clean up non-essential mapping files
+    find transcript_index -name "gene_id_to_name.tsv" -delete
+    """
+}

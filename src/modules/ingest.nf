@@ -22,14 +22,14 @@ process CHECK_LAYOUT {
 // 2a. The "SINGLE" track (downloads BAM and converts to FASTQs)
 process DOWNLOAD_BAM {
     tag "${srr_id}"
-    storeDir { "datasets/${dataset}/${srr_id[-2..-1]}" }
+    storeDir { "${dataset_dir}/${srr_id[-2..-1]}" }
     scratch '/dev/shm'
     errorStrategy 'retry'
     maxRetries 2
 
     input:
     val srr_id
-    val dataset
+    val dataset_dir
 
     output:
     tuple val(srr_id), path("${srr_id}_1.fastq.gz"), path("${srr_id}_2.fastq.gz")
@@ -54,14 +54,14 @@ process DOWNLOAD_BAM {
 // 2b. The "PAIRED" track (downloads SRA and extracts FASTQs)
 process DOWNLOAD_FASTQ {
     tag "${srr_id}"
-    storeDir { "datasets/${dataset}/${srr_id[-2..-1]}" }
+    storeDir { "${dataset_dir}/${srr_id[-2..-1]}" }
     scratch '/dev/shm'
     errorStrategy 'retry'
     maxRetries 2
 
     input:
     val srr_id
-    val dataset
+    val dataset_dir
 
     output:
     tuple val(srr_id), path("${srr_id}_1.fastq.gz"), path("${srr_id}_2.fastq.gz")

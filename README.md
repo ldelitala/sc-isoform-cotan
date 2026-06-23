@@ -19,24 +19,24 @@ If time permits, a secondary exploratory path will involve running the **SCALPEL
 
 ```
 athena_mount/
-├── README.md               # Main project introduction & entry point
-├── main.nf                 # Primary Nextflow DSL2 pipeline workflow
-├── nextflow.config         # Unified pipeline configuration and limits
-├── bin/                    # Executables automatically added to task PATH
-│   ├── ingest_srr.sh       # SRA layout query and download coordinator
-│   ├── download_fastq.sh   # Paired-end fastq download worker
-│   ├── download_bam.sh     # BAM-to-FASTQ conversion worker
-│   ├── filter_matrix.R     # R quality control filtering driver
-│   ├── lib_io.R            # IO helpers for matrix loading
-│   └── lib_qc.R            # QC threshold calculation helpers
-├── docs/                   # Thesis workflow and project documentation
-├── config/                 # Static configuration files (e.g. mt_transcripts.txt)
-├── cache/                  # Download caches (NCBI SRA, Singularity containers)
-├── datasets/               # Extracted FASTQ datasets (grouped by dataset/sample)
-├── references/             # Reference genomes and simpleaf index directories
-├── runs/                   # Execution directories for Nextflow runs and outputs
-├── scripts/                # Helper tools and setup scripts (e.g. apply_cheat_index.py)
-└── filtered/               # Final filtered RDS matrices ready for COTAN
+├── README.md                 # Main project introduction & entry point
+├── bin/                      # Custom binary scripts (automatically in PATH)
+│   ├── filter_matrix.R       # QC filtering script
+│   ├── lib_io.R              # R Matrix IO helper
+│   └── lib_qc.R              # R QC threshold calculation helper
+├── cache/                    # Local singularity download cache
+├── data/                     # Central data directories
+│   ├── datasets/             # Extracted fastq sequence datasets
+│   ├── references/           # Genome references (FASTA, GTF sources) and indices
+│   ├── unfiltered/           # Raw count matrices (valuable alignment output)
+│   └── filtered/             # Cleaned QC-filtered RDS matrices (COTAN input)
+├── docs/                     # Project documentation markdown guides
+├── runs/                     # Execution run directory (workspace per dataset)
+└── src/                      # Pipeline source code directory
+    ├── nextflow.config       # Central config file (loaded automatically)
+    ├── main.nf               # Parent nextflow orchestration script
+    ├── modules/              # Nextflow module files (ingest, align, index, filter)
+    └── scripts/              # Helper utility scripts (e.g. apply_cheat_index)
 ```
 
 ---
@@ -45,62 +45,87 @@ athena_mount/
 
 Refer to the detailed guides in the `docs/` folder in the logical reading order:
 
-1. **[1. Configuration & Parameter Guide](file:///home/deli/athena_mount/docs/1_configuration_parameters.md)**: Details all workflow parameters, QC thresholds, resource limits, and Singularity settings.
-2. **[2. Cluster Resource & Thread Management](file:///home/deli/athena_mount/docs/2_cluster_resource_management.md)**: Explains priority scheduling (`nice`/`ionice`), memory calculations, RAM disk staging, and thread configurations.
-3. **[3. Data Ingestion & Storage Policy](file:///home/deli/athena_mount/docs/3_data_ingestion.md)**: Details standard paired-end vs. BAM-to-FASTQ reconstructed SRA downloads and storage optimization policy.
-4. **[4. Transcript-Level Quantification](file:///home/deli/athena_mount/docs/4_transcript_quantification.md)**: Explains the simpleaf index identity mapping cheat and Nextflow alignment run parameters.
-5. **[5. Quality Control & Filtering](file:///home/deli/athena_mount/docs/5_qc_filtering.md)**: Details the R script filtering logic and the mitochondrial transcript ID matching fix.
-6. **[6. Downstream Analysis & COTAN Validation](file:///home/deli/athena_mount/docs/6_downstream_analysis.md)**: Outlines the application of COTAN and comparing results against SCALPEL and biological references.
-7. **[7. Script & Pipeline Architecture](file:///home/deli/athena_mount/docs/7_script_architecture.md)**: Documents the system internals, process interfaces, inputs/outputs, and Nextflow DSL2 flow.
+1. **[1. Configuration & Parameter Guide](docs/1_configuration_parameters.md)**: Details all workflow parameters, QC thresholds, resource limits, and Singularity settings.
+2. **[2. Cluster Resource & Thread Management](docs/2_cluster_resource_management.md)**: Explains priority scheduling (`nice`/`ionice`), memory calculations, RAM disk staging, and thread configurations.
+3. **[3. Data Ingestion & Storage Policy](docs/3_data_ingestion.md)**: Details standard paired-end vs. BAM-to-FASTQ reconstructed SRA downloads and storage optimization policy.
+4. **[4. Transcript-Level Quantification](docs/4_transcript_quantification.md)**: Explains the simpleaf index identity mapping cheat and Nextflow alignment run parameters.
+5. **[5. Quality Control & Filtering](docs/5_qc_filtering.md)**: Details the R script filtering logic and the mitochondrial transcript ID matching fix.
+6. **[6. Downstream Analysis & COTAN Validation](docs/6_downstream_analysis.md)**: Outlines the application of COTAN and comparing results against SCALPEL and biological references.
+7. **[7. Script & Pipeline Architecture](docs/7_script_architecture.md)**: Documents the system internals, process interfaces, inputs/outputs, and Nextflow DSL2 flow.
 
 ---
 
-## 4. Configuration & Parameter Personalization
+## 4. Configuration & Portability Personalization
 
-All configuration is centralized inside [nextflow.config](file:///home/deli/athena_mount/nextflow.config). For a detailed reference on all parameters, resource limits, and overrides, see [1. Configuration & Parameter Guide](file:///home/deli/athena_mount/docs/1_configuration_parameters.md).
+All configuration is centralized inside `src/nextflow.config`. For a detailed reference on parameters and limits, see [1. Configuration & Parameter Guide](docs/1_configuration_parameters.md).
 
-### Personalizing alignment parameters
-You can edit the `scrnaseq_params` map inside `nextflow.config` to modify `nf-core/scrnaseq` settings, or override them at run-time:
+### Portability & Centralization Overrides (Option B)
+To manage a centralized data setup without editing repository configuration files:
+1. Copy the template file: `cp central.config.example central.config`
+2. Open `central.config` and customize the absolute paths to point to your centralized storage.
+3. Run Nextflow with the `-c` config flag:
+   ```bash
+   nextflow run ../../src/main.nf -c central.config --dataset arrigoni2023 --genome GRCh38
+   ```
+
+### Dynamic Genomes Reference Resolution
+If a genome is not cataloged in `src/conf/genomes.config`, resolve it dynamically by providing the Ensembl species name and assembly code:
 ```bash
-nextflow run main.nf --scrnaseq_params.skip_cellbender false
+nextflow run ../../src/main.nf \
+  --dataset cerevisiae_run \
+  --genome R64-1-1 \
+  --genome_species saccharomyces_cerevisiae \
+  --genome_assembly R64-1-1
 ```
+The pipeline automatically formats Ensembl URLs, downloads the FASTA/GTF files (supporting fallback to toplevel if primary assembly is not found), and indexes the genome.
 
 ---
 
-## 5. Pipeline Execution & Step-by-Step Testing
+## 5. Pipeline Execution (Highly Portable Runs)
 
-The pipeline can be executed end-to-end or step-by-step:
+To ensure run isolation and keep the codebase clean, the pipeline is designed to be executed inside dedicated run workspaces.
 
-### A. Full Run
-To execute the entire pipeline (Download -> Align -> Filter):
+### Step 1: Initialize the run directory
+Create a run folder inside `runs/` (or anywhere else) and navigate into it:
 ```bash
-nextflow run main.nf \
-  --dataset <dataset_name> \
-  --srr_ids <srr_id_list_or_range> \
-  --genome <genome_code>
-```
-*Example*:
-```bash
-nextflow run main.nf --dataset manno2021 --srr_ids SRR11947578-SRR11947580 --genome GRCm38
+mkdir -p runs/arrigoni2023_try1
+cd runs/arrigoni2023_try1
 ```
 
-### B. Step-by-Step Run
-You can use the `--step` flag to run specific components of the pipeline:
-1. **Download only**:
-   ```bash
-   nextflow run main.nf --dataset manno2021 --srr_ids SRR11947578 --step download
-   ```
-2. **Alignment only** (scans existing `datasets/manno2021/` for FASTQ pairs):
-   ```bash
-   nextflow run main.nf --dataset manno2021 --genome GRCm38 --step align
-   ```
-3. **Filtering only** (runs QC filtering on existing alignment output matrix):
-   ```bash
-   nextflow run main.nf --dataset manno2021 --step filter
-   ```
+### Step 2: Launch the pipeline
+Run Nextflow from inside the workspace referencing the pipeline script (e.g. `../../src/main.nf`). This automatically places Nextflow log files, intermediate `.nextflow` caching, and parent `work/` directories inside the workspace:
 
-### C. Resuming Pipeline Tasks
-If execution is interrupted or you make changes to parameters or R QC scripts, run with `-resume` to skip already completed processes:
+#### A. Execute Remote Pipeline (No manual clone needed)
+Nextflow supports executing the pipeline directly from a remote GitHub repository. Nextflow will download, cache, and run it automatically:
 ```bash
-nextflow run main.nf --dataset manno2021 --genome GRCm38 -resume
+nextflow run username/sc-isoform-pipeline \
+  -profile singularity \
+  --dataset arrigoni2023 \
+  --srr_ids SRR26127904 \
+  --genome GRCh38
+```
+
+#### B. Execute Local Pipeline
+```bash
+nextflow run ../../src/main.nf \
+  -profile singularity \
+  --dataset arrigoni2023 \
+  --srr_ids SRR26127904 \
+  --genome GRCh38
+```
+
+#### C. Execute with Direct Dataset Directory (Auto-extract dataset name)
+If you already have sequence files in a specific folder, pass `--dataset_dir` instead of `--dataset`:
+```bash
+nextflow run ../../src/main.nf \
+  -profile singularity \
+  --dataset_dir /home/deli/athena_mount/data/datasets/arrigoni2023 \
+  --genome GRCh38
+```
+This will automatically detect the dataset name as `arrigoni2023` and save output matrices using that name.
+
+### Step 3: Run Step-by-Step or Resume
+Use the `--step` flag to run specific tasks (`all`, `download`, `align`, `filter`), or append `-resume` to restart from the last checkpoint:
+```bash
+nextflow run ../../src/main.nf -profile singularity --dataset arrigoni2023 --genome GRCh38 -resume
 ```

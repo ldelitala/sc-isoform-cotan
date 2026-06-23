@@ -6,20 +6,24 @@ process QC_FILTER {
     memory { [100.GB * task.attempt, 2560.GB].min() }
 
     input:
-    val dataset
     path raw_matrix_rds
     path mt_transcripts
 
     output:
-    path "filtered/${dataset}_simpleaf_filtered.rds", emit: filtered_matrix
+    path "${params.filtered_dir}/filtered.rds", emit: filtered_matrix
 
     script:
+    if (!file(raw_matrix_rds).exists()) {
+        error "Process Error: Input raw matrix file is missing: ${raw_matrix_rds}"
+    }
+    if (file(raw_matrix_rds).size() == 0) {
+        error "Process Error: Input raw matrix file is empty (0 bytes): ${raw_matrix_rds}"
+    }
     """
     set -eo pipefail
     filter_matrix.R \\
         -i ${raw_matrix_rds} \\
-        -o filtered/ \\
-        -s ${dataset}_simpleaf \\
+        -o ${params.filtered_dir}/ \\
         --min_features ${params.min_features} \\
         --max_features ${params.max_features} \\
         --min_counts ${params.min_counts} \\

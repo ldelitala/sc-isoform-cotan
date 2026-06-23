@@ -30,10 +30,10 @@ Standard scRNA-seq mapping pipelines group reads by gene to build a cell-by-gene
 
 ## 2. Alignment Execution and Parameters
 
-The alignment pipeline is executed within the [main.nf](file:///home/deli/athena_mount/main.nf) workflow via the `ALIGN_SIMPLEAF` process.
+The alignment pipeline is executed within the [main.nf](../main.nf) workflow via the `ALIGN_SIMPLEAF` process.
 
 ### Configuration (`nextflow.config`)
-Parameters are declared in the `scrnaseq_params` map in [nextflow.config](file:///home/deli/athena_mount/nextflow.config):
+Parameters are declared in the `scrnaseq_params` map in [nextflow.config](../nextflow.config):
 ```groovy
 params {
     scrnaseq_params = [
@@ -47,13 +47,25 @@ params {
 ### Execution Flow
 1. **`GENERATE_SAMPLESHEET`**: Scans the fastq files channel, generates the Nextflow-compatible `input.csv` samplesheet, and writes a dynamic `nf-params.json` targeting the identity `simpleaf` index directory:
    `references/indices/<genome>_simpleaf`
-2. **`ALIGN_SIMPLEAF`**: Executes `nextflow run nf-core/scrnaseq` inside the workspace task directory using the generated configurations:
-   ```bash
-   nextflow run nf-core/scrnaseq \
-       -r 4.1.0 \
-       -profile singularity \
-       -params-file nf-params.json \
-       --max_cpus 72 \
-       --max_memory "2.0 TB"
-   ```
-3. **Space Reclamation**: The process automatically deletes the nested Nextflow `work/` folder upon successful completion to conserve disk storage.
+2. **`ALIGN_SIMPLEAF` (Native `exec:` Cascade Block)**: Runs natively on the head node using a Nextflow `exec:` block to bypass staging issues and resolve the nested temporary work directory bug (`Invalid include source`). It operates as follows:
+   * **Directories**: Generates the target directory `runs/${dataset}_simpleaf` and stages execution there.
+   * **Container Configuration**: Dynamically creates a `custom.config` file inside the run directory to override simpleaf index/quant tools with version `0.22.0--hd612981_0`, ensuring compatibility with newer Piscem indices:
+     ```groovy
+     process {
+         withName: 'SIMPLEAF_INDEX|SIMPLEAF_QUANT' {
+             container = 'https://depot.galaxyproject.org/singularity/simpleaf:0.22.0--hd612981_0'
+         }
+     }
+     ```
+   * **Execution**: Natively unsets `NXF_OPTS` and `NXF_CONFIG_FILES`, exports `NXF_SYNTAX_PARSER=v1` (forces parser compatibility with nf-core/scrnaseq 4.1.0 under Nextflow 26+), and starts the child pipeline:
+     ```bash
+     nextflow run nf-core/scrnaseq \
+         -r 4.1.0 \
+         -profile singularity \
+         -resume \
+         -c custom.config \
+         -params-file nf-params.json \
+         --max_cpus 72 \
+         --max_memory "2 TB"
+     ```
+3. **Space Reclamation**: Deletes the child workflow's temporary `work/` folder inside `runs/${dataset}_simpleaf` upon successful completion to save disk space.
