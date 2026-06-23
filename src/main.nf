@@ -88,7 +88,7 @@ workflow {
 
     // Define channels for the workflow
     def fastq_files_channel
-    def output_index_channel
+    def output_index_channel = Channel.empty()
     def raw_matrix_channel
 
 
@@ -134,7 +134,7 @@ workflow {
     }
 
     // 2. INDEXING step
-    if (params.step in ['all', 'index']) {
+    if (params.step in ['all', 'index', 'align']) {
 
         if (!params.skip_simpleaf) {
             DOWNLOAD_REFERENCE(
@@ -177,12 +177,9 @@ workflow {
             )
             .tap { webhook_config_channel }
 
-        def params_json_channel = channel.fromPath(createParamsFile(params.scrnaseq_params, output_index_channel.first().toString()))
-            .tap { webhook_config_channel }
-
         webhook_config_channel.subscribe { sendWebhook("nf-core/scrnaseq configuration files generated for dataset") }
 
-        ALIGN_SIMPLEAF(input_csv_channel, params_json_channel, output_index_channel)
+        ALIGN_SIMPLEAF(input_csv_channel, output_index_channel)
 
         raw_matrix_channel = ALIGN_SIMPLEAF.out.raw_seurat_matrix.tap { webhook_align_ch }
 
@@ -233,21 +230,6 @@ def sendWebhook(message) {
     }
 }
 
-def createParamsFile(scrnaseq_params, index_path) {
-    def jsonFile = file("${params.preprocessing_dir}/nf-params.json")
-    jsonFile.parent.mkdirs()
-    jsonFile.text = groovy.json.JsonOutput.prettyPrint(
-        groovy.json.JsonOutput.toJson(
-            [
-                input: "input.csv",
-                outdir: "results",
-                skip_cellbender: true,
-                simpleaf_index: index_path.toString(),
-            ] + scrnaseq_params
-        )
-    )
-    return jsonFile
-}
 
 // Hard validation of Piscem or Salmon simpleaf index contents
 def validatePiscemIndex(index_dir) {

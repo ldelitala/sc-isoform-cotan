@@ -6,7 +6,6 @@
 process ALIGN_SIMPLEAF {
     input:
     val input_csv
-    val nf_core_params_json
     path index_dir
 
     output:
@@ -16,15 +15,25 @@ process ALIGN_SIMPLEAF {
     if (!new File(input_csv.toString()).exists()) {
         throw new RuntimeException("Validation Failed: Samplesheet input CSV file does not exist: ${input_csv}")
     }
-    if (!new File(nf_core_params_json.toString()).exists()) {
-        throw new RuntimeException("Validation Failed: Params JSON file does not exist: ${nf_core_params_json}")
-    }
     if (!new File(index_dir.toString()).exists()) {
         throw new RuntimeException("Validation Failed: Index directory does not exist: ${index_dir}")
     }
 
     def run_dir = new File("${params.preprocessing_dir}")
     run_dir.mkdirs()
+
+    // Dynamically generate nf-params.json in the run workspace
+    def nf_core_params_json = new File(run_dir, "nf-params.json")
+    nf_core_params_json.text = groovy.json.JsonOutput.prettyPrint(
+        groovy.json.JsonOutput.toJson(
+            [
+                input: "input.csv",
+                outdir: "results",
+                skip_cellbender: true,
+                simpleaf_index: index_dir.toPath().toAbsolutePath().toString(),
+            ] + params.scrnaseq_params
+        )
+    )
 
     def custom_config = new File(run_dir, "custom.config")
     custom_config.text = """
@@ -35,7 +44,7 @@ process ALIGN_SIMPLEAF {
     }
     """
 
-    def cmd_string = "unset NXF_OPTS; unset NXF_CONFIG_FILES; export NXF_SYNTAX_PARSER=v1; nice -n 19 ionice -c 3 nextflow run nf-core/scrnaseq -r 4.1.0 -profile singularity -resume -c custom.config -params-file '${nf_core_params_json}' --max_cpus 72 --max_memory '2 TB'"
+    def cmd_string = "unset NXF_OPTS; unset NXF_CONFIG_FILES; export NXF_SYNTAX_PARSER=v1; nice -n 19 ionice -c 3 nextflow run nf-core/scrnaseq -r 4.1.0 -profile singularity -resume -c custom.config -params-file '${nf_core_params_json.getAbsolutePath()}' --max_cpus 72 --max_memory '2 TB'"
 
     def proc = ["bash", "-c", cmd_string].execute(null, run_dir)
     proc.consumeProcessOutput(System.out, System.err)
