@@ -156,7 +156,7 @@ workflow {
 
         // Apply the cheat if needed, using the unified channel
         if (params.transcript_level.toString().toBoolean()) {
-            output_index_channel = APPLY_TRANSCRIPT_CHEAT(output_index_channel)
+            output_index_channel = APPLY_TRANSCRIPT_CHEAT(output_index_channel, file(params.index_dir).getParent())
         }
     }
 

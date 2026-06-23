@@ -89,13 +89,14 @@ process BUILD_INDEX {
  * Outputs a folder 'transcript_index' side-by-side with the original input index.
  */
 process APPLY_TRANSCRIPT_CHEAT {
-    storeDir { index_dir.getParent() }
+    storeDir { store_dir }
 
     input:
-    path(index_dir)
+    path index_dir
+    val store_dir
 
     output:
-    path("transcript_index"), emit: transcript_index_dir
+    path "transcript_index", emit: transcript_index_dir
 
     script:
     """
