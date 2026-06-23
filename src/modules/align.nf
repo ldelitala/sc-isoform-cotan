@@ -35,16 +35,18 @@ process ALIGN_SIMPLEAF {
 
 // 1. Validates inputs before running child pipeline
 def validateAlignInputs(input_csv, index_dir) {
+    def index_real_path = index_dir.toRealPath().toString()
     if (!new File(input_csv.toString()).exists()) {
         throw new RuntimeException("Validation Failed: Samplesheet input CSV file does not exist: ${input_csv}")
     }
-    if (!new File(index_dir.toString()).exists()) {
-        throw new RuntimeException("Validation Failed: Index directory does not exist: ${index_dir}")
+    if (!new File(index_real_path).exists()) {
+        throw new RuntimeException("Validation Failed: Index directory does not exist: ${index_real_path}")
     }
 }
 
 // 2. Generates nf-params.json configuration file
 def writeParamsJson(run_dir, index_dir, scrnaseq_params) {
+    def index_real_path = index_dir.toRealPath().toString()
     def jsonFile = new File(run_dir, "nf-params.json")
     jsonFile.text = groovy.json.JsonOutput.prettyPrint(
         groovy.json.JsonOutput.toJson(
@@ -52,7 +54,7 @@ def writeParamsJson(run_dir, index_dir, scrnaseq_params) {
                 input: "input.csv",
                 outdir: "results",
                 skip_cellbender: true,
-                simpleaf_index: index_dir.toPath().toAbsolutePath().toString(),
+                simpleaf_index: index_real_path,
             ] + scrnaseq_params
         )
     )
