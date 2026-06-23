@@ -70,7 +70,7 @@ process DOWNLOAD_FASTQ {
     """
     set -eo pipefail
     prefetch --output-directory . -q -X 100G "${srr_id}"
-    fasterq-dump --split-files --threads "${task.cpus}" --temp . --outdir . "${srr_id}/${srr_id}.sra"
+    fasterq-dump --split-files --include-technical --threads "${task.cpus}" --temp . --outdir . "${srr_id}/${srr_id}.sra"
     pigz -f -p "${task.cpus}" "${srr_id}"*.fastq
     """
 }

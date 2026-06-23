@@ -46,7 +46,7 @@ def validateAlignInputs(input_csv, index_dir) {
 // 2. Generates nf-params.json configuration file
 def writeParamsJson(run_dir, index_dir, scrnaseq_params) {
     def jsonFile = new File(run_dir, "nf-params.json")
-    def cleanParams = scrnaseq_params.findAll { k, v -> v != null && v != "" }
+    def cleanParams = scrnaseq_params.findAll { _k, v -> v != null && v != "" }
     jsonFile.text = groovy.json.JsonOutput.prettyPrint(
         groovy.json.JsonOutput.toJson(
             [

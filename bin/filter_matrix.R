@@ -31,7 +31,7 @@ option_list <- list(
   make_option(c("-t", "--input_type"), type = "character", default = "auto",
               help = "Input type override: 'auto', 'alevin', 'seurat', 'sce' [default= %default]", metavar = "character"),
   
-  # QC Threshold options passed from Nextflow Config
+  # QC Threshold options
   make_option(c("--min_features"), type = "integer", default = 200,
               help = "Minimum features per cell [default= %default]", metavar = "integer"),
   make_option(c("--max_features"), type = "integer", default = 8000,

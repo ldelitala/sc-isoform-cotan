@@ -1,6 +1,6 @@
 work/
 references/
-cache/
+.cache/
 runs/
 .nextflow/
 .nextflow.log*

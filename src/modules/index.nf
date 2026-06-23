@@ -106,14 +106,33 @@ process APPLY_TRANSCRIPT_CHEAT {
     mkdir -p transcript_index
     cp -rL "${index_dir}/"* transcript_index/
     
-    # 2. Idempotently modify t2g_3col.tsv
+    # 2. Extract mitochondrial transcript IDs before modifying/deleting mapping files
+    MT_OUT="transcript_index/mt_transcripts.txt"
+    touch "\${MT_OUT}"
+
     T2G_FILE=\$(find transcript_index -name "t2g_3col.tsv" | head -n 1)
+    G2N_FILE=\$(find transcript_index -name "gene_id_to_name.tsv" | head -n 1)
+
+    if [ -f "\${T2G_FILE}" ]; then
+        awk -F'\t' '{if (NF >= 3 && (\$3 ~ /^[Mm][Tt][-|_]/)) print \$1}' "\${T2G_FILE}" >> "\${MT_OUT}"
+    fi
+
+    if [ -f "\${G2N_FILE}" ] && [ -f "\${T2G_FILE}" ]; then
+        awk -F'\t' '{if (\$2 ~ /^[Mm][Tt][-|_]/) print \$1}' "\${G2N_FILE}" > mt_genes.tmp
+        awk -F'\t' 'NR==FNR {mt[\$1]=1; next} {if (\$2 in mt) print \$1}' mt_genes.tmp "\${T2G_FILE}" >> "\${MT_OUT}"
+        rm -f mt_genes.tmp
+    fi
+
+    sort -u "\${MT_OUT}" -o "\${MT_OUT}"
+    echo "Extracted \$(wc -l < "\${MT_OUT}") mitochondrial transcripts."
+
+    # 3. Idempotently modify t2g_3col.tsv
     if [ -f "\${T2G_FILE}" ]; then
         awk -F'\t' 'BEGIN {OFS="\t"} {if (NF>=3) print \$1, \$1, \$3; else print \$1, \$1}' "\${T2G_FILE}" > "\${T2G_FILE}.tmp"
         mv -f "\${T2G_FILE}.tmp" "\${T2G_FILE}"
     fi
 
-    # 3. Clean up non-essential mapping files
+    # 4. Clean up non-essential mapping files
     find transcript_index -name "gene_id_to_name.tsv" -delete
     """
 }

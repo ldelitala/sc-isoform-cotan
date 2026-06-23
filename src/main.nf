@@ -85,11 +85,36 @@ workflow {
         validateDirectoryWritable(params.filtered_dir, 'filtered_dir')
     }
 
-
     // Define channels for the workflow
     def fastq_files_channel
     def output_index_channel = Channel.empty()
     def raw_matrix_channel
+    def mt_transcripts_channel
+
+    // Define mt_transcripts channel dynamically to prevent race conditions or missing files at startup
+    if (params.step in ['all', 'index', 'align']) {
+        if (params.transcript_level.toString().toBoolean()) {
+            mt_transcripts_channel = output_index_channel.map { path -> 
+                file(path).getParentFile().toPath().resolve("mt_transcripts.txt") 
+            }
+        } else {
+            if (params.mt_transcripts) {
+                mt_transcripts_channel = channel.fromPath(params.mt_transcripts)
+            } else {
+                mt_transcripts_channel = channel.fromPath("${projectDir}/conf/empty_mt.txt")
+            }
+        }
+    } else {
+        // Step is 'filter' only
+        if (params.mt_transcripts) {
+            mt_transcripts_channel = channel.fromPath(params.mt_transcripts)
+        } else if (params.transcript_level.toString().toBoolean()) {
+            def pre_exist_mt = "${file(params.index_dir).getParent()}/transcript_index/mt_transcripts.txt"
+            mt_transcripts_channel = channel.fromPath(pre_exist_mt)
+        } else {
+            mt_transcripts_channel = channel.fromPath("${projectDir}/conf/empty_mt.txt")
+        }
+    }
 
 
     // 1. DOWNLOADING step
@@ -194,7 +219,7 @@ workflow {
 
     // 4. QUALITY CONTROL
     if (params.step in ['all', 'filter']) {
-        QC_FILTER(raw_matrix_channel.ifEmpty { error("Pipeline error: Raw Seurat matrix file not found. Either alignment failed or bypass path is incorrect.") }, channel.fromPath(params.mt_transcripts))
+        QC_FILTER(raw_matrix_channel.ifEmpty { error("Pipeline error: Raw Seurat matrix file not found. Either alignment failed or bypass path is incorrect.") }, mt_transcripts_channel)
         QC_FILTER.out.filtered_matrix.subscribe { sendWebhook("Quality control filtering completed for dataset.", 'info') }
     }
 }
@@ -221,7 +246,11 @@ def parseSrrIds(val) {
     return val.split(',').collect { srr -> srr.trim() }.findAll()
 }
 
-def sendWebhook(message, status = 'info') {
+def sendWebhook(message) {
+    sendWebhook(message, 'info')
+}
+
+def sendWebhook(message, status) {
     if (params.webhook_url) {
         def datasetName = params.dataset_dir ? file(params.dataset_dir).getName() : 'Unknown'
         def colorCode = 3447003 // Default Blue (#3498DB)
@@ -265,7 +294,7 @@ def sendWebhook(message, status = 'info') {
         try {
             ['curl', '-H', 'Content-Type: application/json', '-X', 'POST', '-d', payload, params.webhook_url].execute().waitFor()
         }
-        catch (e: Exception) {
+        catch (Exception e) {
             log.warn("Webhook failed: ${e.message}")
         }
     }

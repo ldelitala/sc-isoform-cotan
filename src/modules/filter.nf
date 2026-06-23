@@ -10,7 +10,7 @@ process QC_FILTER {
     path mt_transcripts
 
     output:
-    path "${params.filtered_dir}/filtered.rds", emit: filtered_matrix
+    path "${params.filtered_dir}/*_filtered.rds", emit: filtered_matrix
 
     script:
     if (!file(raw_matrix_rds).exists()) {

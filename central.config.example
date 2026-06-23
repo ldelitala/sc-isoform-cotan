@@ -1,83 +1,85 @@
-/*
- * ============================================================================
- * central.config - Centralized User Directory & Resource Configuration
- * ============================================================================
- * Instructions:
- * 1. Copy this file as 'central.config' in your execution run folder.
- * 2. Edit the absolute paths below to point to your centralized folders.
- * 3. Customize hardware resource limits to match your server specs.
- * 4. Execute Nextflow using: nextflow run src/main.nf -c central.config ...
- */
 
+// ----------------------------------------------------------------------------
+// 1. PIPELINE PARAMETERS
+// ----------------------------------------------------------------------------
 params {
-    dataset_dir       = "/home/deli/athena_mount/data/dataset"
-    reference_dir     = "/home/deli/athena_mount/data/reference"
-    index_dir         = "/home/deli/athena_mount/data/index"
-    preprocessing_dir = "/home/deli/athena_mount/runs"
-    unfiltered_dir    = "/home/deli/athena_mount/data/unfiltered"
-    filtered_dir      = "/home/deli/athena_mount/data/filtered"
+    // --- WORKFLOW CONTROL ---
+    step            = ""        // 'all', 'download', 'index', 'align', 'filter'
+    webhook_url     = secrets.WEBHOOK_URL ?: ""
 
-    // Quantification Options
-    transcript_level   = true               // True for transcript-level, false for gene-level matrix
+    // --- 1.1 Input Data Options ---
+    srr_ids         = ""           // Comma-separated SRA accessions (mandatory)
 
-    // Downstream Aligner Settings (nf-core/scrnaseq simpleaf)
+    // --- 1.2 Genome Annotation & Index Options ---
+    genome_assembly = ""           // Genome assembly to use: e.g. 'GRCh38', 'GRCm38' (mandatory)
+    genome_species  = ""           // Dynamic resolve species name: e.g. 'homo_sapiens' (optional)
+    transcript_level =         // True for isoform-level, false for gene-level
+    skip_simpleaf   =         
+
+    // --- ALIGNMENT & PREPROCESSING ---
     scrnaseq_params = [
-        protocol               : "10XV3",           // Sequencing protocol: e.g. '10XV3', '10XV2', '10XV1', etc.
-        skip_cellbender        : true,              // Skips ambient RNA cellbender processing
-        simpleaf_umi_resolution: "parsimony-em",    // UMI resolution strategy
-        custom_geometry        : ""                 // Custom read/barcode geometry if needed (e.g. '1{b[14]u[10]x:}2{r:}')
+        protocol               : "",
+        simpleaf_umi_resolution: "",
+        custom_geometry        : ""
     ]
+    child_custom_config = "" //path to custom config for child scRNA-seq process
 
-    // Path to custom configuration file for child alignment run (optional)
-    child_custom_config = "custom.config"
+    // --- QUALITY CONTROL (QC_FILTER) ---
+    min_features    = 200
+    max_features    = 8000
+    min_counts      = 500
+    max_percent_mt  = 10.0
+
+    // --- STORAGE PATHS ---
+    dataset_dir       = "${launchDir}/results/dataset"
+    reference_dir     = "${launchDir}/results/reference"
+    index_dir         = "${launchDir}/results/index"
+    preprocessing_dir = "${launchDir}/results/preprocessing"
+    unfiltered_dir    = "${launchDir}/results/"
+    filtered_dir      = "${launchDir}/results/"
 }
 
 // ----------------------------------------------------------------------------
-// Athena Server Specific Resource Allocation (Option A overrides)
+// 2. EXECUTOR & SYSTEM RESOURCE LIMITS
 // ----------------------------------------------------------------------------
 executor {
-    name   = 'local'
-    cpus   = 80
-    memory = 2560.GB
+    name = 'local'
 }
 
 process {
-    // Resource ceilings
-    resourceLimits = [ cpus: 80, memory: 2560.GB ]
+    // Default resources
+    cpus   = 2
+    memory = 4.GB
 
-    // Task-specific priority tuning
-    withName: 'DOWNLOAD_BAM|DOWNLOAD_FASTQ' {
-        maxForks      = 6
-        cpus          = 12
-        errorStrategy = 'retry'
-        maxRetries    = 2
-    }
-
-    withName: 'ALIGN_SIMPLEAF' {
-        cpus   = 72
-        memory = 2048.GB
+    // Resource overrides for heavy tasks
+    withName: 'ALIGN_SIMPLEAF|BUILD_INDEX' {
+        cpus   = 8
+        memory = 16.GB
     }
 
     withName: 'QC_FILTER' {
-        cpus   = 8
-        memory = 100.GB
+        cpus   = 4
+        memory = 16.GB
     }
 
-    withName: 'DOWNLOAD_REFERENCE' {
+    withName: 'DOWNLOAD_BAM|DOWNLOAD_FASTQ' {
         maxForks      = 4
-        cpus          = 8
-        memory        = 16.GB
         errorStrategy = 'retry'
         maxRetries    = 2
     }
+}
 
-    withName: 'BUILD_INDEX' {
-        cpus          = 64
-        memory        = 128.GB
+// ----------------------------------------------------------------------------
+// 3. VIRTUALIZATION & CONTAINER PROFILES
+// ----------------------------------------------------------------------------
+profiles {
+    singularity {
+        singularity.enabled    = true
+        singularity.autoMounts = true
     }
 
-    withName: 'APPLY_TRANSCRIPT_CHEAT' {
-        cpus          = 8
-        memory        = 16.GB
+    docker {
+        docker.enabled         = true
+        docker.runOptions      = '-u $(id -u):$(id -g)'
     }
 }
