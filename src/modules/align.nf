@@ -59,9 +59,24 @@ def writeParamsJson(run_dir, index_dir, scrnaseq_params) {
     return jsonFile.getAbsolutePath()
 }
 
-// 3. Generates custom.config for singularity container overrides
+// 3. Generates custom.config for child run, copying user config if provided
 def writeCustomConfig(run_dir) {
     def custom_config = new File(run_dir, "custom.config")
+    
+    if (params.child_custom_config) {
+        def src_file = new File(params.child_custom_config)
+        if (src_file.exists()) {
+            java.nio.file.Files.copy(
+                src_file.toPath(), 
+                custom_config.toPath(), 
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            )
+            return custom_config.getAbsolutePath()
+        } else {
+            log.warn("Child custom config path specified but file does not exist: ${params.child_custom_config}. Falling back to default container override.")
+        }
+    }
+    
     custom_config.text = """
     process {
         withName: 'SIMPLEAF_INDEX|SIMPLEAF_QUANT' {
@@ -74,7 +89,7 @@ def writeCustomConfig(run_dir) {
 
 // 4. Runs child nextflow execution synchronously
 def runChildNextflow(run_dir, params_json_path) {
-    def cmd_string = "unset NXF_OPTS; unset NXF_CONFIG_FILES; export NXF_SYNTAX_PARSER=v1; nice -n 19 ionice -c 3 nextflow run nf-core/scrnaseq -r 4.1.0 -profile singularity -resume -c custom.config -params-file '${params_json_path}' --max_cpus 72 --max_memory '2 TB'"
+    def cmd_string = "unset NXF_OPTS; unset NXF_CONFIG_FILES; export NXF_SYNTAX_PARSER=v1; nice -n 19 ionice -c 3 nextflow run nf-core/scrnaseq -r 4.1.0 -profile singularity -resume -c custom.config -params-file '${params_json_path}'"
     def proc = ["bash", "-c", cmd_string].execute(null, run_dir)
     proc.consumeProcessOutput(System.out, System.err)
     proc.waitFor()

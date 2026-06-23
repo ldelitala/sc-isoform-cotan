@@ -1,0 +1,82 @@
+/*
+ * ============================================================================
+ * central.config - Centralized User Directory & Resource Configuration
+ * ============================================================================
+ * Instructions:
+ * 1. Copy this file as 'central.config' in your execution run folder.
+ * 2. Edit the absolute paths below to point to your centralized folders.
+ * 3. Customize hardware resource limits to match your server specs.
+ * 4. Execute Nextflow using: nextflow run src/main.nf -c central.config ...
+ */
+
+params {
+    dataset_dir       = "/home/deli/athena_mount/data/dataset"
+    reference_dir     = "/home/deli/athena_mount/data/reference"
+    index_dir         = "/home/deli/athena_mount/data/index"
+    preprocessing_dir = "/home/deli/athena_mount/runs"
+    unfiltered_dir    = "/home/deli/athena_mount/data/unfiltered"
+    filtered_dir      = "/home/deli/athena_mount/data/filtered"
+
+    // Quantification Options
+    transcript_level   = true               // True for transcript-level, false for gene-level matrix
+
+    // Downstream Aligner Settings (nf-core/scrnaseq simpleaf)
+    scrnaseq_params = [
+        protocol               : "10XV3",           // Sequencing protocol: e.g. '10XV3', '10XV2', etc.
+        skip_cellbender        : true,              // Skips ambient RNA cellbender processing
+        simpleaf_umi_resolution: "parsimony-em"     // UMI resolution strategy
+    ]
+
+    // Path to custom configuration file for child alignment run (optional)
+    child_custom_config = "custom.config"
+}
+
+// ----------------------------------------------------------------------------
+// Athena Server Specific Resource Allocation (Option A overrides)
+// ----------------------------------------------------------------------------
+executor {
+    name   = 'local'
+    cpus   = 80
+    memory = 2560.GB
+}
+
+process {
+    // Resource ceilings
+    resourceLimits = [ cpus: 80, memory: 2560.GB ]
+
+    // Task-specific priority tuning
+    withName: 'DOWNLOAD_BAM|DOWNLOAD_FASTQ' {
+        maxForks      = 6
+        cpus          = 12
+        errorStrategy = 'retry'
+        maxRetries    = 2
+    }
+
+    withName: 'ALIGN_SIMPLEAF' {
+        cpus   = 72
+        memory = 2048.GB
+    }
+
+    withName: 'QC_FILTER' {
+        cpus   = 8
+        memory = 100.GB
+    }
+
+    withName: 'DOWNLOAD_REFERENCE' {
+        maxForks      = 4
+        cpus          = 8
+        memory        = 16.GB
+        errorStrategy = 'retry'
+        maxRetries    = 2
+    }
+
+    withName: 'BUILD_INDEX' {
+        cpus          = 64
+        memory        = 128.GB
+    }
+
+    withName: 'APPLY_TRANSCRIPT_CHEAT' {
+        cpus          = 8
+        memory        = 16.GB
+    }
+}
