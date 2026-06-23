@@ -22,9 +22,10 @@ params {
 
     // Downstream Aligner Settings (nf-core/scrnaseq simpleaf)
     scrnaseq_params = [
-        protocol               : "10XV3",           // Sequencing protocol: e.g. '10XV3', '10XV2', etc.
+        protocol               : "10XV3",           // Sequencing protocol: e.g. '10XV3', '10XV2', '10XV1', etc.
         skip_cellbender        : true,              // Skips ambient RNA cellbender processing
-        simpleaf_umi_resolution: "parsimony-em"     // UMI resolution strategy
+        simpleaf_umi_resolution: "parsimony-em",    // UMI resolution strategy
+        custom_geometry        : ""                 // Custom read/barcode geometry if needed (e.g. '1{b[14]u[10]x:}2{r:}')
     ]
 
     // Path to custom configuration file for child alignment run (optional)
