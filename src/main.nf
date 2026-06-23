@@ -11,8 +11,8 @@ include { QC_FILTER } from './modules/filter'
 workflow {
 
     // set up webhook notifications for pipeline completion and errors
-    workflow.onComplete = { sendWebhook("Pipeline finished with status ${workflow.success ? 'SUCCESS' : 'FAILED'}. ${workflow.duration ? 'Duration: ' + workflow.duration : ''}") }
-    workflow.onError = { sendWebhook("Pipeline failed with error: ${workflow.errorMessage ?: 'Unknown error'}") }
+    workflow.onComplete = { sendWebhook("Pipeline finished with status ${workflow.success ? 'SUCCESS' : 'FAILED'}. ${workflow.duration ? 'Duration: ' + workflow.duration : ''}", workflow.success ? 'success' : 'error') }
+    workflow.onError = { sendWebhook("Pipeline failed with error: ${workflow.errorMessage ?: 'Unknown error'}", 'error') }
 
     // ANSI Colors for logging
     def c_reset = "\033[0m"
@@ -121,7 +121,7 @@ workflow {
             .ifEmpty { error("Pipeline error: No FASTQ files available. Download failed.") }
             .tap { webhook_fastq_files_channel }
 
-        webhook_fastq_files_channel.collect().subscribe { sendWebhook("Download step finished for dataset.") }
+        webhook_fastq_files_channel.collect().subscribe { sendWebhook("Download step finished for dataset.", 'info') }
     }
     else {
         fastq_files_channel = channel.fromFilePairs("${params.dataset_dir}/*/*_{1,2}.fastq.gz", size: 2)
@@ -160,7 +160,7 @@ workflow {
         }
 
         // Map output channel to its absolute path string to bypass exec: staging limitations
-        output_index_channel = output_index_channel.map { it.toAbsolutePath().toString() }
+        output_index_channel = output_index_channel.map { path -> path.toAbsolutePath().resolve('index').toString() }
     }
 
     // 3. ALIGNMENT step
@@ -180,13 +180,13 @@ workflow {
             )
             .tap { webhook_config_channel }
 
-        webhook_config_channel.subscribe { sendWebhook("nf-core/scrnaseq configuration files generated for dataset") }
+        webhook_config_channel.subscribe { sendWebhook("nf-core/scrnaseq configuration files generated for dataset", 'info') }
 
         ALIGN_SIMPLEAF(input_csv_channel, output_index_channel)
 
         raw_matrix_channel = ALIGN_SIMPLEAF.out.raw_seurat_matrix.tap { webhook_align_ch }
 
-        webhook_align_ch.subscribe { sendWebhook("Alignment completed for dataset.") }
+        webhook_align_ch.subscribe { sendWebhook("Alignment completed for dataset.", 'info') }
     }
     else {
         raw_matrix_channel = channel.fromPath("${params.unfiltered_dir}/raw_matrix.seurat.rds")
@@ -195,7 +195,7 @@ workflow {
     // 4. QUALITY CONTROL
     if (params.step in ['all', 'filter']) {
         QC_FILTER(raw_matrix_channel.ifEmpty { error("Pipeline error: Raw Seurat matrix file not found. Either alignment failed or bypass path is incorrect.") }, channel.fromPath(params.mt_transcripts))
-        QC_FILTER.out.filtered_matrix.subscribe { sendWebhook("Quality control filtering completed for dataset.") }
+        QC_FILTER.out.filtered_matrix.subscribe { sendWebhook("Quality control filtering completed for dataset.", 'info') }
     }
 }
 
@@ -221,9 +221,47 @@ def parseSrrIds(val) {
     return val.split(',').collect { srr -> srr.trim() }.findAll()
 }
 
-def sendWebhook(message) {
+def sendWebhook(message, status = 'info') {
     if (params.webhook_url) {
-        def payload = groovy.json.JsonOutput.toJson([content: message, text: message])
+        def datasetName = params.dataset_dir ? file(params.dataset_dir).getName() : 'Unknown'
+        def colorCode = 3447003 // Default Blue (#3498DB)
+        def emoji = "ℹ️"
+        if (status == 'success') {
+            colorCode = 3066993 // Green (#2ECC71)
+            emoji = "✅"
+        } else if (status == 'error') {
+            colorCode = 15158332 // Red (#E74C3C)
+            emoji = "❌"
+        } else if (status == 'warning') {
+            colorCode = 15105570 // Orange (#E67E22)
+            emoji = "⚠️"
+        }
+
+        def timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        timestamp.setTimeZone(TimeZone.getTimeZone("UTC"))
+        def formattedTime = timestamp.format(new Date())
+
+        def embed = [
+            title: "${emoji} Nextflow Pipeline Notification",
+            description: message,
+            color: colorCode,
+            timestamp: formattedTime,
+            fields: [
+                [name: "Dataset / Run", value: "`" + datasetName + "`", inline: true],
+                [name: "Genome Assembly", value: "`" + (params.genome_assembly ?: 'N/A') + "`", inline: true],
+                [name: "Step", value: "`" + params.step + "`", inline: true],
+                [name: "Transcript Level", value: "`" + params.transcript_level.toString() + "`", inline: true]
+            ],
+            footer: [
+                text: "sc-isoform-pipeline"
+            ]
+        ]
+
+        if (params.srr_ids) {
+            embed.fields.add([name: "SRA Run IDs", value: "`" + params.srr_ids + "`", inline: false])
+        }
+
+        def payload = groovy.json.JsonOutput.toJson([embeds: [embed]])
         try {
             ['curl', '-H', 'Content-Type: application/json', '-X', 'POST', '-d', payload, params.webhook_url].execute().waitFor()
         }
