@@ -31,8 +31,9 @@ workflow PREPROCESSING {
         )
 
     def raw_matrix_ch
-
-    if (!(unfiltered_dir.resolve('combined_raw_matrix.seurat.rds').exists())) {
+    def raw_matrix_path = file(unfiltered_dir).resolve('combined_raw_matrix.seurat.rds')
+    
+    if (!(raw_matrix_path.exists())) {
     
     ALIGN_SIMPLEAF(
         input_csv_ch,
@@ -47,8 +48,8 @@ workflow PREPROCESSING {
     
     }
     else {
-        log.warn("\033[0;33mWARNING: Unfiltered matrix already exists at ${unfiltered_dir.resolve('combined_raw_matrix.seurat.rds')}. Skipping alignment step.\033[0m")
-        raw_matrix_ch = channel.fromPath(unfiltered_dir.resolve('combined_raw_matrix.seurat.rds'))
+        log.warn("\033[0;33mWARNING: Unfiltered matrix already exists at ${raw_matrix_path}. Skipping alignment step.\033[0m")
+        raw_matrix_ch = channel.fromPath(raw_matrix_path)
     }
 
     raw_matrix_ch.tap { webhook_align_ch }
