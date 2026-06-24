@@ -7,7 +7,7 @@ def getGtfUrl(sp, asm, rel) { "http://ftp.ensembl.org/pub/release-${rel}/gtf/${s
 // --- PROCESSES ---
 
 process DOWNLOAD_REFERENCE {
-    storeDir reference_dir
+    storeDir { reference_dir }
 
     input:
     val reference_dir
