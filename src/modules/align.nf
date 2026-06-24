@@ -3,14 +3,15 @@
 // Contains the isolated nf-core/scrnaseq wrapper with dynamic memory scaling
 // ----------------------------------------------------------------------------
 
+//todo: separate the folder preapration logic and the staging logic from the childnextflow exec
 process ALIGN_SIMPLEAF {
     input:
     val input_csv
     val index_dir
-    val unfiltered_dir       // Replaces params.unfiltered_dir
-    val preprocessing_dir    // Replaces params.preprocessing_dir
-    val scrnaseq_params      // Replaces params.scrnaseq_params
-    val child_custom_config  // Replaces params.child_custom_config
+    val unfiltered_dir       
+    val preprocessing_dir    
+    val scrnaseq_params      
+    val child_custom_config  
 
     output:
     path "${unfiltered_dir}/raw_matrix.seurat.rds", emit: raw_seurat_matrix

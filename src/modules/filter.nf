@@ -1,3 +1,4 @@
+//todo: make it so that it works when transcript=false
 process QC_FILTER {
     publishDir params.filtered_dir, mode: 'copy', overwrite: true
 

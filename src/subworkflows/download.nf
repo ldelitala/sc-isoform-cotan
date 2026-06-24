@@ -1,17 +1,11 @@
 include { CHECK_LAYOUT ; DOWNLOAD_BAM ; DOWNLOAD_FASTQ } from '../modules/ingest'
-include { parseSrrIds ; sendWebhook } from '../utils/helpers'
+include { ERR_MISS; parseSrrIds ; sendWebhook } from '../utils/helpers'
 
 /*
  * SUBWORKFLOW: DOWNLOAD_READS
  * * Description:
  * Orchestrates the downloading of raw sequencing reads from the SRA database. 
- * Parses input run IDs, determines the sequencing layout (single vs. paired-end), 
- * and routes the samples to the appropriate download process (BAM or FASTQ).
- * * Takes:
- * srr_ids     (val) : Comma-separated string or range of SRA run IDs.
- * dataset_dir (val) : Destination directory path for the downloaded files.
- * * Emits:
- * fastq_files (ch)  : Tuple containing [ srr_id, fastq_1, fastq_2 ].
+ * Uses the dataset dir as cache with storeDir to avoid re-downloading files.
  */
 workflow DOWNLOAD_READS {
     take:
@@ -19,7 +13,13 @@ workflow DOWNLOAD_READS {
     dataset_dir
 
     main:
+    
+    // fast check 
+    srr_ids ?: ERR_MISS ('srr_ids')
+    dataset_dir ?: ERR_MISS ('dataset_dir')
     def all_srrs = parseSrrIds(srr_ids) ?: error("No valid SRA run IDs found in 'srr_ids' parameter: ${srr_ids}")
+    
+    // begin
     CHECK_LAYOUT(channel.fromList(all_srrs))
 
     def layout_branches = CHECK_LAYOUT.out
@@ -45,5 +45,6 @@ workflow DOWNLOAD_READS {
     webhook_fastq_files_channel.collect().subscribe { sendWebhook("Download step finished for dataset.", 'info') }
 
     emit:
-    fastq_ch
+    //identity mapping used to suppress annoyng vs code parser warning
+    fastq_ch.map { x -> x }
 }

@@ -7,7 +7,6 @@ def getGtfUrl(sp, asm, rel) { "http://ftp.ensembl.org/pub/release-${rel}/gtf/${s
 // --- PROCESSES ---
 
 process DOWNLOAD_REFERENCE {
-    // Permanent cache! Nextflow will never run this again if the files exist here.
     storeDir reference_dir
 
     input:
@@ -77,7 +76,7 @@ process APPLY_TRANSCRIPT_CHEAT {
     script:
     """
     cp -rL ${gene_index_dir} modified_index
-    cd modified_index
+    cd modified_index/index
     
     # 1. Extract MT transcripts by cross-referencing gene_id_to_name.tsv with t2g_3col.tsv
     awk -F'\\t' 'NR==FNR {if (\$2 ~ /^[Mm][Tt][-|_]/) mt[\$1]=1; next} {if (\$2 in mt) print \$1}' gene_id_to_name.tsv t2g_3col.tsv > mt_transcripts.txt
