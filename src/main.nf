@@ -27,7 +27,7 @@ workflow {
     workflow.onComplete = { sendWebhook("Pipeline finished with status ${workflow.success ? 'SUCCESS' : 'FAILED'}. ${workflow.duration ? 'Duration: ' + workflow.duration : ''}", workflow.success ? 'success' : 'error') }
     workflow.onError = { sendWebhook("Pipeline failed with error: ${workflow.errorMessage ?: 'Unknown error'}", 'error') }
 
-    if(params.steps in ['download']){
+    if(params.step in ['download']){
         DOWNLOAD_READS(params.srr_ids, params.dataset_dir)
     }
     
