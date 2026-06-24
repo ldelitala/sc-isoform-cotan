@@ -87,7 +87,7 @@ def writeCustomConfig(run_dir, child_custom_config) {
     custom_config.text = """
     process {
         withName: 'SIMPLEAF_INDEX|SIMPLEAF_QUANT' {
-            container = 'quay.io/biocontainers/simpleaf:0.23.0--ha6fb395_0'
+            container = 'https://depot.galaxyproject.org/singularity/simpleaf:0.24.0--hd612981_0'
         }
     }
     """
