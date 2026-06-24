@@ -1,0 +1,86 @@
+// utils/helpers.nf
+
+def ERR_MSG(param) {
+    return "\033[0;31mPipeline error: '${param}' parameter missing.\033[0m"
+}
+
+def parseSrrIds(val) {
+    if (!val) return []
+    def m = (val =~ /^([A-Za-z]+)(\d+)\s*-\s*[A-Za-z]+(\d+)$/)
+    if (m.matches()) {
+        def prefix = m[0][1]
+        def (start, end) = [m[0][2].toInteger(), m[0][3].toInteger()]
+        return (start..end).collect { num -> prefix + num.toString().padLeft(m[0][2].length(), '0') }
+    }
+    return val.split(',').collect { srr -> srr.trim() }.findAll()
+}
+
+def sendWebhook(message) {
+    sendWebhook(message, 'info')
+}
+
+def sendWebhook(message, status) {
+    if (params.webhook_url) {
+        def datasetName = params.dataset_dir ? file(params.dataset_dir).getName() : 'Unknown'
+        def colorCode = 3447003 // Default Blue
+        def emoji = "ℹ️"
+        
+        if (status == 'success') { colorCode = 3066993; emoji = "✅" } 
+        else if (status == 'error') { colorCode = 15158332; emoji = "❌" } 
+        else if (status == 'warning') { colorCode = 15105570; emoji = "⚠️" }
+
+        def timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        timestamp.setTimeZone(TimeZone.getTimeZone("UTC"))
+        def formattedTime = timestamp.format(new Date())
+
+        def embed = [
+            title: "${emoji} Nextflow Pipeline Notification",
+            description: message,
+            color: colorCode,
+            timestamp: formattedTime,
+            fields: [
+                [name: "Dataset / Run", value: "`" + datasetName + "`", inline: true],
+                [name: "Genome Assembly", value: "`" + (params.genome_assembly ?: 'N/A') + "`", inline: true],
+                [name: "Step", value: "`" + params.step + "`", inline: true],
+                [name: "Transcript Level", value: "`" + params.transcript_level.toString() + "`", inline: true]
+            ],
+            footer: [ text: "sc-isoform-pipeline" ]
+        ]
+
+        if (params.srr_ids) embed.fields.add([name: "SRA Run IDs", value: "`" + params.srr_ids + "`", inline: false])
+
+        def payload = groovy.json.JsonOutput.toJson([embeds: [embed]])
+        try {
+            ['curl', '-H', 'Content-Type: application/json', '-X', 'POST', '-d', payload, params.webhook_url].execute().waitFor()
+        } catch (Exception e) {
+            log.warn("Webhook failed: ${e.message}")
+        }
+    }
+}
+
+def validatePiscemIndex(index_dir) {
+    if (!index_dir) error("Validation Error: 'index_dir' is required but not configured.")
+    def index_path = file(index_dir)
+    if (!index_path.exists()) error("Validation Error: Specified index path does not exist: ${index_dir}")
+    
+    def nested_index = file("${index_dir}/index")
+    def has_t2g = file("${index_path}/t2g_3col.tsv").exists() || file("${nested_index}/t2g_3col.tsv").exists()
+    def has_piscem = file("${index_path}/piscem_idx.ssi").exists() || file("${nested_index}/piscem_idx.ssi").exists()
+    def has_salmon = file("${index_path}/ref_core.hash").exists() || file("${nested_index}/ref_core.hash").exists()
+
+    if (!has_t2g || !(has_piscem || has_salmon)) {
+        error("Validation Error: Malformed simpleaf index at ${index_dir}. Missing required index files.")
+    }
+}
+
+def validateDirectoryWritable(dir_path, param_name) {
+    if (!dir_path) error("Validation Error: Parameter '${param_name}' is empty.")
+    def target = file(dir_path)
+
+    def check_dir = target.exists() ? target : target.getParent()
+    if (check_dir != null && !check_dir.exists()) check_dir = check_dir.getParent()
+
+    if (check_dir == null || !check_dir.exists() || !check_dir.toFile().canWrite()) {
+        error("Validation Error: Target path or its parent is not writable for '${param_name}': ${dir_path}")
+    }
+}
