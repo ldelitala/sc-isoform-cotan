@@ -64,7 +64,7 @@ process BUILD_INDEX {
 }
 
 process APPLY_TRANSCRIPT_CHEAT {
-    publishDir transcript_index_dir, mode: 'copy', overwrite: true
+    publishDir { transcript_index_dir }, mode: 'copy', overwrite: true
 
     input:
     path gene_index_dir
