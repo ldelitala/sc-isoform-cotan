@@ -53,12 +53,12 @@ workflow PREPROCESSING {
     }
 
     raw_matrix_ch.tap { webhook_align_ch }
-    webhook_align_ch.subscribe { sendWebhook("Alignment completed for dataset.", 'info') }
+    webhook_align_ch.collect().subscribe { sendWebhook("Alignment completed for dataset.", 'info') }
 
     QC_FILTER(raw_matrix_ch, index_ch.map { path -> file(path).resolve('mt_transcripts.txt').toString() })
 
     QC_FILTER.out.filtered_matrix.tap { webhook_qc_ch }
-    webhook_qc_ch.subscribe { sendWebhook("Quality control filtering completed for dataset.", 'info') }
+    webhook_qc_ch.collect().subscribe { sendWebhook("Quality control filtering completed for dataset.", 'info') }
 
     emit:
     QC_FILTER.out.filtered_matrix

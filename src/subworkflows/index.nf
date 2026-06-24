@@ -55,7 +55,7 @@ workflow PREPARE_INDEX {
 
         output_index_ch = BUILD_INDEX(DOWNLOAD_REFERENCE.out, gene_index_dir)
         output_index_ch.tap { webhook_build_ch }
-        webhook_build_ch.subscribe { sendWebhook("Indexing finished.", 'info') }
+        webhook_build_ch.collect().subscribe { sendWebhook("Indexing finished.", 'info') }
     }
     else {
         log.info("\033[0;33mSkipping SimpleAF index building...\033[0m")
@@ -66,7 +66,7 @@ workflow PREPARE_INDEX {
     if (transcript_level.toString().toBoolean()) {
         output_index_ch = APPLY_TRANSCRIPT_CHEAT(output_index_ch, file(transcript_index_dir))
         output_index_ch.tap { webhook_cheat_ch }
-        webhook_cheat_ch.subscribe { sendWebhook("Transcript Cheat applied.", 'info') }
+        webhook_cheat_ch.collect().subscribe { sendWebhook("Transcript Cheat applied.", 'info') }
     }
 
     emit:

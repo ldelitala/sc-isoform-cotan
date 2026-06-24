@@ -3,3 +3,4 @@ runs/
 .conda/
 .Trash-1000/
 ncbi_cache/
+data/
