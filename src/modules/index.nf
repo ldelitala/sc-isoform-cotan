@@ -1,16 +1,17 @@
 nextflow.enable.dsl = 2
 
-/**
- * DOWNLOAD_REFERENCE
- * Downloads FASTA and GTF files from Ensembl.
- * Uses 'storeDir' to cache raw reference files permanently.
- */
+// --- HELPER FUNCTIONS ---
+def getFastaUrl(sp, asm, rel) { "http://ftp.ensembl.org/pub/release-${rel}/fasta/${sp.toLowerCase()}/dna/${sp.capitalize()}.${asm}.dna.primary_assembly.fa.gz" }
+def getGtfUrl(sp, asm, rel) { "http://ftp.ensembl.org/pub/release-${rel}/gtf/${sp.toLowerCase()}/${sp.capitalize()}.${asm}.${rel}.gtf.gz" }
+
+// --- PROCESSES ---
+
 process DOWNLOAD_REFERENCE {
-    storeDir { "${reference_dir}/" }
+    // Permanent cache! Nextflow will never run this again if the files exist here.
+    storeDir reference_dir
 
     input:
     val reference_dir
-    val reference_urls
     val genome_species
     val genome_assembly
     val ensembl_release
@@ -19,44 +20,25 @@ process DOWNLOAD_REFERENCE {
     tuple path("*.fa.gz"), path("*.gtf.gz")
 
     script:
-    genome_assembly ?: error("Missing required parameter: genome_assembly")
-    def urls = reference_urls ? reference_urls[genome_assembly] : null
-    if (!urls) {
-        if (genome_species && genome_assembly) {
-            def species = genome_species.toLowerCase().trim()
-            def assembly = genome_assembly.trim()
-            def release = ensembl_release
-            def species_cap = species.substring(0, 1).toUpperCase() + species.substring(1)
-            urls = [fasta: "http://ftp.ensembl.org/pub/release-${release}/fasta/${species}/dna/${species_cap}.${assembly}.dna.primary_assembly.fa.gz", gtf: "http://ftp.ensembl.org/pub/release-${release}/gtf/${species}/${species_cap}.${assembly}.${release}.gtf.gz"]
-        }
-        else {
-            error("No reference URLs configured for genome: ${genome_assembly}. Use '--genome_species <species>' and '--genome_assembly <assembly>' to resolve dynamically.")
-        }
-    }
-    def fasta_url = urls.fasta
-    def gtf_url = urls.gtf
-    def fasta_file = fasta_url.substring(fasta_url.lastIndexOf('/') + 1)
-    def gtf_file = gtf_url.substring(gtf_url.lastIndexOf('/') + 1)
-
+    def fasta_url = getFastaUrl(genome_species, genome_assembly, ensembl_release)
+    def gtf_url = getGtfUrl(genome_species, genome_assembly, ensembl_release)
     """
     set -eo pipefail
     
+    # Download to temporary names first
     if wget -q --spider "${fasta_url}"; then
-        wget -q -O "${fasta_file}" "${fasta_url}"
+        wget -q -O temp_genome.fa.gz "${fasta_url}"
     else
-        fallback_url=\$(echo "${fasta_url}" | sed 's/primary_assembly/toplevel/')
-        wget -q -O "${fasta_file}" "\${fallback_url}"
+        wget -q -O temp_genome.fa.gz "${fasta_url.replace('primary_assembly', 'toplevel')}"
     fi
+    wget -q -O temp_anno.gtf.gz "${gtf_url}"
 
-    wget -q -O "${gtf_file}" "${gtf_url}"
+    # Only rename to final outputs if downloads finish perfectly
+    mv temp_genome.fa.gz genome.fa.gz
+    mv temp_anno.gtf.gz annotation.gtf.gz
     """
 }
 
-/**
- * BUILD_INDEX
- * Generates a simpleaf index from FASTA/GTF files.
- * Uses dynamic storeDir to place the index folder exactly at the provided path.
- */
 process BUILD_INDEX {
     container 'https://depot.galaxyproject.org/singularity/simpleaf:0.22.0--hd612981_0'
     storeDir { file(gene_index_dir).getParent() }
@@ -66,73 +48,45 @@ process BUILD_INDEX {
     val gene_index_dir
 
     output:
-    path(file(gene_index_dir).getName()), emit: gene_index_dir
+    path "${file(gene_index_dir).getName()}", emit: index_dir
 
     script:
-    gene_index_dir ?: error("Missing required parameter: gene_index_dir")
-    def folder_name = file(gene_index_dir).getName()
+    def folder = file(gene_index_dir).getName()
     """
-    set -eo pipefail
-    export ALEVIN_FRY_HOME="\$PWD"
+    export ALEVIN_FRY_HOME=\$PWD
     simpleaf set-paths
-    simpleaf index \\
-        -f "${fasta_file}" \\
-        -g "${gtf_file}" \\
-        -o "${folder_name}" \\
-        -t ${task.cpus}
+    
+    # Build to a temporary folder
+    simpleaf index -f ${fasta_file} -g ${gtf_file} -o temp_index -t ${task.cpus}
+
+    # Only create the final folder if the build didn't crash
+    mv temp_index ${folder}
     """
 }
 
-/**
- * APPLY_TRANSCRIPT_CHEAT
- * Creates an idempotent, modified transcript index by mapping transcripts to themselves.
- * Outputs a folder 'transcript_index' side-by-side with the original input index.
- */
 process APPLY_TRANSCRIPT_CHEAT {
-    storeDir { store_dir }
+    publishDir transcript_index_dir, mode: 'copy', overwrite: true
 
     input:
-    path index_dir
-    val store_dir
+    path gene_index_dir
+    val transcript_index_dir
 
     output:
-    path "transcript_index", emit: transcript_index_dir
+    path "modified_index", emit: transcript_index
 
     script:
     """
-    set -eo pipefail
+    cp -rL ${gene_index_dir} modified_index
+    cd modified_index
     
-    # 1. Create workspace and copy original index contents
-    mkdir -p transcript_index
-    cp -rL "${index_dir}/"* transcript_index/
+    # 1. Extract MT transcripts by cross-referencing gene_id_to_name.tsv with t2g_3col.tsv
+    awk -F'\\t' 'NR==FNR {if (\$2 ~ /^[Mm][Tt][-|_]/) mt[\$1]=1; next} {if (\$2 in mt) print \$1}' gene_id_to_name.tsv t2g_3col.tsv > mt_transcripts.txt
     
-    # 2. Extract mitochondrial transcript IDs before modifying/deleting mapping files
-    MT_OUT="transcript_index/mt_transcripts.txt"
-    touch "\${MT_OUT}"
-
-    T2G_FILE=\$(find transcript_index -name "t2g_3col.tsv" | head -n 1)
-    G2N_FILE=\$(find transcript_index -name "gene_id_to_name.tsv" | head -n 1)
-
-    if [ -f "\${T2G_FILE}" ]; then
-        awk -F'\t' '{if (NF >= 3 && (\$3 ~ /^[Mm][Tt][-|_]/)) print \$1}' "\${T2G_FILE}" >> "\${MT_OUT}"
-    fi
-
-    if [ -f "\${G2N_FILE}" ] && [ -f "\${T2G_FILE}" ]; then
-        awk -F'\t' '{if (\$2 ~ /^[Mm][Tt][-|_]/) print \$1}' "\${G2N_FILE}" > mt_genes.tmp
-        awk -F'\t' 'NR==FNR {mt[\$1]=1; next} {if (\$2 in mt) print \$1}' mt_genes.tmp "\${T2G_FILE}" >> "\${MT_OUT}"
-        rm -f mt_genes.tmp
-    fi
-
-    sort -u "\${MT_OUT}" -o "\${MT_OUT}"
-    echo "Extracted \$(wc -l < "\${MT_OUT}") mitochondrial transcripts."
-
-    # 3. Idempotently modify t2g_3col.tsv
-    if [ -f "\${T2G_FILE}" ]; then
-        awk -F'\t' 'BEGIN {OFS="\t"} {if (NF>=3) print \$1, \$1, \$3; else print \$1, \$1}' "\${T2G_FILE}" > "\${T2G_FILE}.tmp"
-        mv -f "\${T2G_FILE}.tmp" "\${T2G_FILE}"
-    fi
-
-    # 4. Clean up non-essential mapping files
-    find transcript_index -name "gene_id_to_name.tsv" -delete
+    # Apply Transcript Cheat
+    awk -F'\t' 'BEGIN {OFS="\t"} {print \$1, \$1, \$3}' t2g_3col.tsv > tmp.tsv
+    mv tmp.tsv t2g_3col.tsv
+    
+    # Cleanup
+    rm -f gene_id_to_name.tsv
     """
 }

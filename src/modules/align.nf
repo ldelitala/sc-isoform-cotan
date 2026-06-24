@@ -7,24 +7,29 @@ process ALIGN_SIMPLEAF {
     input:
     val input_csv
     val index_dir
+    val unfiltered_dir       // Replaces params.unfiltered_dir
+    val preprocessing_dir    // Replaces params.preprocessing_dir
+    val scrnaseq_params      // Replaces params.scrnaseq_params
+    val child_custom_config  // Replaces params.child_custom_config
 
     output:
-    path "${params.unfiltered_dir}/raw_matrix.seurat.rds", emit: raw_seurat_matrix
+    path "${unfiltered_dir}/raw_matrix.seurat.rds", emit: raw_seurat_matrix
 
     exec:
-    def run_dir = new File("${params.preprocessing_dir}")
+    def run_dir = new File("${preprocessing_dir}")
     run_dir.mkdirs()
 
     // Execute separate steps via modular helper functions
     validateAlignInputs(input_csv, index_dir)
     
-    def params_json_path = writeParamsJson(run_dir, index_dir, params.scrnaseq_params)
+    def params_json_path = writeParamsJson(run_dir, index_dir, scrnaseq_params)
     
-    writeCustomConfig(run_dir)
+    // Now explicitly passing child_custom_config
+    writeCustomConfig(run_dir, child_custom_config)
     
     runChildNextflow(run_dir, params_json_path)
     
-    stageOutputMatrix(run_dir, "${params.unfiltered_dir}")
+    stageOutputMatrix(run_dir, "${unfiltered_dir}")
     
     cleanChildWorkDir(run_dir)
 }
@@ -60,12 +65,12 @@ def writeParamsJson(run_dir, index_dir, scrnaseq_params) {
     return jsonFile.getAbsolutePath()
 }
 
-// 3. Generates custom.config for child run, copying user config if provided
-def writeCustomConfig(run_dir) {
+// 3. Generates custom.config for child run, using passed config if provided
+def writeCustomConfig(run_dir, child_custom_config) {
     def custom_config = new File(run_dir, "custom.config")
     
-    if (params.child_custom_config) {
-        def src_file = new File(params.child_custom_config)
+    if (child_custom_config) {
+        def src_file = new File(child_custom_config)
         if (src_file.exists()) {
             java.nio.file.Files.copy(
                 src_file.toPath(), 
@@ -74,7 +79,7 @@ def writeCustomConfig(run_dir) {
             )
             return custom_config.getAbsolutePath()
         } else {
-            log.warn("Child custom config path specified but file does not exist: ${params.child_custom_config}. Falling back to default container override.")
+            log.warn("Child custom config path specified but file does not exist: ${child_custom_config}. Falling back to default container override.")
         }
     }
     

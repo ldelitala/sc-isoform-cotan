@@ -8,3 +8,5 @@ datasets/
 filtered/
 nxf_work/
 temp_clone/
+.conda/
+.Trash-1000/

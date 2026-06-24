@@ -87,35 +87,8 @@ workflow {
 
     // Define channels for the workflow
     def fastq_files_channel
-    def output_index_channel = Channel.empty()
+    def output_index_channel
     def raw_matrix_channel
-    def mt_transcripts_channel
-
-    // Define mt_transcripts channel dynamically to prevent race conditions or missing files at startup
-    if (params.step in ['all', 'index', 'align']) {
-        if (params.transcript_level.toString().toBoolean()) {
-            mt_transcripts_channel = output_index_channel.map { path -> 
-                file(path).getParentFile().toPath().resolve("mt_transcripts.txt") 
-            }
-        } else {
-            if (params.mt_transcripts) {
-                mt_transcripts_channel = channel.fromPath(params.mt_transcripts)
-            } else {
-                mt_transcripts_channel = channel.fromPath("${projectDir}/conf/empty_mt.txt")
-            }
-        }
-    } else {
-        // Step is 'filter' only
-        if (params.mt_transcripts) {
-            mt_transcripts_channel = channel.fromPath(params.mt_transcripts)
-        } else if (params.transcript_level.toString().toBoolean()) {
-            def pre_exist_mt = "${file(params.index_dir).getParent()}/transcript_index/mt_transcripts.txt"
-            mt_transcripts_channel = channel.fromPath(pre_exist_mt)
-        } else {
-            mt_transcripts_channel = channel.fromPath("${projectDir}/conf/empty_mt.txt")
-        }
-    }
-
 
     // 1. DOWNLOADING step
     if (params.step in ['all', 'download']) {
@@ -164,24 +137,23 @@ workflow {
         if (!params.skip_simpleaf) {
             DOWNLOAD_REFERENCE(
                 params.reference_dir,
-                params.reference_urls,
                 params.genome_species,
                 params.genome_assembly,
                 params.ensembl_release,
             )
             log.info("${c_green}Starting SimpleAF index building...${c_reset}")
-            output_index_channel = BUILD_INDEX(DOWNLOAD_REFERENCE.out, params.index_dir)
+            output_index_channel = BUILD_INDEX(DOWNLOAD_REFERENCE.out, params.gene_index_dir)
         }
         else {
             log.info("${c_yellow}Skipping SimpleAF index building...${c_reset}")
             // Ensure this points to the parent directory containing the index folder
-            output_index_channel = channel.fromPath(params.index_dir)
-                .ifEmpty { error("Pipeline error: Index not found at ${params.index_dir}") }
+            output_index_channel = channel.fromPath(params.gene_index_dir)
+                .ifEmpty { error("Pipeline error: Index not found at ${params.gene_index_dir}") }
         }
 
         // Apply the cheat if needed, using the unified channel
         if (params.transcript_level.toString().toBoolean()) {
-            output_index_channel = APPLY_TRANSCRIPT_CHEAT(output_index_channel, file(params.index_dir).getParent())
+            output_index_channel = APPLY_TRANSCRIPT_CHEAT(output_index_channel, file(params.transcript_index_dir))
         }
 
         // Map output channel to its absolute path string to bypass exec: staging limitations
@@ -207,7 +179,7 @@ workflow {
 
         webhook_config_channel.subscribe { sendWebhook("nf-core/scrnaseq configuration files generated for dataset", 'info') }
 
-        ALIGN_SIMPLEAF(input_csv_channel, output_index_channel)
+        ALIGN_SIMPLEAF(input_csv_channel, output_index_channel, params.unfiltered_dir, params.preprocessing_dir, params.scrnaseq_params, params.child_custom_config)
 
         raw_matrix_channel = ALIGN_SIMPLEAF.out.raw_seurat_matrix.tap { webhook_align_ch }
 
@@ -219,7 +191,7 @@ workflow {
 
     // 4. QUALITY CONTROL
     if (params.step in ['all', 'filter']) {
-        QC_FILTER(raw_matrix_channel.ifEmpty { error("Pipeline error: Raw Seurat matrix file not found. Either alignment failed or bypass path is incorrect.") }, mt_transcripts_channel)
+        QC_FILTER(raw_matrix_channel.ifEmpty { error("Pipeline error: Raw Seurat matrix file not found. Either alignment failed or bypass path is incorrect.") }, )
         QC_FILTER.out.filtered_matrix.subscribe { sendWebhook("Quality control filtering completed for dataset.", 'info') }
     }
 }
