@@ -64,19 +64,19 @@ process BUILD_INDEX {
 }
 
 process APPLY_TRANSCRIPT_CHEAT {
-    publishDir { transcript_index_dir }, mode: 'copy', overwrite: true
+    publishDir { file(transcript_index_dir).getParent() }, mode: 'copy', overwrite: true
 
     input:
     path gene_index_dir
     val transcript_index_dir
 
     output:
-    path "modified_index", emit: transcript_index
+    path "transcript_index", emit: transcript_index
 
     script:
     """
-    cp -rL ${gene_index_dir} modified_index
-    cd modified_index/index
+    cp -rL ${gene_index_dir} transcript_index
+    cd transcript_index/index
     
     # 1. Extract MT transcripts by cross-referencing gene_id_to_name.tsv with t2g_3col.tsv
     awk -F'\\t' 'NR==FNR {if (\$2 ~ /^[Mm][Tt][-|_]/) mt[\$1]=1; next} {if (\$2 in mt) print \$1}' gene_id_to_name.tsv t2g_3col.tsv > mt_transcripts.txt
