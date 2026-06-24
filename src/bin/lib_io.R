@@ -11,5 +11,9 @@ load_raw_matrix <- function(input_path, input_type = "auto") {
   message("Loading Seurat RDS: ", input_path)
   obj <- readRDS(input_path)
   assay_name <- DefaultAssay(obj)
-  return(GetAssayData(obj, assay = assay_name, slot = "counts"))
+  if (packageVersion("Seurat") >= "5.0.0") {
+    return(GetAssayData(obj, assay = assay_name, layer = "counts"))
+  } else {
+    return(GetAssayData(obj, assay = assay_name, slot = "counts"))
+  }
 }
