@@ -39,7 +39,7 @@ process DOWNLOAD_REFERENCE {
 }
 
 process BUILD_INDEX {
-    container 'https://depot.galaxyproject.org/singularity/simpleaf:0.22.0--hd612981_0'
+    container 'https://depot.galaxyproject.org/singularity/simpleaf:0.24.0--hd612981_1'
     storeDir { file(gene_index_dir).getParent() }
 
     input:
