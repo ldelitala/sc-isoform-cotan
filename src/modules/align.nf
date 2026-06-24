@@ -8,13 +8,13 @@ process ALIGN_SIMPLEAF {
     input:
     val input_csv
     val index_dir
-    val unfiltered_dir       
-    val preprocessing_dir    
-    val scrnaseq_params      
-    val child_custom_config  
+    val unfiltered_dir
+    val preprocessing_dir
+    val scrnaseq_params
+    val child_custom_config
 
     output:
-    path "${unfiltered_dir}/raw_matrix.seurat.rds", emit: raw_seurat_matrix
+    path "raw_matrix.seurat.rds", emit: raw_seurat_matrix
 
     exec:
     def run_dir = new File("${preprocessing_dir}")
@@ -22,16 +22,17 @@ process ALIGN_SIMPLEAF {
 
     // Execute separate steps via modular helper functions
     validateAlignInputs(input_csv, index_dir)
-    
+
     def params_json_path = writeParamsJson(run_dir, index_dir, scrnaseq_params)
-    
+
     // Now explicitly passing child_custom_config
     writeCustomConfig(run_dir, child_custom_config)
-    
+
     runChildNextflow(run_dir, params_json_path)
-    
-    stageOutputMatrix(run_dir, "${unfiltered_dir}")
-    
+
+    stageOutputMatrix(run_dir, unfiltered_dir.toString())
+    stageOutputMatrix(run_dir, task.workDir.toString())
+
     cleanChildWorkDir(run_dir)
 }
 
@@ -69,21 +70,22 @@ def writeParamsJson(run_dir, index_dir, scrnaseq_params) {
 // 3. Generates custom.config for child run, using passed config if provided
 def writeCustomConfig(run_dir, child_custom_config) {
     def custom_config = new File(run_dir, "custom.config")
-    
+
     if (child_custom_config) {
         def src_file = new File(child_custom_config)
         if (src_file.exists()) {
             java.nio.file.Files.copy(
-                src_file.toPath(), 
-                custom_config.toPath(), 
-                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                src_file.toPath(),
+                custom_config.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING,
             )
             return custom_config.getAbsolutePath()
-        } else {
+        }
+        else {
             log.warn("Child custom config path specified but file does not exist: ${child_custom_config}. Falling back to default container override.")
         }
     }
-    
+
     custom_config.text = """
     process {
         withName: 'SIMPLEAF_INDEX|SIMPLEAF_QUANT' {
@@ -111,9 +113,9 @@ def stageOutputMatrix(run_dir, unfiltered_dir) {
     def dest_file = new File(unfiltered_dir, "raw_matrix.seurat.rds")
     dest_file.parentFile.mkdirs()
     java.nio.file.Files.copy(
-        src_file.toPath(), 
-        dest_file.toPath(), 
-        java.nio.file.StandardCopyOption.REPLACE_EXISTING
+        src_file.toPath(),
+        dest_file.toPath(),
+        java.nio.file.StandardCopyOption.REPLACE_EXISTING,
     )
 }
 

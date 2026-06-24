@@ -31,7 +31,7 @@ workflow PREPROCESSING {
         )
 
     def raw_matrix_ch
-    def raw_matrix_path = file(unfiltered_dir).resolve('combined_raw_matrix.seurat.rds')
+    def raw_matrix_path = file(unfiltered_dir).resolve('raw_matrix.seurat.rds')
     
     if (!(raw_matrix_path.exists())) {
     
