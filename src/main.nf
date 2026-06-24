@@ -21,7 +21,7 @@ include { PREPROCESSING } from './subworkflows/preprocessing.nf'
 // ----------------------------------------------------------------------------
 workflow {
 
-    printPipelineInfo(params, launchDir, projectDir, workDir, workflow.profile)
+    printPipelineInfo(params, launchDir, workDir, workflow.profile)
 
     // Webhooks
     workflow.onComplete = { sendWebhook("Pipeline finished with status ${workflow.success ? 'SUCCESS' : 'FAILED'}. ${workflow.duration ? 'Duration: ' + workflow.duration : ''}", workflow.success ? 'success' : 'error') }
