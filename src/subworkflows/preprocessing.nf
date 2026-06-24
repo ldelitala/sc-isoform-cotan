@@ -30,6 +30,10 @@ workflow PREPROCESSING {
             sort: true,
         )
 
+    def raw_matrix_ch
+
+    if (!(unfiltered_dir.resolve('combined_raw_matrix.seurat.rds').exists())) {
+    
     ALIGN_SIMPLEAF(
         input_csv_ch,
         index_ch,
@@ -39,8 +43,15 @@ workflow PREPROCESSING {
         child_custom_config,
     )
 
-    def raw_matrix_ch = ALIGN_SIMPLEAF.out.raw_seurat_matrix.tap { webhook_align_ch }
+    raw_matrix_ch = ALIGN_SIMPLEAF.out.raw_seurat_matrix
+    
+    }
+    else {
+        log.warn("\033[0;33mWARNING: Unfiltered matrix already exists at ${unfiltered_dir.resolve('combined_raw_matrix.seurat.rds')}. Skipping alignment step.\033[0m")
+        raw_matrix_ch = channel.fromPath(unfiltered_dir.resolve('combined_raw_matrix.seurat.rds'))
+    }
 
+    raw_matrix_ch.tap { webhook_align_ch }
     webhook_align_ch.subscribe { sendWebhook("Alignment completed for dataset.", 'info') }
 
     QC_FILTER(raw_matrix_ch, index_ch.map { path -> path.toAbsolutePath().resolve('mt_transcripts.txt').toString() })

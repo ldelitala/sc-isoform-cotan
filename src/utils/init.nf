@@ -20,7 +20,7 @@ def fmtBool(val) {
 // ----------------------------------------------------------------------------
 // MAIN LOGGING FUNCTION
 // ----------------------------------------------------------------------------
-def printPipelineInfo(params, launchDir, projectDir, workDir, profile) {
+def printPipelineInfo(params, launchDir, workDir, profile) {
     
     // Extended ANSI Color Palette
     def c_reset  = "\033[0m"
