@@ -63,11 +63,11 @@ Wraps the execution of the `nf-core/scrnaseq` pipeline using the `nf-cascade` pa
 * **Directives**:
   * None. Runs natively as Groovy code bypassing containerized worker-node staging.
 * **Execution**:
-  * Natively sets up the run directory (`runs/${dataset}_simpleaf`) and generates `custom.config` overriding the simpleaf container to version `0.22.0--hd612981_0`.
+  * Natively sets up the run directory (`runs/${dataset}_simpleaf`) and generates `custom.config` overriding the simpleaf container to version `0.24.1--hd612981_0`.
   * Triggers `nextflow run nf-core/scrnaseq` using the Java `Process.execute()` interface, unsetting `NXF_OPTS`/`NXF_CONFIG_FILES` and exporting `NXF_SYNTAX_PARSER=v1`.
   * Consumes logs/outputs natively in real time, waits for completion, and throws an error on non-zero exit codes.
   * Safely cleans up the child pipeline's `work/` directory upon success.
-* **Outputs**: Path to the raw Seurat matrix targeting the final run directory (type: `path`).
+* **Outputs**: Path to the raw Seurat matrix relative to the task work directory (type: `path`). The file `raw_matrix.seurat.rds` is staged to both the target `unfiltered_dir` and the local `task.workDir`.
 
 ### D. Process: `QC_FILTER`
 Executes R quality control cell-filtering using parameters passed from the configuration.

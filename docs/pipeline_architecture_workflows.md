@@ -149,7 +149,7 @@ graph TD
   * `nf_core_params_json` (`val`): Path to custom nextflow params config (`nf-params.json`).
   * `index_dir` (`path`): Path to target transcript-level Piscem index.
 * **Outputs**:
-  * `path("${params.unfiltered_dir}/raw_matrix.seurat.rds"), emit: raw_seurat_matrix`: Computed raw Seurat RDS matrix.
+  * `path("raw_matrix.seurat.rds"), emit: raw_seurat_matrix`: Computed raw Seurat RDS matrix.
 * **Requirements & Directives**:
   * Executes via a native Groovy `exec:` block on the launch host.
   * Bypasses container staging by unsetting standard Nextflow environment variables (`NXF_OPTS`, `NXF_CONFIG_FILES`).
