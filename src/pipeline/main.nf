@@ -5,27 +5,46 @@ nextflow.enable.dsl = 2
 // ----------------------------------------------------------------------------
 // IMPORTS
 // ----------------------------------------------------------------------------
-include { sendWebhook } from './utils/helpers'
+include { require ; sendWebhook } from './utils/helpers'
 include { printPipelineInfo } from './utils/init'
 
 include { DOWNLOAD_READS } from './subworkflows/download'
 include { PREPARE_INDEX  } from './subworkflows/index'
 include { PREPROCESSING } from './subworkflows/preprocessing.nf'
 
-// ----------------------------------------------------------------------------
-// PRE-FLIGHT INITIALIZATION
-// ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // MAIN ORCHESTRATOR
 // ----------------------------------------------------------------------------
 workflow {
 
+    // ========================================================================
+    // 1. FOL VALIDATION (Orchestrator Level)
+    // ========================================================================
+    def valid_steps = ['download', 'index', 'align']
+    
+    require( params.step != null && params.step in valid_steps, 
+        "Invalid or missing 'step' parameter. Provided: '${params.step}'. Must be one of: ${valid_steps.join(', ')}" )
+
+    // ========================================================================
+    // 2. PRE-FLIGHT INITIALIZATION
+    // ========================================================================
     printPipelineInfo(params, launchDir, workDir, workflow.profile)
 
-    // Webhooks
-    workflow.onComplete = { sendWebhook("Pipeline finished with status ${workflow.success ? 'SUCCESS' : 'FAILED'}. ${workflow.duration ? 'Duration: ' + workflow.duration : ''}", workflow.success ? 'success' : 'error') }
-    workflow.onError = { sendWebhook("Pipeline failed with error: ${workflow.errorMessage ?: 'Unknown error'}", 'error') }
+    // Global Webhook Handlers
+    workflow.onComplete { 
+        def status = workflow.success ? 'SUCCESS' : 'FAILED'
+        def duration = workflow.duration ?: 'Unknown duration'
+        sendWebhook("Pipeline finished with status ${status}. Duration: ${duration}", workflow.success ? 'success' : 'error') 
+    }
+    
+    workflow.onError { 
+        sendWebhook("Pipeline failed with error: ${workflow.errorMessage ?: 'Unknown error'}", 'error') 
+    }
+
+    // ========================================================================
+    // 3. EXECUTION ROUTING
+    // ========================================================================
 
     if(params.step in ['download']){
         DOWNLOAD_READS(params.srr_ids, params.dataset_dir)
