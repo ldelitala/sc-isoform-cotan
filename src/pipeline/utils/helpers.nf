@@ -1,6 +1,13 @@
 // utils/helpers.nf
+
+def require(boolean condition, String errorMessage) {
+    if (!condition) {
+        error("\033[0;31mPipeline Validation Error: ${errorMessage}\033[0m")
+    }
+}
+
 def ERR_MISS(param) {
-    return "\033[0;31mPipeline error: '${param}' parameter missing.\033[0m"
+    error "\033[0;31mPipeline error: '${param}' parameter missing.\033[0m"
 }
 
 def parseSrrIds(val) {

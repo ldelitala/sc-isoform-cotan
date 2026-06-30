@@ -1,5 +1,5 @@
 include { DOWNLOAD_REFERENCE ; BUILD_INDEX ; APPLY_TRANSCRIPT_CHEAT } from '../modules/index'
-include { ERR_MISS ; sendWebhook } from '../utils/helpers'
+include { require ; sendWebhook } from '../utils/helpers'
 
 /*
  * SUBWORKFLOW: PREPARE_INDEX
@@ -22,24 +22,41 @@ workflow PREPARE_INDEX {
 
     main:
 
-    // fast check 
-    skip_simpleaf == null ?: ERR_MISS('skip_simpleaf')
-    transcript_level == null ?: ERR_MISS('transcript_level')
-    reference_dir ?: ERR_MISS('reference_dir')
-    gene_index_dir ?: ERR_MISS('gene_index_dir')
+    // ========================================================================
+    // 1. FOL VALIDATION (P -> Q is equivalent to !P || Q)
+    // ========================================================================
 
-    // Only require transcript_index_dir if we intend to perform the cheat
-    if (transcript_level.toString().toBoolean()) {
-        transcript_index_dir ?: ERR_MISS('transcript_index_dir')
-    }
+    // Base Requirements (Existence)
+    require(
+        [skip_simpleaf, transcript_level, gene_index_dir].every { p -> p != null },
+        "Mandatory base parameters 'skip_simpleaf', 'transcript_level', and 'gene_index_dir' are missing.",
+    )
 
-    // These parameters are only strictly required if we are NOT skipping simpleaf
-    if (!skip_simpleaf.toString().toBoolean()) {
-        genome_species ?: ERR_MISS('genome_species')
-        genome_assembly ?: ERR_MISS('genome_assembly')
-        ensembl_release ?: ERR_MISS('ensembl_release')
-    }
+    // Conditional Dependencies
+    require(
+        skip_simpleaf || [reference_dir, genome_species, genome_assembly, ensembl_release].every { p -> p != null },
+        "Reference parameters missing. These are required if 'skip_simpleaf' is false. 'reference_dir', 'genome_species', 'genome_assembly', 'ensembl_release'",
+    )
 
+    require(
+        !transcript_level || transcript_index_dir != null,
+        "Parameter 'transcript_index_dir' is missing. Required if 'transcript_level' is true.",
+    )
+
+    // File System Integrity: Check for the 'index/' folder specifically
+    require(
+        !skip_simpleaf || file("${gene_index_dir}/index").exists(),
+        "SimpleAF index structure not found. SimpleAF produces a directory containing 'index/', 'ref/', and metadata; " + "this pipeline expects the 'index/' subdirectory to be present within: ${gene_index_dir}",
+    )
+
+    require(
+        !transcript_level || file(transcript_index_dir).getParent()?.exists(),
+        "The parent directory for the transcript index does not exist.",
+    )
+
+    // ========================================================================
+    // 2. EXECUTION
+    // ========================================================================
 
     def output_index_ch
 
@@ -64,6 +81,12 @@ workflow PREPARE_INDEX {
     }
 
     if (transcript_level.toString().toBoolean()) {
+
+        def parent_dir = file(transcript_index_dir).getParent()
+        if (!parent_dir.exists()) {
+            error("Invalid path: The parent directory for 'transcript_index_dir' (${parent_dir}) does not exist. Please check your configuration.")
+        }
+
         output_index_ch = APPLY_TRANSCRIPT_CHEAT(output_index_ch, file(transcript_index_dir))
         output_index_ch.tap { webhook_cheat_ch }
         webhook_cheat_ch.collect().subscribe { sendWebhook("Transcript Cheat applied.", 'info') }

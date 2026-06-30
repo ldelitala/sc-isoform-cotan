@@ -51,10 +51,10 @@ process APPLY_TRANSCRIPT_CHEAT {
     val transcript_index_dir
 
     output:
-    path "transcript_index", emit: transcript_index
+    path "${file(transcript_index_dir).getName()}", emit: transcript_index
 
     script:
     """
-    ingest/apply_cheat.sh ${gene_index_dir} transcript_index
+    ingest/apply_cheat.sh ${gene_index_dir} ${file(transcript_index_dir).getName()}
     """
 }
