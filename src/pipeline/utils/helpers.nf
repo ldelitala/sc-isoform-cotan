@@ -1,6 +1,6 @@
 // utils/helpers.nf
 
-def require(boolean condition, String errorMessage) {
+def require(condition: boolean, errorMessage: String) {
     if (!condition) {
         error("\033[0;31mPipeline Validation Error: ${errorMessage}\033[0m")
     }
