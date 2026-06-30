@@ -1,5 +1,5 @@
 include { CHECK_LAYOUT ; DOWNLOAD_BAM ; DOWNLOAD_FASTQ } from '../modules/ingest'
-include { require ; parseSrrIds ; sendWebhook } from '../utils/helpers'
+include { require ; ensureDir ; parseSrrIds ; sendWebhook } from '../utils/helpers'
 
 /*
  * SUBWORKFLOW: DOWNLOAD_READS
@@ -28,14 +28,12 @@ workflow DOWNLOAD_READS {
         "No valid SRA run IDs found in 'srr_ids' parameter: ${srr_ids}" )
 
     // File System Integrity (State Check)
-    require( file(dataset_dir).getParent()?.exists(), 
-        "The parent directory for 'dataset_dir' does not exist. Cannot safely cache downloads." )
-
+    ensureDir(dataset_dir, "dataset")
 
     // ========================================================================
     // 2. EXECUTION
     // ========================================================================
-    
+
     CHECK_LAYOUT(channel.fromList(all_srrs))
 
     def layout_branches = CHECK_LAYOUT.out

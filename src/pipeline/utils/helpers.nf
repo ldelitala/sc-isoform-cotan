@@ -6,6 +6,19 @@ def require(condition: boolean, errorMessage: String) {
     }
 }
 
+def ensureDir(def paths, String context = "directory") {
+    // Convert single strings/paths to a list for uniform processing
+    def dirList = paths instanceof List ? paths : [paths]
+    
+    dirList.each { d -> 
+        if (d) {
+            def parent = file(d).getParent()
+            parent?.mkdirs()
+            require(parent?.exists(), "Cannot create or access the parent directory for ${context} at: ${parent}. Check your path or permissions.")
+        }
+    }
+}
+
 def parseSrrIds(val) {
     if (!val) {
         return []

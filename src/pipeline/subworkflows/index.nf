@@ -1,5 +1,5 @@
 include { DOWNLOAD_REFERENCE ; BUILD_INDEX ; APPLY_TRANSCRIPT_CHEAT } from '../modules/index'
-include { require ; sendWebhook } from '../utils/helpers'
+include { require ; ensureDir ; sendWebhook } from '../utils/helpers'
 
 /*
  * SUBWORKFLOW: PREPARE_INDEX
@@ -49,10 +49,9 @@ workflow PREPARE_INDEX {
         "SimpleAF index structure not found. SimpleAF produces a directory containing 'index/', 'ref/', and metadata; " + "this pipeline expects the 'index/' subdirectory to be present within: ${gene_index_dir}",
     )
 
-    require(
-        !transcript_level || file(transcript_index_dir).getParent()?.exists(),
-        "The parent directory for the transcript index does not exist.",
-    )
+    if(transcript_level){
+        ensureDir(transcript_index_dir, "transcript index directory")
+    }
 
     // ========================================================================
     // 2. EXECUTION
