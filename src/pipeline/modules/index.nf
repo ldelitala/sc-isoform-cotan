@@ -22,7 +22,7 @@ process DOWNLOAD_REFERENCE {
     def fasta_url = getFastaUrl(genome_species, genome_assembly, ensembl_release)
     def gtf_url = getGtfUrl(genome_species, genome_assembly, ensembl_release)
     """
-    ingest/download_ref.sh ${fasta_url} ${gtf_url}
+    2.1_index_download_reference.sh ${fasta_url} ${gtf_url}
     """
 }
 
@@ -39,7 +39,7 @@ process BUILD_INDEX {
 
     script:
     """
-    ingest/build_index.sh ${fasta_file} ${gtf_file} ${task.cpus} ${file(gene_index_dir).getName()}
+    2.2_index_build_index.sh ${fasta_file} ${gtf_file} ${task.cpus} ${file(gene_index_dir).getName()}
     """
 }
 
@@ -55,6 +55,6 @@ process APPLY_TRANSCRIPT_CHEAT {
 
     script:
     """
-    ingest/apply_cheat.sh ${gene_index_dir} ${file(transcript_index_dir).getName()}
+    2.3_index_apply_cheat.sh ${gene_index_dir} ${file(transcript_index_dir).getName()}
     """
 }

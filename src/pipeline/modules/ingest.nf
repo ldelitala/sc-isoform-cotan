@@ -13,7 +13,7 @@ process CHECK_LAYOUT {
 
     script:
     """
-    ingest/check_layout.sh ${srr_id}
+    1.1_ingest_check_layout.sh ${srr_id}
     """
 }
 
@@ -34,7 +34,7 @@ process DOWNLOAD_BAM {
 
     script:
     """
-    ingest/download_bam.sh ${srr_id} ${task.cpus}
+    1.2_ingest_download_bam.sh ${srr_id} ${task.cpus}
     """
 }
 
@@ -55,6 +55,6 @@ process DOWNLOAD_FASTQ {
 
     script:
     """
-    ingest/download_fastq.sh ${srr_id} ${task.cpus}
+    1.3_ingest_download_fastq.sh ${srr_id} ${task.cpus}
     """
 }
