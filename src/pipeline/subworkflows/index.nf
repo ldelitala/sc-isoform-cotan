@@ -7,7 +7,7 @@ include { require ; sendWebhook } from '../utils/helpers'
  * Orchestrates the downloading of reference genome and annotation files, and the building of a SimpleAF index.
  * Uses the reference dir and gene index dir as cache with storeDir to avoid re-downloading files.
  * If skip_simpleaf is true, it skips the index building step and uses the provided gene index dir.
- * If transcript_level is true, it applies a transcript-level cheat to the index. 
+ * If transcript_level is true, it applies a transcript-level cheat to the index.
  */
 workflow PREPARE_INDEX {
     take:

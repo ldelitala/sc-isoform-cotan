@@ -1,5 +1,5 @@
 include { CHECK_LAYOUT ; DOWNLOAD_BAM ; DOWNLOAD_FASTQ } from '../modules/ingest'
-include { ERR_MISS; parseSrrIds ; sendWebhook } from '../utils/helpers'
+include { require ; parseSrrIds ; sendWebhook } from '../utils/helpers'
 
 /*
  * SUBWORKFLOW: DOWNLOAD_READS
@@ -14,12 +14,28 @@ workflow DOWNLOAD_READS {
 
     main:
     
-    // fast check 
-    srr_ids ?: ERR_MISS ('srr_ids')
-    dataset_dir ?: ERR_MISS ('dataset_dir')
-    def all_srrs = parseSrrIds(srr_ids) ?: error("No valid SRA run IDs found in 'srr_ids' parameter: ${srr_ids}")
+    // ========================================================================
+    // 1. FOL VALIDATION (Declarative Contract)
+    // ========================================================================
+
+    // Base Requirements (Existence)
+    require( [srr_ids, dataset_dir].every { p -> p != null }, 
+        "Mandatory parameters 'srr_ids' and 'dataset_dir' must be provided." )
+
+    // Data Integrity (Parsing & Logic)
+    def all_srrs = parseSrrIds(srr_ids)
+    require( all_srrs.size() > 0, 
+        "No valid SRA run IDs found in 'srr_ids' parameter: ${srr_ids}" )
+
+    // File System Integrity (State Check)
+    require( file(dataset_dir).getParent()?.exists(), 
+        "The parent directory for 'dataset_dir' does not exist. Cannot safely cache downloads." )
+
+
+    // ========================================================================
+    // 2. EXECUTION
+    // ========================================================================
     
-    // begin
     CHECK_LAYOUT(channel.fromList(all_srrs))
 
     def layout_branches = CHECK_LAYOUT.out
