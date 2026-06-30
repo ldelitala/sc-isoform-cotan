@@ -6,10 +6,6 @@ def require(boolean condition, String errorMessage) {
     }
 }
 
-def ERR_MISS(param) {
-    error "\033[0;31mPipeline error: '${param}' parameter missing.\033[0m"
-}
-
 def parseSrrIds(val) {
     if (!val) {
         return []
