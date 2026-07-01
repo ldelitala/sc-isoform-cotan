@@ -2,40 +2,33 @@
 
 # FILE NAME: clean.R
 
+library(Seurat)
+library(Matrix)
+
 # 0. temp hardcoding of paths
 output_dir <- "./results/cotan_data"
 log_file_name <- "clean.log"
-filtered_data <- "/data/lorenzo_delitala/runs/arrigoni2023/results/sample_filtered.rds"
+combined_raw_matrix_path = "/data/lorenzo_delitala/runs/arrigoni2023/results/combined_raw_matrix.seurat.rds"
 
-# 1. Load the shared configuration
-source("/data/lorenzo_delitala/src/pipeline/bin/lib_COTAN_config.R")
+# source("/data/lorenzo_delitala/src/pipeline/bin/lib_COTAN_config.R")
 
-normalized_output_dir <- config_cotan_workflow(output_dir, log_file_name)
+# config_cotan_workflow(output_dir, log_file_name)
 
-# 2. load matrix data
-filtered_data <- readRDS(filtered_data)
+# Assuming you already loaded your Seurat object
+seurat_obj <- readRDS(combined_raw_matrix_path)
 
-if (is.list(filtered_data) && "matrix" %in% names(filtered_data)) {
-  message("Extracting sparse matrix from list...")
-  filtered_matrix <- filtered_data$matrix
+# 1. Extract the matrix (which contains the EM fractional counts)
+raw_matrix <- GetAssayData(seurat_obj, assay = "RNA", layer = "counts")
+
+# 2. Round ONLY the non-zero values directly in the memory slot
+# This preserves the sparse matrix structure and uses almost zero RAM
+raw_matrix@x <- round(raw_matrix@x)
+
+# 3. Run a quick validation to ensure it worked
+is_integer <- all(raw_matrix@x %% 1 == 0)
+
+if(is_integer) {
+  message("SUCCESS: The matrix has been safely rounded to integers.")
 } else {
-  stop("The loaded data does not contain a 'matrix' key. Check your filtering script output!")
+  message("ERROR: Rounding failed.")
 }
-
-# 3. create COTAN object and set MetaData
-cotan_obj <- COTAN(raw = filtered_matrix)
-cotan_obj <-
-  initializeMetaDataset(
-    cotan_obj,
-    GEO = "SRA: SRR26127904-SRR26127911",
-    sequencingMethod = "10Xv3",
-    sampleCondition = "arrigoni2023"
-  )
-
-logThis(
-        paste0(
-               "Condition ",
-               getMetadataElement(cotan_obj, datasetTags()[["cond"]])),
-        logLevel = 1L)
-
-colnames(filtered_matrix)[1:5]

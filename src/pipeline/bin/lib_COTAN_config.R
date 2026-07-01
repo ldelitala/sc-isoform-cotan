@@ -12,7 +12,7 @@ suppressPackageStartupMessages({
 config_cotan_workflow <- function(output_dir, log_file_name) {
 
   # 1. Resolve Conflicts
-  conflict_prefer("%<-%", "zeallot", quiet = TRUE)
+  conflict_prefer("%<-%", "zeallot")
 
   # 2. Enable Parallel Processing
   options(parallelly.fork.enable = TRUE)

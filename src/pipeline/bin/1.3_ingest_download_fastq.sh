@@ -12,5 +12,5 @@ fasterq-dump --split-files --include-technical --threads "${cpus}" --temp . --ou
 pigz -f -p "${cpus}" *.fastq
 
 # Standardize output naming
-mv "${srr_id}_1.fastq"*.gz "${srr_id}_1.fastq.gz"
-mv "${srr_id}_2.fastq"*.gz "${srr_id}_2.fastq.gz"
+# mv "${srr_id}_1.fastq"*.gz "${srr_id}_1.fastq.gz"
+# mv "${srr_id}_2.fastq"*.gz "${srr_id}_2.fastq.gz"
