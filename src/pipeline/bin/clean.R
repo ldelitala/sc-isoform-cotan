@@ -27,7 +27,7 @@ raw_matrix@x <- round(raw_matrix@x)
 # 3. Run a quick validation to ensure it worked
 is_integer <- all(raw_matrix@x %% 1 == 0)
 
-if(is_integer) {
+if (is_integer) {
   message("SUCCESS: The matrix has been safely rounded to integers.")
 } else {
   message("ERROR: Rounding failed.")
