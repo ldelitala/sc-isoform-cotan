@@ -25,6 +25,6 @@ config_cotan_workflow <- function(output_dir, log_file_name) {
   setLoggingLevel(2L)
   setLoggingFile(file.path(data_dir, log_file_name))
 
-  return (data_dir)
+  data_dir
 
 }
