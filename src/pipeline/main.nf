@@ -42,6 +42,8 @@ workflow {
 
     if (params.step in ['download']) {
         DOWNLOAD_READS(params.srr_ids, params.dataset_dir)
+
+        DOWNLOAD_READS.out.subscribe { }
     }
 
     if (params.step in ['index']) {
@@ -56,6 +58,8 @@ workflow {
             params.genome_assembly,
             params.ensembl_release,
         )
+
+        PREPARE_INDEX.out.subscribe { }
     }
 
 
@@ -81,6 +85,8 @@ workflow {
             params.scrnaseq_params,
             params.child_config,
         )
+
+        PREPROCESSING.out.subscribe { }
     }
 
     onComplete:
