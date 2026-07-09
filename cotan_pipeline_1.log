@@ -1,0 +1,8 @@
+[2026-07-09 10:45:27] == [ CONFIGURING COTAN WORKFLOW ] ==========================================================================
+[2026-07-09 10:45:27] > Setting up conflict resolution...
+[2026-07-09 10:45:27] > Setting up parallel processing...
+[2026-07-09 10:45:27]   * Log file initialized at: /data/lorenzo_delitala/cotan_pipeline_1.log
+[2026-07-09 10:45:27]   * Logging level set to: 3
+[2026-07-09 10:45:28] -- [ Configuration Complete ] ------------------------------------------------------------------------------
+
+

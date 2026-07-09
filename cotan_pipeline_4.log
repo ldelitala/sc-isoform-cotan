@@ -1,0 +1,90 @@
+[2026-07-09 14:55:56] == [ CONFIGURING COTAN WORKFLOW ] ==========================================================================
+[2026-07-09 14:55:56] > Setting up conflict resolution...
+[2026-07-09 14:55:56] > Setting up parallel processing...
+[2026-07-09 14:55:56]   * Log file initialized at: /data/lorenzo_delitala/cotan_pipeline_4.log
+[2026-07-09 14:55:56]   * Logging level set to: 3
+[2026-07-09 14:55:56] -- [ Configuration Complete ] ------------------------------------------------------------------------------
+
+
+[2026-07-09 14:56:58] == [ COTAN INITIALIZATION ] ================================================================================
+[2026-07-09 14:56:58] > Extracting raw counts from Seurat object...
+[2026-07-09 14:56:58] > Rounding decimal values to integers...
+[2026-07-09 14:56:58] > Creating COTAN object & base metadata...
+
+[2026-07-09 14:56:58] .:: Executing COTAN() ::.
+[2026-07-09 14:56:58]   
+[2026-07-09 14:56:58] > parameters for COTAN object:
+[2026-07-09 14:56:58]   * GEO ID: arrigoni2023
+[2026-07-09 14:56:58]   * Sequencing Method: 10XV1
+[2026-07-09 14:56:58]   * Sample Condition: prova
+
+[2026-07-09 14:56:58] .:: Executing initializeMetaDataset() ::.
+[2026-07-09 14:56:58] Initializing `COTAN` meta-data
+[2026-07-09 14:56:58]   
+[2026-07-09 14:56:58] > Transferring metadata (percent.mt)...
+[2026-07-09 14:56:58] > Extracting cell origins from barcodes...
+[2026-07-09 14:56:58]   * Diagnostic: All barcodes formatted correctly.
+[2026-07-09 14:56:58]   * Origin Summary: [ SRR26127904: 1053 | SRR26127905: 1012 | SRR26127906: 933 | SRR26127907: 902 | SRR26127908: 846 | SRR26127909: 928 | SRR26127910: 934 | SRR26127911: 907 ]
+
+[2026-07-09 14:56:58] .:: Executing addCondition() ::.
+[2026-07-09 14:56:58]   
+[2026-07-09 14:56:58] -- [ Initialization Complete ] -----------------------------------------------------------------------------
+
+
+[2026-07-09 14:56:58] == [ COTAN CLEANING (ITERATIVE) ] ==========================================================================
+[2026-07-09 14:56:58] > Cleaning parameters:
+[2026-07-09 14:56:58]   * Cells cutoff: 0.003000
+[2026-07-09 14:56:58]   * Genes cutoff: 0.002000
+[2026-07-09 14:56:58]   * Cells threshold: 0.990000
+[2026-07-09 14:56:58]   * Genes threshold: 0.990000
+
+[2026-07-09 14:56:58] > Initial matrix dimensions:
+[2026-07-09 14:56:58]   * Cells: 7515
+[2026-07-09 14:56:58]   * Genes: 10000
+
+[2026-07-09 14:56:58] > Starting iterative filtering loop to remove sparse genes and cells...
+[2026-07-09 14:56:58] Asked to drop 8209 genes and 0 cells
+[2026-07-09 14:56:58] Asked to drop 0 genes and 3876 cells
+[2026-07-09 14:56:58] > Iterative filtering completed in 2 iterations.
+
+[2026-07-09 14:56:58] > Summary of removed elements (Total):
+[2026-07-09 14:56:58]   * Cells: 3876
+[2026-07-09 14:56:58]   * Genes: 8209
+
+[2026-07-09 14:56:58] > Final matrix dimensions after cleaning:
+[2026-07-09 14:56:58]   * Cells: 3639
+[2026-07-09 14:56:58]   * Genes: 1791
+
+[2026-07-09 14:56:58] -- [ Cleaning Complete ] -----------------------------------------------------------------------------------
+
+
+[2026-07-09 14:56:58] == [ PREPARING COTAN OBJECT ] ==============================================================================
+[2026-07-09 14:56:58] .:: Executing estimateLambdaLinear() ::.
+[2026-07-09 14:56:58]   
+[2026-07-09 14:56:58] > Lambda estimation complete. Summary statistics:
+[2026-07-09 14:56:58]   * Mean Lambda: 0.025045
+[2026-07-09 14:56:58]   * Std Dev Lambda: 0.292631
+[2026-07-09 14:56:58]   * Median Lambda: 0.000550
+[2026-07-09 14:56:58]   * Min Lambda: 0.000000
+[2026-07-09 14:56:58]   * Max Lambda: 9.887606
+
+[2026-07-09 14:56:58] .:: Executing estimateNuLinear() ::.
+[2026-07-09 14:56:58]   
+[2026-07-09 14:56:58] > Nu estimation complete. Summary statistics:
+[2026-07-09 14:56:58]   * Mean Nu: 1.000000
+[2026-07-09 14:56:58]   * Std Dev Nu: 2.206248
+[2026-07-09 14:56:58]   * Median Nu: 0.022294
+[2026-07-09 14:56:58]   * Min Nu: 0.000000
+[2026-07-09 14:56:58]   * Max Nu: 20.755304
+
+[2026-07-09 14:56:58] > Preparing for COEX calculation with parameters:
+[2026-07-09 14:56:58]   * Threshold: 0.010000
+[2026-07-09 14:56:58]   * Cores: 22
+[2026-07-09 14:56:58]   * Maximum Iterations: 100
+[2026-07-09 14:56:58]   * Chunk Size: 1024
+
+[2026-07-09 14:56:58] .:: Executing estimateDispersionViaSolver() ::.
+[2026-07-09 14:56:58] Estimate `dispersion`: START
+[2026-07-09 14:56:58] Effective number of cores used: 22
+[2026-07-09 14:57:00] Executing 2 genes batches
+[2026-07-09 14:57:02] Newton dispersion solver failed: Dispersion solver failed on batch 1/2 (newton): NAs are not allowed in subscripted assignments | retrying with bisection
