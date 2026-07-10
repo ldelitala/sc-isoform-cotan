@@ -14,7 +14,8 @@ filter_mt_transcripts(seurat_obj, mt_transcripts_list, threshold = 5)
 \item{threshold}{Numeric. Maximum acceptable MT percentage. Default is 5.}
 }
 \value{
-A new, filtered \code{Seurat} object.
+A new, filtered \code{Seurat} object. It has an additional metadata column \code{percent.mt}
+representing the percentage of mitochondrial counts per cell.
 }
 \description{
 Calculates the percentage of mitochondrial counts per cell using a custom

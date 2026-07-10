@@ -5,11 +5,8 @@
 # ==============================================================================
 
 # Generates a fixed-width decorative ribbon
-make_ribbon <- function(msg, char = "=", total_width = 80) {
-    # Calculate space occupied by "== [ " + msg + " ] "
-    base_len <- nchar(msg) + 7
-    pad_len <- max(0, total_width - base_len)
-    paste0(rep(char, pad_len), collapse = "")
+add_ribbon <- function(msg, char = "=", total_width = 80) {
+    return(sprintf("%s%s", msg, paste0(rep(char, max(0, total_width - nchar(msg))), collapse = "")))
 }
 
 # ==============================================================================
@@ -45,7 +42,7 @@ log_warn <- function(msg, level = 0L) {
     COTAN::logThis(sprintf("⚠️ [WARNING] %s", msg), logLevel = level)
 }
 
-# --- LEVEL 1 (HEADER) ---
+# --- LEVEL 1 (HEADER & BASIC INFO) ---
 
 #' Print a formatted header
 #'
@@ -59,17 +56,15 @@ log_warn <- function(msg, level = 0L) {
 #' @return No return value.
 #' @export
 log_header <- function(msg, is_complete = FALSE, level = 1L) {
+    COTAN::logThis("", logLevel = level)
     if (is_complete) {
-        ribbon <- make_ribbon(msg, char = "-")
-        COTAN::logThis(sprintf("-- [ %s ] %s\n\n", msg, ribbon), logLevel = level)
+        COTAN::logThis(add_ribbon(sprintf("-- [ %s ]  ", msg), char = "-"), logLevel = level)
+        COTAN::logThis("", logLevel = level)
     } else {
-        msg_up <- toupper(msg)
-        ribbon <- make_ribbon(msg_up, char = "=")
-        COTAN::logThis(sprintf("== [ %s ] %s\n", msg_up, ribbon), logLevel = level)
+        msg_up <- sprintf("== [ %s ]  ", toupper(msg))
+        COTAN::logThis(add_ribbon(msg_up, char = "="), logLevel = level)
     }
 }
-
-# --- LEVEL 2 (INFO) ---
 
 #' Log an information message
 #'
@@ -80,6 +75,8 @@ log_header <- function(msg, is_complete = FALSE, level = 1L) {
 log_info <- function(msg, level = 2L) {
     COTAN::logThis(sprintf("> %s", msg), logLevel = level)
 }
+
+# --- LEVEL 2 (ADVANCED INFO) ---
 
 #' Log a statistical bullet point
 #'
@@ -105,11 +102,14 @@ log_cotan_execution <- function(func_name, is_complete = FALSE, level = 2L) {
     msg_base <- sprintf(".:: Executing %s ::.", func_name)
 
     if (!is_complete) {
-        COTAN::logThis(msg_base, logLevel = level)
+        COTAN::logThis("", logLevel = level)
+        COTAN::logThis(add_ribbon(msg_base, char = ".", total_width = 70), logLevel = level)
     } else {
         dots <- paste0(rep(".", nchar(msg_base)), collapse = "")
-        COTAN::logThis(paste0(dots, "\n"), logLevel = level)
+        COTAN::logThis(add_ribbon(dots, char = ".", total_width = 70), logLevel = level)
+        COTAN::logThis("", logLevel = level)
     }
+
 }
 
 # --- LEVEL 3 (DEBUG) ---

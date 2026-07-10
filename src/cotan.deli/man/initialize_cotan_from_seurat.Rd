@@ -17,7 +17,7 @@ initialize_cotan_from_seurat(
 
 \item{geo_id}{String. Identifier for the experiment.}
 
-\item{seq_method}{String. Sequencing method (Default "10XV1").}
+\item{seq_method}{String. Sequencing method.}
 
 \item{condition}{String. Sample condition.}
 
@@ -27,9 +27,7 @@ initialize_cotan_from_seurat(
 An initialized \code{COTAN} object.
 }
 \description{
-Converts a Seurat object into a COTAN object, ensuring counts are
-properly rounded to integers and metadata is transferred safely.
-Is thought to be used after mithocondrial filtering and before
-cleaning the COTAN object. The seurat object must have a "percent.mt"
-column in its metadata.
+Converts a Seurat object into a COTAN object, ensuring metadata is
+transferred safely. The Seurat object must have strictly integer counts
+and a "percent.mt" column in its metadata.
 }

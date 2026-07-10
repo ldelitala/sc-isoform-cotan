@@ -5,3 +5,5 @@ runs/
 ncbi_cache/
 data/
 .vscode/
+COTAN/
+logs/
