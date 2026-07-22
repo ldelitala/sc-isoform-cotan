@@ -50,22 +50,29 @@ def validateAlignInputs(input_csv, index_dir) {
     }
 }
 
-// 2. Generates nf-params.json configuration file
-def writeParamsJson(run_dir, index_dir, scrnaseq_params) {
-    def jsonFile = new File(run_dir, "nf-params.json")
-    def cleanParams = scrnaseq_params.findAll { _k, v -> v != null && v != "" }
-    jsonFile.text = groovy.json.JsonOutput.prettyPrint(
-        groovy.json.JsonOutput.toJson(
-            [
-                input: "input.csv",
-                outdir: "results",
-                skip_cellbender: true,
-                simpleaf_index: index_dir.toString(),
-            ] + cleanParams
-        )
-    )
-    return jsonFile.getAbsolutePath()
-}
+ // 2. Generates nf-params.json configuration file
+    def writeParamsJson(run_dir, index_dir, scrnaseq_params) {
+        def jsonFile = new File(run_dir, "nf-params.json")    
+        
+        // Clean and normalize parameters
+        def cleanParams = scrnaseq_params.findAll { _k, v -> v != null && v != "" }
+        if (cleanParams.protocol) {
+            cleanParams.protocol = cleanParams.protocol.toUpperCase()
+        }
+          
+        jsonFile.text = groovy.json.JsonOutput.prettyPrint(
+            groovy.json.JsonOutput.toJson(
+                [
+                    input: "input.csv",
+                    outdir: "results", 
+                    skip_cellbender: true,
+                    simpleaf_index: index_dir.toString(),
+                ] + cleanParams
+            )
+        )    
+        return jsonFile.getAbsolutePath()
+    }
+
 
 // 3. Generates custom.config for child run, using passed config if provided
 def writeCustomConfig(run_dir, child_custom_config) {

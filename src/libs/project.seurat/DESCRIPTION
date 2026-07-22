@@ -1,0 +1,14 @@
+Package: project.seurat
+Title: Seurat Utilities for COTAN Pipeline
+Version: 0.1.0
+Description: Provides optimized helper functions and preprocessing pipelines for Seurat objects.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
+Imports:
+    project.base,
+    project.logger,
+    SeuratObject,
+    Seurat,
+    Matrix

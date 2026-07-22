@@ -1,0 +1,12 @@
+Package: project.logger
+Title: Structured Logging for COTAN Pipelines
+Version: 0.1.0
+Description: Provides hierarchical tree logging, statistics formatting, and verbosity tracking for COTAN pipelines.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
+Imports:
+    COTAN,
+    tools,
+    conflicted

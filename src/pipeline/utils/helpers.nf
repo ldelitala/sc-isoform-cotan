@@ -6,11 +6,11 @@ def require(condition: boolean, errorMessage: String) {
     }
 }
 
-def ensureDir(def paths, String context = "directory") {
+def ensureDir(paths, context: String = "directory") {
     // Convert single strings/paths to a list for uniform processing
     def dirList = paths instanceof List ? paths : [paths]
-    
-    dirList.each { d -> 
+
+    dirList.each { d ->
         if (d) {
             def parent = file(d).getParent()
             parent?.mkdirs()
@@ -19,7 +19,8 @@ def ensureDir(def paths, String context = "directory") {
     }
 }
 
-def parseSrrIds(val) {
+//legacy function before moving to input samplesheet
+/* def parseSrrIds(val) {
     if (!val) {
         return []
     }
@@ -30,48 +31,87 @@ def parseSrrIds(val) {
         return (start..end).collect { num -> prefix + num.toString().padLeft(m[0][2].length(), '0') }
     }
     return val.split(',').collect { srr -> srr.trim() }.findAll()
+} */
+
+def sendWebhook(webhookUrl, message) {
+    sendWebhook(webhookUrl, message, 'info')
 }
 
-def sendWebhook(message) {
-    sendWebhook(message, 'info')
-}
+def sendWebhook(webhookUrl, message, status, duration = null) {
+    if (!webhookUrl || !webhookUrl.toString().startsWith("http")) {
+        return null
+    }
+    log.warn(message)
 
-def sendWebhook(message, status) {
-    if (params.webhook_url) {
-        def datasetName = launchDir.getName()
-        def colorCode = 3447003
-        // Default Blue
-        def emoji = "ℹ️"
+    // 1. Capture Nextflow variables immediately before moving to the background
+    def datasetName = launchDir.getName()
+    def normalizedStatus = status?.toLowerCase()
+    def durText = duration ? duration.toString() : null
 
-        if (status == 'success') {
-            colorCode = 3066993
-            emoji = "✅"
-        }
-        else if (status == 'error') {
-            colorCode = 15158332
-            emoji = "❌"
-        }
-        else if (status == 'warning') {
-            colorCode = 15105570
-            emoji = "⚠️"
-        }
-
-        def timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        timestamp.setTimeZone(TimeZone.getTimeZone("UTC"))
-        def formattedTime = timestamp.format(new Date())
-
-        def embed = [title: "${emoji} Nextflow Pipeline Notification", description: message, color: colorCode, timestamp: formattedTime, fields: [[name: "Dataset / Run", value: "`" + datasetName + "`", inline: true], [name: "Genome Assembly", value: "`" + (params.genome_assembly ?: 'N/A') + "`", inline: true], [name: "Step", value: "`" + params.step + "`", inline: true], [name: "Transcript Level", value: "`" + params.transcript_level.toString() + "`", inline: true]], footer: [text: "sc-isoform-pipeline"]]
-
-        if (params.srr_ids) {
-            embed.fields.add([name: "SRA Run IDs", value: "`" + params.srr_ids + "`", inline: false])
-        }
-
-        def payload = groovy.json.JsonOutput.toJson([embeds: [embed]])
+    // 2. FIRE AND FORGET (Daemon Thread)
+    // The JVM will automatically kill this thread the millisecond Nextflow finishes its work.
+    // It is physically impossible for this to hold your terminal hostage.
+    Thread.startDaemon {
         try {
-            ['curl', '--connect-timeout', '5', '--max-time', '10', '-H', 'Content-Type: application/json', '-X', 'POST', '-d', payload, params.webhook_url].execute().waitFor()
+            def colorBlue = 3447003
+            def colorGreen = 3066993
+            def colorRed = 15158332
+            def colorOrange = 15105570
+
+            def colorCode = colorBlue
+
+            if (normalizedStatus == 'success') {
+                colorCode = colorGreen
+            }
+            else if (normalizedStatus == 'failed' || normalizedStatus == 'error') {
+                colorCode = colorRed
+            }
+            else if (normalizedStatus == 'warning') {
+                colorCode = colorOrange
+            }
+
+            def timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            timestamp.setTimeZone(TimeZone.getTimeZone("UTC"))
+
+            def descriptionText = "${message}"
+            if (durText) {
+                descriptionText += "\n⏱*${durText}*"
+            }
+
+            def embed = [title: datasetName, description: descriptionText, color: colorCode, timestamp: timestamp.format(new Date())]
+
+            def payload = groovy.json.JsonOutput.toJson([embeds: [embed]])
+
+            def connection = new URL(webhookUrl).openConnection()
+            connection.setRequestMethod("POST")
+            connection.setDoOutput(true)
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.setConnectTimeout(5000)
+            connection.setReadTimeout(10000)
+
+            // Send the payload
+            def outStream = connection.getOutputStream()
+            outStream.write(payload.getBytes("UTF-8"))
+            outStream.flush()
+            outStream.close()
+
+            // 3. Clear the socket buffers to prevent memory leaks on HTTP 429 Errors
+            if (connection.getResponseCode() >= 400) {
+                def errStream = connection.getErrorStream()
+                if (errStream != null) {
+                    errStream.text
+                }
+            }
+            else {
+                def inStream = connection.getInputStream()
+                if (inStream != null) {
+                    inStream.text
+                }
+            }
+
+            connection.disconnect()
         }
-        catch (e: Exception) {
-            log.warn("Webhook failed: ${e.message}")
+        catch (e) {
         }
     }
 }

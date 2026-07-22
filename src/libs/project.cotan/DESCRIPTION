@@ -1,0 +1,15 @@
+Package: project.cotan
+Title: Sub-package project.cotan
+Version: 0.0.0.9000
+Description: Handles basic cotan operations.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
+Imports:
+    project.logger,
+    project.utils,
+    Seurat,
+    COTAN,
+    methods
+

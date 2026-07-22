@@ -1,0 +1,8 @@
+Package: deli.base
+Title: Sub-package deli.base
+Version: 0.0.0.9000
+Description: Gives logging to other deli packages and config to users.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0

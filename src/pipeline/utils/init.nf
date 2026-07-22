@@ -40,7 +40,7 @@ def printPipelineInfo(params, launchDir, workDir, profile) {
     ${c_cyan}${c_bold}▶ RUN CONFIGURATION${c_reset}
       ${c_bold}Pipeline Step        ${c_reset}: ${fmtVal(params.step)}
       ${c_bold}Active Profile       ${c_reset}: ${fmtVal(profile ?: 'standard')}
-      ${c_bold}SRA Run IDs          ${c_reset}: ${params.srr_ids ? c_yellow + params.srr_ids + c_reset : c_dim + 'None (Using local data)' + c_reset}
+      ${c_bold}Samplesheet Input    ${c_reset}: ${params.input ? c_yellow + params.input + c_reset : c_dim + 'None (Using local data)' + c_reset}
 
     ${c_cyan}${c_bold}▶ REFERENCE & INDEXING${c_reset}
       ${c_bold}Genome Assembly      ${c_reset}: ${fmtVal(params.genome_assembly)}

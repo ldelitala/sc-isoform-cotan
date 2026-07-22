@@ -1,3 +1,5 @@
+//TODO: Change the dataset dir structure so that it is dataset_dir/sample_name/srr_ids
+// so for example dataset/sample_1/02, dataset/sample_1/03, dataset/sample_2/04, dataset/sample_2/05, ...
 nextflow.enable.dsl = 2
 // 1. Query the API
 process CHECK_LAYOUT {
