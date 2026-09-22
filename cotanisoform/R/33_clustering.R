@@ -60,6 +60,8 @@ calculate_gdi <- function(
 #' them back into the COTAN object.
 #'
 #' @param cotan_obj A `COTAN` object.
+#' @param cl_name Character. Name of the clusterization the merged result is stored
+#'               under. Default is `"merged"`.
 #' @param gdi_threshold Numeric. Threshold for GDI clustering.
 #' @param cores Integer. Number of cores to use. Default is 1L.
 #' @param optimize_for_speed Boolean. Try using the torch library to run matrix calculations. Default is TRUE.

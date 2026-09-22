@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-22
+
 ### Added
 - `envs/` (analysis + pipeline conda definitions) and `scripts/install_deps.R` pinning COTAN.
 - DTU parity harness `scripts/verify_dtu_parity.R` (3/3 published cases reproduced).
@@ -13,6 +15,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Merged ten R packages (`project.*`, `deli.*`) into a single package, `cotanisoform/`.
 - Moved the downstream drivers into a config-driven `analysis/` layer; no hardcoded paths.
 - Curated published outputs live under `results/`.
+- `cotanisoform` 0.2.0 is `R CMD check` clean: non-ASCII log glyphs escaped, undocumented
+  `@param`s documented, unused `parallelly` / `zeallot` imports dropped, `stats::median`
+  qualified. `roxygenise()` is now idempotent.
 
 ### Removed
 - The ten superseded R packages (`project.*`, `deli.*`) and the two third-party COTAN

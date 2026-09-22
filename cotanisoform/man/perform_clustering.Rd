@@ -37,6 +37,9 @@ perform_clustering(
 \arguments{
 \item{cotan_obj}{A \code{COTAN} object.}
 
+\item{cl_name}{Character. Name of the clusterization the merged result is stored
+under. Default is \code{"merged"}.}
+
 \item{gdi_threshold}{Numeric. Threshold for GDI clustering.}
 
 \item{cores}{Integer. Number of cores to use. Default is 1L.}

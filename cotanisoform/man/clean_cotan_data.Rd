@@ -26,7 +26,8 @@ clean_cotan_data(
 
 \item{genes_threshold}{Numeric. Cells expressing > fraction of genes marked as fully-expressing (Default 0.99).}
 
-\item{drop_fully_expressed}{Logical. Whether to physically drop fully-expressed genes/transcripts from the object. Default is \code{FALSE}.}
+\item{drop_fully_expressed}{Logical. Whether to physically drop fully-expressed
+genes/transcripts from the object. Default is \code{FALSE}.}
 
 \item{output_dir}{Character. Optional directory to save the output object as an RDS file. Default is \code{NULL}.}
 

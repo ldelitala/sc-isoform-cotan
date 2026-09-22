@@ -99,8 +99,9 @@ unquoted after production).
 - Steps `01`–`06` are faithful transcriptions of the released drivers but have
   **not** been re-executed (hours of COEX, plus an undefined optimisation); they
   are validated with `--dry-run` only. Step `08` on the final tables gives
-  45 shared / 1 + 1 exclusive, whereas the published `dtu_shared.csv` is a stale
-  2026-07-24 artifact.
+  45 shared / 1 + 1 exclusive, whereas the released `dtu_shared.csv` (39 / 3 / 4) came
+  from an earlier 40/38 candidate pair and is kept for the thesis appendix — see
+  [`dtu_methods.md`](dtu_methods.md).
 - The child `nf-core/scrnaseq` run honours a user-supplied `custom.config`
   (`child_config` → `custom.config`, `src/pipeline/modules/align.nf`), but the
   in-repo default only overrides the simpleaf container — it does not scale the

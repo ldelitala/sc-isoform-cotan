@@ -15,7 +15,8 @@ filter_empty_droplets(
 
 \item{output_dir}{Character. Optional directory to save the output object as an RDS file. Default is \code{NULL}.}
 
-\item{file_name}{Character. Optional file name for saving the output object. Default is \code{"seurat_no_empty_droplets.rds"}.}
+\item{file_name}{Character. Optional file name for saving the output object.
+Default is \code{"seurat_no_empty_droplets.rds"}.}
 }
 \value{
 A new \code{Seurat} object with empty droplets removed.

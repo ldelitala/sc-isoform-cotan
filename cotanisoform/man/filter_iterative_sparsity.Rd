@@ -24,7 +24,8 @@ filter_iterative_sparsity(
 
 \item{output_dir}{Character. Optional directory to save the output object as an RDS file. Default is \code{NULL}.}
 
-\item{file_name}{Character. Optional file name for saving the output object. Default is \code{"seurat_sparsity_filtered.rds"}.}
+\item{file_name}{Character. Optional file name for saving the output object.
+Default is \code{"seurat_sparsity_filtered.rds"}.}
 }
 \value{
 A new, subsetted \code{Seurat} object with the converged dimensions.

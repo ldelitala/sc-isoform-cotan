@@ -114,21 +114,21 @@ reset_log_state <- function() {
 # Hidden environment for theme settings
 .log_theme <- new.env(parent = emptyenv())
 
-# Default theme settings
-.log_theme$info_prefix     <- "❖ "
-.log_theme$warn_prefix     <- "⚠️ [WARNING] "
-.log_theme$error_prefix    <- "❌ [ERROR] "
-.log_theme$stat_prefix     <- " » "
+# Default theme settings (non-ASCII glyphs are escaped so the package is portable)
+.log_theme$info_prefix     <- "\u2756 "
+.log_theme$warn_prefix     <- "\u26a0\ufe0f [WARNING] "
+.log_theme$error_prefix    <- "\u274c [ERROR] "
+.log_theme$stat_prefix     <- " \u00bb "
 .log_theme$debug_prefix    <- " [DEBUG] "
-.log_theme$branch_vertical <- "┃"
+.log_theme$branch_vertical <- "\u2503"
 .log_theme$branch_space    <- " "
-.log_theme$branch_start    <- "┏━━"
-.log_theme$branch_end      <- "┗━━"
-.log_theme$exec_start      <- "▶"
-.log_theme$exec_done       <- "✔ Done."
-.log_theme$exec_arrow_down <- "⇣"
-.log_theme$exec_arrow_up   <- "⇡"
-.log_theme$bullet          <- "◦"
+.log_theme$branch_start    <- "\u250f\u2501\u2501"
+.log_theme$branch_end      <- "\u2517\u2501\u2501"
+.log_theme$exec_start      <- "\u25b6"
+.log_theme$exec_done       <- "\u2714 Done."
+.log_theme$exec_arrow_down <- "\u21e3"
+.log_theme$exec_arrow_up   <- "\u21e1"
+.log_theme$bullet          <- "\u25e6"
 
 # Timestamp settings
 .log_theme$time_format     <- "%Y-%m-%d %H:%M:%S"
@@ -191,7 +191,7 @@ set_log_theme <- function(...) {
 }
 
 # Generate base indentation (excluding the last visible depth level)
-# Used for branching lines like ┣━━ or ⇣
+# Used for branching lines (tree connectors and arrows)
 .get_indent_base <- function() {
     stack <- .get_log_stack()
     if (length(stack) == 0) return("")
@@ -440,7 +440,7 @@ log_cotan_execution <- function(func_name, ..., is_complete = FALSE, level = 2L)
 
             # Il simbolo bullet colorato di grigio come separatore
             sep_symbol <- .col_gray(sprintf(" %s ", .get_theme("bullet")))
-            # Aggiunge 2 spazi per spingere l'indentazione più all'interno
+            # Adds 2 spaces to push the indentation further in
             msg_params <- paste0(
                 "  ",
                 .col_gray(paste0(.get_theme("bullet"), " ")),
@@ -495,9 +495,9 @@ log_matrix_stats <- function(cells_before, cells_after = NULL, features_before =
         if (diff == 0) {
             return("0")
         } else if (diff > 0) {
-            return(sprintf("▼ %s ▼", fmt_num(diff)))
+            return(sprintf("\u25bc %s \u25bc", fmt_num(diff)))
         } else {
-            return(sprintf("▲ %s ▲", fmt_num(abs(diff))))
+            return(sprintf("\u25b2 %s \u25b2", fmt_num(abs(diff))))
         }
     }
 
@@ -520,12 +520,12 @@ log_matrix_stats <- function(cells_before, cells_after = NULL, features_before =
     old_features <- center_text(fmt_num(features_before), col_width)
 
     # Gray bracket components
-    b_tl <- .col_gray("  ⎡ ")
-    b_tr <- .col_gray(" ⎤")
-    b_ml <- .col_gray("  ⎢ ")
-    b_mr <- .col_gray(" ⎥")
-    b_bl <- .col_gray("  ⎣ ")
-    b_br <- .col_gray(" ⎦")
+    b_tl <- .col_gray("  \u23a1 ")
+    b_tr <- .col_gray(" \u23a4")
+    b_ml <- .col_gray("  \u23a2 ")
+    b_mr <- .col_gray(" \u23a5")
+    b_bl <- .col_gray("  \u23a3 ")
+    b_br <- .col_gray(" \u23a6")
 
     sep  <- "   " # Fixed spacer between columns
 

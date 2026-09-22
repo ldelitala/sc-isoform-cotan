@@ -204,15 +204,17 @@ extract_dtu_candidates <- function(
     if (length(all_evaluated_coex) > 0) {
         log_stat(sprintf(
             "Significant pairs coex scores: min = %.4f, median = %.4f, mean = %.4f, max = %.4f",
-            min(all_evaluated_coex), median(all_evaluated_coex), mean(all_evaluated_coex), max(all_evaluated_coex)
+            min(all_evaluated_coex), stats::median(all_evaluated_coex),
+            mean(all_evaluated_coex), max(all_evaluated_coex)
         ))
         log_stat(sprintf(
             "Significant pairs p-values: min = %.4e, median = %.4e, mean = %.4e, max = %.4e",
-            min(all_evaluated_pvals), median(all_evaluated_pvals), mean(all_evaluated_pvals), max(all_evaluated_pvals)
+            min(all_evaluated_pvals), stats::median(all_evaluated_pvals),
+            mean(all_evaluated_pvals), max(all_evaluated_pvals)
         ))
         log_stat(sprintf(
             "Significant pairs max DEA contrasts: min = %.4f, median = %.4f, mean = %.4f, max = %.4f",
-            min(all_evaluated_contrasts), median(all_evaluated_contrasts),
+            min(all_evaluated_contrasts), stats::median(all_evaluated_contrasts),
             mean(all_evaluated_contrasts), max(all_evaluated_contrasts)
         ))
     }

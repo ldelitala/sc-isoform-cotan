@@ -1,7 +1,7 @@
 Package: cotanisoform
 Type: Package
 Title: Isoform-Aware COTAN for Differential Transcript Usage
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("Lorenzo", "Delitala", email = "ldelitala@gmail.com",
                   role = c("aut", "cre"))
 Description: Adapts COTAN co-expression and zero-count statistics from gene level to
@@ -26,9 +26,7 @@ Imports:
     utils,
     tools,
     stats,
-    conflicted,
-    parallelly,
-    zeallot
+    conflicted
 Suggests:
     testthat (>= 3.0.0),
     lintr,

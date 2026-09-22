@@ -18,6 +18,11 @@ filter_cotan_by_condition(
 \item{cond_name}{Character. The name of the condition (e.g., "passed_QC", "cell_type").}
 
 \item{cond_value}{Character/Logical. The specific value to retain.}
+
+\item{output_dir}{Character. Optional directory to save the filtered object; nothing
+is written when \code{NULL}.}
+
+\item{file_name}{Character. File name used when \code{output_dir} is given.}
 }
 \value{
 A COTAN object containing only the cells matching the condition.

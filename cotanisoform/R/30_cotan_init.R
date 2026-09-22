@@ -3,6 +3,9 @@
 #' @param cotan_obj A COTAN object.
 #' @param cond_name Character. The name of the condition (e.g., "passed_QC", "cell_type").
 #' @param cond_value Character/Logical. The specific value to retain.
+#' @param output_dir Character. Optional directory to save the filtered object; nothing
+#'                   is written when `NULL`.
+#' @param file_name Character. File name used when `output_dir` is given.
 #' @return A COTAN object containing only the cells matching the condition.
 #'
 #' @importFrom COTAN getCondition getCells dropGenesCells getNumCells getNumGenes
