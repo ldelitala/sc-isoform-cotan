@@ -14,7 +14,11 @@ jobs:
         with:
           use-public-rspm: true
       - name: Install lintr
-        run: Rscript -e 'install.packages("lintr")'
+        run: |
+          Rscript -e '
+            repos <- Sys.getenv("RSPM", unset = "https://cloud.r-project.org")
+            install.packages("lintr", repos = repos)
+          '
       - name: Lint
         run: |
           Rscript -e '
