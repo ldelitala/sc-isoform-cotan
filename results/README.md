@@ -15,6 +15,8 @@ they are Git-unfriendly and stay on the machine.
 ## What each dataset dir contains
 
 - `dtu_candidates*.csv` / `.rds` — DTU candidate tables (the thesis deliverable).
+  arrigoni writes `dtu_candidates.csv`; ding cortex_2 writes
+  `dtu_candidates.gene_cluster.csv` and `dtu_candidates.transcript_cluster.csv`.
 - `dtu_shared.csv`, `dtu_exclusive_file*.csv` — gene-vs-transcript DTU comparison.
 - `plots/` — COTAN diagnostics: GDI plots, UMAPs, cluster/dendrogram plots.
 - `logs/` — per-step run logs (`init_cotan`, `cotan_calc`, `cluster`, `plot_gdi`, …).
@@ -30,8 +32,8 @@ Large intermediate objects: `calculated.*.cotan.rds` (~3–5.5 GB),
 
 ## Provenance
 
-Produced on Athena by the R analysis layer in `src/libs/` (see the repository
-`README.md`). Files were copied verbatim; no post-processing.
+Produced on Athena by the `analysis/` driver steps (`analysis/run_all.R`) using the
+`cotanisoform` R package. Files were copied verbatim; no post-processing.
 
 ## Refreshing
 
@@ -41,5 +43,5 @@ Produced on Athena by the R analysis layer in `src/libs/` (see the repository
 # on the Mac
 rsync -a athena:/data/lorenzo_delitala/data/publish_results/ results/
 git add results && git commit -m "Update results"
-git push github master && git push origin master
+git push github HEAD    # push the branch you are working on
 ```
