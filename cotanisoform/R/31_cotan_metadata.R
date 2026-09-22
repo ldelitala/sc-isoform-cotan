@@ -46,7 +46,7 @@ update_cell_condition <- function(
     cotan_cells <- COTAN::getCells(cotan_obj)
     clean_cotan_cells <- if (strip_suffix) trimws(sub("-.*", "", cotan_cells)) else cotan_cells
     clean_input_barcodes <- if (strip_suffix) trimws(sub("-.*", "", names(condition_data))) else names(condition_data)
-    
+
     log_info("Finding matching barcodes...")
     match_indices <- match(clean_input_barcodes, clean_cotan_cells)
     valid_matches <- !is.na(match_indices)
@@ -71,7 +71,10 @@ update_cell_condition <- function(
     )
 
     log_cotan_execution("addCondition()", is_complete = TRUE)
-    log_stat(sprintf("Cells updated: %8s", format(length(matched_cotan_indices), big.mark = ",", scientific = FALSE, trim = TRUE)))
+    log_stat(sprintf(
+        "Cells updated: %8s",
+        format(length(matched_cotan_indices), big.mark = ",", scientific = FALSE, trim = TRUE)
+    ))
     log_header(is_complete = TRUE)
 
     return(new_cotan_obj)
@@ -205,9 +208,12 @@ add_genes_metadata <- function(cotan_obj, col_name, col_data) {
     cotan_obj@metaGenes <- genes_metadata
 
     log_cotan_execution("setColumnInDF()", is_complete = TRUE)
-    log_stat(sprintf("Transcripts targeted: %8s", format(length(all_transcripts), big.mark = ",", scientific = FALSE, trim = TRUE)))
+    log_stat(sprintf(
+        "Transcripts targeted: %8s",
+        format(length(all_transcripts), big.mark = ",", scientific = FALSE, trim = TRUE)
+    ))
     log_header(is_complete = TRUE)
-    
+
     return(cotan_obj)
 }
 
@@ -279,7 +285,10 @@ update_cell_clusterization <- function(
 
     if (cluster_name %in% existing_clusterizations) {
         if (!override) {
-            log_error(sprintf("Clusterization '%s' exists. Use override = TRUE to update.", cluster_name), stop_exec = TRUE)
+            log_error(
+                sprintf("Clusterization '%s' exists. Use override = TRUE to update.", cluster_name),
+                stop_exec = TRUE
+            )
         }
         log_info("Clusterization exists. Updating incrementally (DEA will be reset)...")
         current_clusters <- as.character(COTAN::getClusters(cotan_obj, clName = cluster_name))
@@ -312,7 +321,10 @@ update_cell_clusterization <- function(
     )
 
     log_cotan_execution("addClusterization()", is_complete = TRUE)
-    log_stat(sprintf("Cells updated: %8s", format(length(matched_cotan_indices), big.mark = ",", scientific = FALSE, trim = TRUE)))
+    log_stat(sprintf(
+        "Cells updated: %8s",
+        format(length(matched_cotan_indices), big.mark = ",", scientific = FALSE, trim = TRUE)
+    ))
     log_header(is_complete = TRUE)
 
     return(new_cotan_obj)
@@ -322,8 +334,8 @@ update_cell_clusterization <- function(
 #'
 #' @description
 #' Reads barcodes from multiple TSV/TVS files (one file per cell type),
-#' extracts the named vectors, and delegates the standardization and insertion 
-#' to the `update_cell_clusterization` helper to register them as a 
+#' extracts the named vectors, and delegates the standardization and insertion
+#' to the `update_cell_clusterization` helper to register them as a
 #' clusterization inside the COTAN object.
 #'
 #' @param cotan_obj A `COTAN` object.
@@ -353,13 +365,13 @@ add_cell_types_from_tsv <- function(
   }
 
   log_info("Updating cell clusterization...")
-  
+
   new_cotan_obj <- update_cell_clusterization(
     cotan_obj = cotan_obj,
     cluster_data = combined_cluster_data,
     cluster_name = cluster_name,
     default_value = "Unknown",
-    strip_suffix = TRUE, 
+    strip_suffix = TRUE,
     override = override
   )
 

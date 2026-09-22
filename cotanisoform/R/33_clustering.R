@@ -25,7 +25,8 @@ calculate_gdi <- function(
   file_name = "cotan_gdi.rds"
 ) {
     log_header("calculate gdi")
-    log_cotan_execution("calculateGDI()", statType = stat_type, rowsFraction = rows_fraction, cores = cores, chunkSize = chunk_size)
+    log_cotan_execution("calculateGDI()", statType = stat_type, rowsFraction = rows_fraction,
+                        cores = cores, chunkSize = chunk_size)
 
     cotan_obj <- storeGDI(
         cotan_obj,

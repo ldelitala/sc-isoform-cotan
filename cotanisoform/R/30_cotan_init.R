@@ -92,7 +92,8 @@ initialize_cotan_from_seurat <- function(
 
   log_info("Initializing base metadata...")
 
-  log_cotan_execution("initializeMetaDataset()", GEO = geo_id, sequencingMethod = seq_method, sampleCondition = condition)
+  log_cotan_execution("initializeMetaDataset()", GEO = geo_id, sequencingMethod = seq_method,
+                      sampleCondition = condition)
   cotan_obj <- initializeMetaDataset(
     cotan_obj,
     GEO = geo_id,
@@ -129,7 +130,8 @@ initialize_cotan_from_seurat <- function(
 #' @param genes_cutoff Numeric. Fraction of genes a cell must express to be kept (Default 0.002).
 #' @param cells_threshold Numeric. Genes expressed in > fraction of cells marked as fully-expressed (Default 0.99).
 #' @param genes_threshold Numeric. Cells expressing > fraction of genes marked as fully-expressing (Default 0.99).
-#' @param drop_fully_expressed Logical. Whether to physically drop fully-expressed genes/transcripts from the object. Default is `FALSE`.
+#' @param drop_fully_expressed Logical. Whether to physically drop fully-expressed
+#'   genes/transcripts from the object. Default is `FALSE`.
 #' @param output_dir Character. Optional directory to save the output object as an RDS file. Default is `NULL`.
 #' @param file_name Character. Optional file name for saving the output object. Default is `"cotan_cleaned.rds"`.
 #'
@@ -156,7 +158,7 @@ clean_cotan_data <- function(
       cellsCutoff = cells_cutoff, genesCutoff = genes_cutoff,
       cellsThreshold = cells_threshold, genesThreshold = genes_threshold
     )
-    
+
     cotan_obj <- clean(
       cotan_obj,
       cellsCutoff = cells_cutoff,
@@ -170,7 +172,7 @@ clean_cotan_data <- function(
     if (drop_fully_expressed) {
       log_info("Identifying and dropping fully-expressed genes/transcripts...")
       fully_expressed <- getFullyExpressedGenes(cotan_obj)
-      
+
       if (length(fully_expressed) > 0) {
         log_info(sprintf("Found %d fully-expressed genes/transcripts. Dropping them...", length(fully_expressed)))
         cotan_obj <- dropGenesCells(cotan_obj, genes = fully_expressed)
@@ -189,7 +191,7 @@ clean_cotan_data <- function(
     if (num_cells_after < (num_cells_before * 0.2)) {
       log_warn("Warning: cleaning removed over 80% of the cells. The parameters might be too restrictive.")
     }
-    
+
     if (!is.null(output_dir)) {
       log_info("Saving COTAN object...")
       save_object(cotan_obj, output_dir, file_name)

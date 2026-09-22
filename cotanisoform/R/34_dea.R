@@ -19,7 +19,7 @@ dea_on_clusters <- function(
 ) {
     log_header("dea on clusters")
     log_cotan_execution("DEAOnClusters()", clName = cl_name)
-    
+
     # Run DEA with optional clusters parameter
     dea_df <- COTAN::DEAOnClusters(cotan_obj, clName = cl_name, clusters = clusters)
     log_cotan_execution("DEAOnClusters()", is_complete = TRUE)
@@ -39,7 +39,7 @@ dea_on_clusters <- function(
         coexDF = dea_df,
         override = TRUE
     )
-    
+
     if (!is.null(output_dir)) {
         log_info("Saving COTAN object...")
         save_object(cotan_obj, output_dir, file_name)

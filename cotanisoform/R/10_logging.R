@@ -172,13 +172,13 @@ set_log_theme <- function(...) {
 .get_indent <- function() {
     stack <- .get_log_stack()
     if (length(stack) == 0) return("")
-    
+
     current_level <- getOption("COTAN.LogLevel", default = 1L)
-    
+
     # Only draw lines for headers at or below the current output level
     visible_stack <- stack[stack <= current_level]
     if (length(visible_stack) == 0) return("")
-    
+
     indent_parts <- vapply(visible_stack, function(lvl) {
         if (current_level >= 3L) {
             paste0(.col_blue_bold(.get_theme("branch_vertical")), "   ")
@@ -186,7 +186,7 @@ set_log_theme <- function(...) {
             paste0(.col_blue_bold(.get_theme("branch_space")), "   ")
         }
     }, character(1))
-    
+
     paste0(indent_parts, collapse = "")
 }
 
@@ -195,16 +195,16 @@ set_log_theme <- function(...) {
 .get_indent_base <- function() {
     stack <- .get_log_stack()
     if (length(stack) == 0) return("")
-    
+
     current_level <- getOption("COTAN.LogLevel", default = 1L)
-    
+
     # Filter for visible stack elements
     visible_stack <- stack[stack <= current_level]
-    
+
     # Drop the last visible element to get the base prefix
     if (length(visible_stack) <= 1) return("")
     visible_stack <- visible_stack[-length(visible_stack)]
-    
+
     indent_parts <- vapply(visible_stack, function(lvl) {
         if (current_level >= 3L) {
             paste0(.col_blue_bold(.get_theme("branch_vertical")), "   ")
@@ -212,7 +212,7 @@ set_log_theme <- function(...) {
             paste0(.col_blue_bold(.get_theme("branch_space")), "   ")
         }
     }, character(1))
-    
+
     paste0(indent_parts, collapse = "")
 }
 # ==============================================================================
@@ -230,7 +230,7 @@ set_log_theme <- function(...) {
 log_error <- function(msg, stop_exec = FALSE) {
     indent <- .get_indent()
     msg_formatted <- .col_red_bold(paste0(.get_theme("error_prefix"), msg))
-    .write_log(paste0(indent, msg_formatted), logLevel = 0L)
+    .write_log(paste0(indent, msg_formatted), log_level = 0L)
     if (stop_exec) stop(msg, call. = FALSE)
 }
 
@@ -245,7 +245,7 @@ log_error <- function(msg, stop_exec = FALSE) {
 log_warn <- function(msg, level = 0L) {
     indent <- .get_indent()
     msg_formatted <- .col_yellow(paste0(.get_theme("warn_prefix"), msg))
-    .write_log(paste0(indent, msg_formatted), logLevel = level)
+    .write_log(paste0(indent, msg_formatted), log_level = level)
 }
 
 #' Log an Information Message
@@ -259,7 +259,7 @@ log_warn <- function(msg, level = 0L) {
 log_info <- function(msg, level = 2L) {
     indent <- .get_indent()
     msg_formatted <- .col_gray(paste0(.get_theme("info_prefix"), msg))
-    .write_log(paste0(indent, msg_formatted), logLevel = level)
+    .write_log(paste0(indent, msg_formatted), log_level = level)
 }
 
 #' Log a Statistical Bullet Point
@@ -273,7 +273,7 @@ log_info <- function(msg, level = 2L) {
 log_stat <- function(msg, level = 1L) {
     indent <- .get_indent()
     msg_formatted <- .col_cyan(paste0(.get_theme("stat_prefix"), msg))
-    .write_log(paste0(indent, msg_formatted), logLevel = level)
+    .write_log(paste0(indent, msg_formatted), log_level = level)
 }
 
 #' Log a Debug Message
@@ -287,7 +287,7 @@ log_stat <- function(msg, level = 1L) {
 log_debug <- function(msg, level = 3L) {
     indent <- .get_indent()
     msg_formatted <- .col_gray(paste0(.get_theme("debug_prefix"), msg))
-    .write_log(paste0(indent, msg_formatted), logLevel = level)
+    .write_log(paste0(indent, msg_formatted), log_level = level)
 }
 # ==============================================================================
 # Output Sinks (Console and File Redirection)
@@ -295,39 +295,39 @@ log_debug <- function(msg, level = 3L) {
 
 #' Dispatch log string to console and file connections
 #'
-#' Prints message to console (with ANSI escape colors, no timestamps) if LogLevel is met, 
+#' Prints message to console (with ANSI escape colors, no timestamps) if LogLevel is met,
 #' and writes it with timestamps (if configured) and without colors to the active COTAN log file.
 #'
 #' @param msg Character. The styled message string.
-#' @param logLevel Integer. Log level threshold. Default is 1L.
+#' @param log_level Integer. Log level threshold. Default is 1L.
 #' @return Invisible TRUE.
 #' @noRd
-.write_log <- function(msg, logLevel = 1L) {
+.write_log <- function(msg, log_level = 1L) {
     # Get current log file connection from options
     log_conn <- getOption("COTAN.LogFile")
-    
+
     # Get current COTAN.LogLevel
     current_level <- getOption("COTAN.LogLevel", default = 1L)
-    
+
     # 1. Handle console output (No timestamp, prints with colors)
-    if (current_level >= logLevel) {
+    if (current_level >= log_level) {
         # message() automatically appends a newline and outputs to stderr,
         # making it perfectly compatible with suppressMessages().
         message(msg)
     }
-    
+
     # 2. Handle file output (Clean text + timestamp if configured)
     if (!is.null(log_conn)) {
         # Strip ANSI escape codes using regex
         clean_msg <- gsub("\033\\[[0-9;]*m", "", msg)
-        
+
         # Prepend timestamp if configured
         time_pos <- .get_theme("time_position")
         time_fmt <- .get_theme("time_format")
-        
+
         if (time_fmt != "") {
             timestamp_str <- sprintf("[%s] ", format(Sys.time(), time_fmt))
-            
+
             if (time_pos == "before_indent") {
                 file_msg <- paste0(timestamp_str, clean_msg)
             } else if (time_pos == "after_indent") {
@@ -335,7 +335,7 @@ log_debug <- function(msg, level = 3L) {
                 stack <- .get_log_stack()
                 visible_stack <- stack[stack <= current_level]
                 indent_len <- length(visible_stack) * 4
-                
+
                 if (indent_len > 0 && nchar(clean_msg) >= indent_len) {
                     indent_str <- substr(clean_msg, 1, indent_len)
                     content_str <- substr(clean_msg, indent_len + 1, nchar(clean_msg))
@@ -349,11 +349,11 @@ log_debug <- function(msg, level = 3L) {
         } else {
             file_msg <- clean_msg
         }
-        
+
         # Append to the connection
         cat(file_msg, "\n", file = log_conn, sep = "")
     }
-    
+
     invisible(TRUE)
 }
 # ==============================================================================
@@ -362,7 +362,7 @@ log_debug <- function(msg, level = 3L) {
 
 #' Print a Formatted Header with Dynamic Clean Tree
 #'
-#' Prints structural header visual boundaries to frame pipeline phases. 
+#' Prints structural header visual boundaries to frame pipeline phases.
 #' Manages the active indentation stack to align logs within tree branches.
 #'
 #' @param msg Character. The text message to display. Default is "".
@@ -372,25 +372,25 @@ log_debug <- function(msg, level = 3L) {
 #' @export
 log_header <- function(msg = "", is_complete = FALSE, level = 3L) {
     current_level <- getOption("COTAN.LogLevel", default = 1L)
-    
+
     if (is_complete) {
         # Pop the last element off the stack
         .pop_log_level()
-        
+
         # Only print the closing line if the header's level is visible
         if (current_level >= level) {
             indent <- .get_indent()
             msg_formatted <- .col_blue_bold(.get_theme("branch_end"))
-            .write_log(paste0(indent, msg_formatted), logLevel = level)
+            .write_log(paste0(indent, msg_formatted), log_level = level)
         }
     } else {
         # Only print the starting line if the header's level is visible
         if (current_level >= level) {
             indent <- .get_indent()
             msg_formatted <- .col_blue_bold(sprintf("%s %s", .get_theme("branch_start"), toupper(msg)))
-            .write_log(paste0(indent, msg_formatted), logLevel = level)
+            .write_log(paste0(indent, msg_formatted), log_level = level)
         }
-        
+
         # Push the level onto the stack (always track it!)
         .push_log_level(level)
     }
@@ -401,7 +401,7 @@ log_header <- function(msg = "", is_complete = FALSE, level = 3L) {
 
 #' Handle the Start and End of an Execution Block
 #'
-#' Prints function execution start sequences with parameters or completion indicators 
+#' Prints function execution start sequences with parameters or completion indicators
 #' in a tree-aligned layout.
 #'
 #' @param func_name Character. Name of the function/process.
@@ -412,13 +412,13 @@ log_header <- function(msg = "", is_complete = FALSE, level = 3L) {
 #' @export
 log_cotan_execution <- function(func_name, ..., is_complete = FALSE, level = 2L) {
     base_indent <- .get_indent_base()
-    
+
     if (!is_complete) {
         # 1. Sostituisce l'ultimo livello dell'albero con la freccia verso il basso
         arrows_down <- paste0(.col_blue_bold(.get_theme("exec_arrow_down")), "   ")
         msg_exec <- .col_magenta(sprintf("%s %s", .get_theme("exec_start"), func_name))
-        .write_log(paste0(base_indent, arrows_down, msg_exec), logLevel = level)
-        
+        .write_log(paste0(base_indent, arrows_down, msg_exec), log_level = level)
+
         # 2. Formatta e stampa i parametri (se presenti) nel varco appena aperto
         params <- list(...)
         if (length(params) > 0) {
@@ -426,32 +426,36 @@ log_cotan_execution <- function(func_name, ..., is_complete = FALSE, level = 2L)
             if (is.null(param_names) || any(param_names == "")) {
                 param_names[param_names == ""] <- "unnamed"
             }
-            
+
             # Formattazione con colori separati per Chiave e Valore
             formatted_pairs <- vapply(seq_along(params), function(i) {
                 val <- params[[i]]
                 val_str <- if (is.null(val)) "NULL" else paste(as.character(val), collapse = ",")
-                
+
                 key_colored <- .col_gray(param_names[i])
                 val_colored <- .col_cyan(val_str)
-                
+
                 sprintf("%s: %s", key_colored, val_colored)
             }, character(1))
-            
+
             # Il simbolo bullet colorato di grigio come separatore
             sep_symbol <- .col_gray(sprintf(" %s ", .get_theme("bullet")))
             # Aggiunge 2 spazi per spingere l'indentazione più all'interno
-            msg_params <- paste0("  ", .col_gray(paste0(.get_theme("bullet"), " ")), paste(formatted_pairs, collapse = sep_symbol))
-            
-            param_indent <- paste0(base_indent, "    ") 
-            .write_log(paste0(param_indent, msg_params), logLevel = level)
+            msg_params <- paste0(
+                "  ",
+                .col_gray(paste0(.get_theme("bullet"), " ")),
+                paste(formatted_pairs, collapse = sep_symbol)
+            )
+
+            param_indent <- paste0(base_indent, "    ")
+            .write_log(paste0(param_indent, msg_params), log_level = level)
         }
-        
+
     } else {
         # 3. Sostituisce l'ultimo livello dell'albero con la freccia verso l'alto
         arrows_up <- paste0(.col_blue_bold(.get_theme("exec_arrow_up")), "   ")
         msg_done <- .col_magenta(.get_theme("exec_done"))
-        .write_log(paste0(base_indent, arrows_up, msg_done), logLevel = level)
+        .write_log(paste0(base_indent, arrows_up, msg_done), log_level = level)
     }
 }
 # ==============================================================================
@@ -460,7 +464,7 @@ log_cotan_execution <- function(func_name, ..., is_complete = FALSE, level = 2L)
 
 #' Log Matrix Filtering Statistics
 #'
-#' Prints structured, aligned bracket tables showing cell and feature variations 
+#' Prints structured, aligned bracket tables showing cell and feature variations
 #' before and after filtering operations.
 #'
 #' @param cells_before Integer. Number of cells before filtering.
@@ -470,12 +474,13 @@ log_cotan_execution <- function(func_name, ..., is_complete = FALSE, level = 2L)
 #' @param level Integer. Log level threshold. Default is 1L.
 #' @return Invisible NULL.
 #' @export
-log_matrix_stats <- function(cells_before, cells_after = NULL, features_before = NULL, features_after = NULL, level = 1L) {
+log_matrix_stats <- function(cells_before, cells_after = NULL, features_before = NULL,
+                             features_after = NULL, level = 1L) {
     # Helper to format numbers with thousands separator
     fmt_num <- function(x) {
         format(as.numeric(x), big.mark = ",", scientific = FALSE, trim = TRUE)
     }
-    
+
     # Helper to center text in a column of a given width
     center_text <- function(text, width = 14) {
         pad <- max(0, width - nchar(text))
@@ -483,7 +488,7 @@ log_matrix_stats <- function(cells_before, cells_after = NULL, features_before =
         right <- ceiling(pad / 2)
         paste0(strrep(" ", left), text, strrep(" ", right))
     }
-    
+
     # Helper to construct delta string (difference indicator)
     get_delta_str <- function(before, after) {
         diff <- before - after
@@ -495,7 +500,7 @@ log_matrix_stats <- function(cells_before, cells_after = NULL, features_before =
             return(sprintf("▲ %s ▲", fmt_num(abs(diff))))
         }
     }
-    
+
     # Check if we should display the variation or just a snapshot
     showing_variation <- (!is.null(cells_before) && !is.null(cells_after)) ||
                          (!is.null(features_before) && !is.null(features_after))
@@ -510,7 +515,7 @@ log_matrix_stats <- function(cells_before, cells_after = NULL, features_before =
     col_width    <- 14
     lbl_cells    <- center_text("Cells", col_width)
     lbl_features <- center_text("Features", col_width)
-    
+
     old_cells    <- center_text(fmt_num(cells_before), col_width)
     old_features <- center_text(fmt_num(features_before), col_width)
 
@@ -521,46 +526,46 @@ log_matrix_stats <- function(cells_before, cells_after = NULL, features_before =
     b_mr <- .col_gray(" ⎥")
     b_bl <- .col_gray("  ⎣ ")
     b_br <- .col_gray(" ⎦")
-    
+
     sep  <- "   " # Fixed spacer between columns
-    
+
     # Write a formatted matrix line with tree indentation
     print_matrix_line <- function(line) {
         indent <- .get_indent()
-        .write_log(paste0(indent, line), logLevel = level)
+        .write_log(paste0(indent, line), log_level = level)
     }
 
     if (showing_variation) {
         log_info("Matrix variation:", level = level)
-        
+
         delta_cells    <- center_text(get_delta_str(cells_before, cells_after), col_width)
         delta_features <- center_text(get_delta_str(features_before, features_after), col_width)
-        
+
         new_cells      <- center_text(fmt_num(cells_after), col_width)
         new_features   <- center_text(fmt_num(features_after), col_width)
-        
+
         # Color scheme: Orange dim (top), Gray (old), Magenta bold (delta), Orange bold (new)
         line1 <- paste0(b_tl, .col_orange_dim(lbl_cells), sep, .col_orange_dim(lbl_features), b_tr)
         line2 <- paste0(b_ml, .col_gray(old_cells), sep, .col_gray(old_features), b_mr)
         line3 <- paste0(b_ml, .col_yellow(delta_cells), sep, .col_yellow(delta_features), b_mr)
         line4 <- paste0(b_bl, .col_orange_bold(new_cells), sep, .col_orange_bold(new_features), b_br)
-        
+
         print_matrix_line(line1)
         print_matrix_line(line2)
         print_matrix_line(line3)
         print_matrix_line(line4)
-        
+
     } else {
         log_info("Matrix snapshot:", level = level)
-        
+
         # Color scheme: Orange dim (top), Orange bold (snapshot values)
         line1 <- paste0(b_tl, .col_orange_dim(lbl_cells), sep, .col_orange_dim(lbl_features), b_tr)
         line2 <- paste0(b_bl, .col_orange_bold(old_cells), sep, .col_orange_bold(old_features), b_br)
-        
+
         print_matrix_line(line1)
         print_matrix_line(line2)
     }
-    
+
     invisible(NULL)
 }
 # ==============================================================================
@@ -569,7 +574,7 @@ log_matrix_stats <- function(cells_before, cells_after = NULL, features_before =
 
 #' Log Estimator Statistics
 #'
-#' Computes distribution summaries (mean, median, sd, min, max) of a numeric vector 
+#' Computes distribution summaries (mean, median, sd, min, max) of a numeric vector
 #' and prints them in structured logs.
 #'
 #' @param estimator_values Numeric vector. Values of the estimator to summarize.
@@ -604,16 +609,16 @@ log_estimator_stats <- function(estimator_values, estimator_name, level = 1L) {
   base_name <- tools::file_path_sans_ext(base_filename)
   ext <- tools::file_ext(base_filename)
   if (ext != "") ext <- paste0(".", ext)
-  
+
   log_path <- file.path(dir_path, base_filename)
   counter <- 1
-  
+
   while (file.exists(log_path)) {
     new_log_name <- sprintf("%s_%d%s", base_name, counter, ext)
     log_path <- file.path(dir_path, new_log_name)
     counter <- counter + 1
   }
-  
+
   return(log_path)
 }
 

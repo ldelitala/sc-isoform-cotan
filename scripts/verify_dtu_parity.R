@@ -27,8 +27,9 @@ parse_args <- function(args) {
     opts <- list(root = "/data/lorenzo_delitala", out = NULL, case = NULL, `self-test` = NULL)
     for (arg in args) {
         if (!grepl("^--", arg)) stop(sprintf("unexpected argument: %s", arg))
-        key <- sub("^--([^=]+)=.*$", "\\1", arg)
-        val <- sub("^--[^=]+=", "", arg)
+        body <- sub("^--", "", arg)
+        key <- sub("=.*$", "", body)
+        val <- if (grepl("=", body)) sub("^[^=]+=", "", body) else TRUE
         if (!key %in% names(opts)) stop(sprintf("unknown option: %s", arg))
         opts[[key]] <- val
     }
@@ -186,9 +187,16 @@ check_case <- function(case, object_path) {
     }
 
     dea <- COTAN::getClustersCoex(cotan_obj)
-    if (!case$clusterization %in% names(dea) &&
-        !paste0("CL_", case$clusterization) %in% names(dea)) {
-        cat(sprintf("[%s] running dea_on_clusters(%s)\n", tag, case$clusterization))
+    dea_mat <- dea[[case$clusterization]]
+    if (is.null(dea_mat)) dea_mat <- dea[[paste0("CL_", case$clusterization)]]
+    # A clusterization slot can exist with an empty DEA frame (that is how
+    # 06_transfer_cluster.R injects the gene clusters into the transcript object),
+    # so an existing slot is not enough: the released run recomputed DEA there too.
+    dea_empty <- is.null(dea_mat) || nrow(dea_mat) == 0L || ncol(dea_mat) == 0L ||
+        !any(is.finite(as.matrix(dea_mat)))
+    if (dea_empty) {
+        cat(sprintf("[%s] running dea_on_clusters(%s) -- stored DEA is %s\n", tag,
+                    case$clusterization, if (is.null(dea_mat)) "absent" else "empty"))
         cotan_obj <- dea_on_clusters(cotan_obj, cl_name = case$clusterization, clusters = NULL)
     }
 
@@ -287,14 +295,19 @@ for (case in selected) {
         verdicts[[case$name]] <- NA
         next
     }
-    ok <- vapply(existing, function(p) {
-        isTRUE(tryCatch(check_case(case, p), error = function(e) {
-            cat(sprintf("[%s] ERROR on %s: %s\n", case$name, p, conditionMessage(e)))
+    any_ok <- FALSE
+    for (object_path in existing) {
+        ok <- tryCatch(check_case(case, object_path), error = function(e) {
+            cat(sprintf("[%s] ERROR on %s: %s\n", case$name, object_path, conditionMessage(e)))
             FALSE
-        }))
-    }, logical(1))
-    verdicts[[case$name]] <- any(ok)
-    cat(sprintf("[%s] %s\n", case$name, if (any(ok)) "OK" else "NO MATCHING OBJECT"))
+        })
+        if (isTRUE(ok)) {
+            any_ok <- TRUE
+            break   # first candidate that reproduces wins; no need to keep loading GBs
+        }
+    }
+    verdicts[[case$name]] <- any_ok
+    cat(sprintf("[%s] %s\n", case$name, if (any_ok) "OK" else "NO MATCHING OBJECT"))
 }
 
 verdict <- unlist(verdicts)

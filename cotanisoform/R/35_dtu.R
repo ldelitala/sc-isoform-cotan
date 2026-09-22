@@ -26,7 +26,7 @@ extract_dtu_candidates <- function(
     log_header("extract dtu candidates")
 
     log_info("Retrieving stored inputs...")
-    
+
     all_dea <- COTAN::getClustersCoex(cotan_object)
     diff_expression_matrix <- NULL
     if (clusterization_name %in% names(all_dea)) {
@@ -37,15 +37,15 @@ extract_dtu_candidates <- function(
             diff_expression_matrix <- all_dea[[prefixed_name]]
         }
     }
-    
+
     coex_matrix <- COTAN::getGenesCoex(cotan_object)
-    
+
     p_value_matrix <- NULL
     tryCatch({
         key <- .get_object_key(cotan_object)
         p_value_matrix <- .p_values_cache[[key]]
     }, error = function(e) {})
-    
+
     if (is.null(p_value_matrix)) {
         p_value_matrix <- attr(cotan_object, "p_values")
     }
@@ -55,7 +55,10 @@ extract_dtu_candidates <- function(
 
     if (is.null(diff_expression_matrix) || is.null(p_value_matrix)) {
         log_error(sprintf(
-            "Missing inputs: DEA matrix is %s, P-value matrix is %s. Run dea_on_clusters() and calculate_p_value() first.",
+            paste(
+                "Missing inputs: DEA matrix is %s, P-value matrix is %s.",
+                "Run dea_on_clusters() and calculate_p_value() first."
+            ),
             if (is.null(diff_expression_matrix)) "NULL" else "OK",
             if (is.null(p_value_matrix)) "NULL" else "OK"
         ), stop_exec = TRUE)
@@ -110,8 +113,8 @@ extract_dtu_candidates <- function(
         }
 
         for (i in seq_len(nrow(pairs))) {
-            t_A <- transcripts[pairs[i, 1]]
-            t_B <- transcripts[pairs[i, 2]]
+            t_a <- transcripts[pairs[i, 1]]
+            t_b <- transcripts[pairs[i, 2]]
 
             coex_val <- sub_coex[pairs[i, 1], pairs[i, 2]]
             pval_val <- sub_pval[pairs[i, 1], pairs[i, 2]]
@@ -119,30 +122,35 @@ extract_dtu_candidates <- function(
             all_evaluated_coex <- c(all_evaluated_coex, coex_val)
             all_evaluated_pvals <- c(all_evaluated_pvals, pval_val)
 
-            contrast <- diff_expression_matrix[t_A, ] - diff_expression_matrix[t_B, ]
+            contrast <- diff_expression_matrix[t_a, ] - diff_expression_matrix[t_b, ]
             all_evaluated_contrasts <- c(all_evaluated_contrasts, max(abs(contrast)))
 
-            cl_A <- names(contrast)[contrast >= min_dea_contrast]
-            cl_B <- names(contrast)[contrast <= -min_dea_contrast]
+            cl_a <- names(contrast)[contrast >= min_dea_contrast]
+            cl_b <- names(contrast)[contrast <= -min_dea_contrast]
 
-            if (length(cl_A) == 0 || length(cl_B) == 0) {
+            if (length(cl_a) == 0 || length(cl_b) == 0) {
                 weak_count <- weak_count + 1
                 next
             }
 
             df_row <- data.frame(
                 Gene_ID = gene,
-                Transcript_A = t_A, Transcript_B = t_B,
-                COEX_Score = coex_val, 
+                Transcript_A = t_a, Transcript_B = t_b,
+                COEX_Score = coex_val,
                 P_Value = pval_val,
-                Enriched_Cell_Types_A = I(list(cl_A)), Enriched_Cell_Types_B = I(list(cl_B)),
-                Max_Contrast_A = max(contrast[cl_A]), Max_Contrast_B = abs(min(contrast[cl_B])),
+                Enriched_Cell_Types_A = I(list(cl_a)), Enriched_Cell_Types_B = I(list(cl_b)),
+                Max_Contrast_A = max(contrast[cl_a]), Max_Contrast_B = abs(min(contrast[cl_b])),
                 stringsAsFactors = FALSE
             )
 
             if (!is.null(gene_name_col)) {
-                df_row$Gene_Name <- feature_metadata[t_A, gene_name_col]
-                df_row <- df_row[, c("Gene_ID", "Gene_Name", "Transcript_A", "Transcript_B", "COEX_Score", "P_Value", "Enriched_Cell_Types_A", "Enriched_Cell_Types_B", "Max_Contrast_A", "Max_Contrast_B")]
+                df_row$Gene_Name <- feature_metadata[t_a, gene_name_col]
+                dtu_cols <- c(
+                    "Gene_ID", "Gene_Name", "Transcript_A", "Transcript_B", "COEX_Score",
+                    "P_Value", "Enriched_Cell_Types_A", "Enriched_Cell_Types_B",
+                    "Max_Contrast_A", "Max_Contrast_B"
+                )
+                df_row <- df_row[, dtu_cols]
             }
 
             dtu_list[[length(dtu_list) + 1]] <- df_row
@@ -173,12 +181,12 @@ extract_dtu_candidates <- function(
     if (missing_count > 0) {
         log_warn(sprintf("Skipped %d genes with missing transcripts in COEX matrix.", missing_count))
     }
-    
+
     log_stat(sprintf("Genes with multiple transcripts: %d", length(multi_genes)))
     if (zero_pairs_count > 0) {
         log_stat(sprintf("Genes with zero significant mutually exclusive pairs: %d", zero_pairs_count))
     }
-    
+
     genes_with_pairs <- length(multi_genes) - zero_pairs_count - missing_count
     log_stat(sprintf("Genes with at least one significant mutually exclusive pair: %d", genes_with_pairs))
     log_stat(sprintf("Total significant transcript pairs evaluated: %d", length(all_evaluated_coex)))
@@ -187,7 +195,10 @@ extract_dtu_candidates <- function(
         log_stat(sprintf("Filtered out %d transcript pairs lacking reciprocal cluster switch.", weak_count))
     }
     if (nrow(final_df) > 0) {
-        log_stat(sprintf("Identified %d DTU events across %d unique genes.", nrow(final_df), length(unique(final_df$Gene_ID))))
+        log_stat(sprintf(
+            "Identified %d DTU events across %d unique genes.",
+            nrow(final_df), length(unique(final_df$Gene_ID))
+        ))
     }
 
     if (length(all_evaluated_coex) > 0) {
@@ -201,7 +212,8 @@ extract_dtu_candidates <- function(
         ))
         log_stat(sprintf(
             "Significant pairs max DEA contrasts: min = %.4f, median = %.4f, mean = %.4f, max = %.4f",
-            min(all_evaluated_contrasts), median(all_evaluated_contrasts), mean(all_evaluated_contrasts), max(all_evaluated_contrasts)
+            min(all_evaluated_contrasts), median(all_evaluated_contrasts),
+            mean(all_evaluated_contrasts), max(all_evaluated_contrasts)
         ))
     }
 

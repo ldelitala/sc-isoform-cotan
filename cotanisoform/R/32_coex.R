@@ -7,17 +7,17 @@
         geo <- COTAN::getMetadataElement(cotan_obj, "GEO")
         if (is.null(geo) || length(geo) == 0 || geo == "") geo <- "unknown"
     }, error = function(e) {})
-    
+
     n_cells <- COTAN::getNumCells(cotan_obj)
     n_genes <- COTAN::getNumGenes(cotan_obj)
-    
+
     cells <- COTAN::getCells(cotan_obj)
     cells_hash <- if (length(cells) > 0) {
         sum(utf8ToInt(cells[1])) + sum(utf8ToInt(cells[length(cells)]))
     } else {
         0
     }
-    
+
     return(paste(geo, n_cells, n_genes, cells_hash, sep = "_"))
 }
 
@@ -63,7 +63,8 @@ prepare_to_coex <- function(
     log_cotan_execution("estimateNuLinear()", is_complete = TRUE)
 
     # --- 3. DISPERSION ---
-    log_cotan_execution("estimateDispersionViaSolver()", threshold = threshold, cores = cores, maxIterations = max_iterations, chunkSize = chunk_size)
+    log_cotan_execution("estimateDispersionViaSolver()", threshold = threshold, cores = cores,
+                        maxIterations = max_iterations, chunkSize = chunk_size)
 
     if (!estimator_logs) {
         old_log_level <- getOption("COTAN.LogLevel", default = 1L)
@@ -148,7 +149,7 @@ calculate_coex <- function(
         log_warn("COEX matrix already calculated and aligned. It will be overwritten.")
     }
 
-    log_cotan_execution("calculateCoex()", 
+    log_cotan_execution("calculateCoex()",
         actOnCells = act_on_cells, returnPPFract = return_pp_fract, optimizeForSpeed = optimize_for_speed,
         deviceStr = device_str
     )
@@ -243,15 +244,15 @@ calculate_p_value <- function(
     )
 
     log_cotan_execution("calculatePValue()", is_complete = TRUE)
-    
+
     # Store in global package cache
     key <- .get_object_key(cotan_obj)
     .p_values_cache[[key]] <- p_value_matrix
-    
+
     # Also store in attributes as fallback
     attr(cotan_obj, "p_values") <- p_value_matrix
     attr(cotan_obj@metaDataset, "p_values") <- p_value_matrix
-    
+
     if (!is.null(output_dir)) {
         log_info("Saving COTAN object...")
         save_object(cotan_obj, output_dir, file_name)

@@ -28,7 +28,7 @@
 #' @noRd
 .find_non_empty_cells <- function(seurat_obj, features, assay = "RNA", layer = "counts") {
     counts_mat <- Seurat::GetAssayData(seurat_obj, assay = assay, layer = layer)
-    
+
     if (inherits(counts_mat, "dgCMatrix")) {
         subset_mat <- counts_mat[rownames(counts_mat) %in% features, , drop = FALSE]
         valid_cells <- diff(subset_mat@p) > 0
@@ -36,7 +36,7 @@
         # Fallback for dense matrices
         valid_cells <- Matrix::colSums(counts_mat[features, , drop = FALSE]) > 0
     }
-    
+
     return(valid_cells)
 }
 
@@ -79,7 +79,7 @@ clean_simpleaf_barcodes <- function(
     log_header("clean simpleaf barcodes")
 
     original_names <- SeuratObject::Cells(seurat_obj)
-    
+
     if (!any(grepl("_", original_names))) {
         log_warn("No underscores found in cell names. Barcodes might already be clean. Skipping renaming.")
         log_header(is_complete = TRUE)
@@ -106,7 +106,7 @@ clean_simpleaf_barcodes <- function(
     unique_barcodes <- make.unique(raw_barcodes, sep = "-")
 
     log_info("Creating b2sample mapping...")
-    
+
     # Mantieni esattamente 2 colonne: il barcode (univoco) e il sample originale
     barcode_mapping <- data.frame(
         Barcode = unique_barcodes,
@@ -145,7 +145,8 @@ clean_simpleaf_barcodes <- function(
 #' @param seurat_obj A `Seurat` object.
 #' @param assay Character. The assay to use. Default is "RNA".
 #' @param output_dir Character. Optional directory to save the output object as an RDS file. Default is `NULL`.
-#' @param file_name Character. Optional file name for saving the output object. Default is `"seurat_rounded_counts.rds"`.
+#' @param file_name Character. Optional file name for saving the output object.
+#'   Default is `"seurat_rounded_counts.rds"`.
 #'
 #' @return A `Seurat` object with strictly integer counts.
 #'
@@ -208,7 +209,8 @@ round_seurat_counts <- function(
 #'
 #' @param seurat_obj A `Seurat` object containing single-cell RNA-seq data.
 #' @param output_dir Character. Optional directory to save the output object as an RDS file. Default is `NULL`.
-#' @param file_name Character. Optional file name for saving the output object. Default is `"seurat_no_empty_droplets.rds"`.
+#' @param file_name Character. Optional file name for saving the output object.
+#'   Default is `"seurat_no_empty_droplets.rds"`.
 #'
 #' @return A new `Seurat` object with empty droplets removed.
 #'
@@ -284,7 +286,7 @@ filter_spliced_transcripts <- function(
 
   log_info("Checking for cells that became empty due to feature removal...")
   valid_cells <- .find_non_empty_cells(seurat_obj, spliced_features)
-  
+
   num_cells_before <- ncol(seurat_obj)
   cells_dropped <- num_cells_before - sum(valid_cells)
 
@@ -381,7 +383,8 @@ filter_mt_transcripts <- function(
 #' @param genes_cutoff Numeric. Fraction of features a cell must express. Default is 0.002.
 #' @param loss_threshold Numeric. Threshold (0-1) to trigger a warning for data loss. Default is 0.5 (50%).
 #' @param output_dir Character. Optional directory to save the output object as an RDS file. Default is `NULL`.
-#' @param file_name Character. Optional file name for saving the output object. Default is `"seurat_sparsity_filtered.rds"`.
+#' @param file_name Character. Optional file name for saving the output object.
+#'   Default is `"seurat_sparsity_filtered.rds"`.
 #'
 #' @return A new, subsetted `Seurat` object with the converged dimensions.
 #'
@@ -456,7 +459,7 @@ filter_iterative_sparsity <- function(
   }
 
   log_info("Iterative filtering converged.")
-  
+
   valid_features <- rownames(raw_mat)
   valid_cells <- colnames(raw_mat)
 
@@ -549,5 +552,3 @@ create_test_subset <- function(
 
   return(seurat_subset)
 }
-
-
