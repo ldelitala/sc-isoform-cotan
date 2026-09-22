@@ -30,33 +30,35 @@ Standard scRNA-seq mapping pipelines group reads by gene to build a cell-by-gene
 
 ## 2. Alignment Execution and Parameters
 
-The alignment pipeline is executed within the [main.nf](../main.nf) workflow via the `ALIGN_SIMPLEAF` process.
+The alignment pipeline is executed within the [main.nf](../src/pipeline/main.nf) workflow via the `ALIGN_SIMPLEAF` process.
 
 ### Configuration (`nextflow.config`)
-Parameters are declared in the `scrnaseq_params` map in [nextflow.config](../nextflow.config):
+Parameters are declared in the `scrnaseq_params` map in [nextflow.config](../src/pipeline/nextflow.config) (per-run overrides live in `runs/<dataset>/nextflow.config`):
 ```groovy
 params {
     scrnaseq_params = [
-        protocol: "10XV3",
-        skip_cellbender: true,
-        simpleaf_umi_resolution: "parsimony-em"
+        skip_multiqc           : true,
+        skip_fastqc            : true,
+        protocol               : "10xv3",
+        simpleaf_umi_resolution: "parsimony-em",
+        custom_geometry        : ""
     ]
 }
 ```
 
 ### Execution Flow
-1. **`GENERATE_SAMPLESHEET`**: Scans the fastq files channel, generates the Nextflow-compatible `input.csv` samplesheet, and writes a dynamic `nf-params.json` targeting the identity `simpleaf` index directory:
-   `references/indices/<genome>_simpleaf`
+1. **Samplesheet assembly** (in `src/pipeline/subworkflows/preprocessing.nf`): the fastq files channel is gathered with Nextflow's `.collectFile(name: 'input.csv', …)` operator into the single CSV the child pipeline consumes. `ALIGN_SIMPLEAF` then writes `nf-params.json` via `writeParamsJson()`, pointing `simpleaf_index` at the identity index directory.
 2. **`ALIGN_SIMPLEAF` (Native `exec:` Cascade Block)**: Runs natively on the head node using a Nextflow `exec:` block to bypass staging issues and resolve the nested temporary work directory bug (`Invalid include source`). It operates as follows:
-   * **Directories**: Generates the target directory `runs/${dataset}_simpleaf` and stages execution there.
-   * **Container Configuration**: Dynamically creates a `custom.config` file inside the run directory to override simpleaf index/quant tools with version `0.22.0--hd612981_0`, ensuring compatibility with newer Piscem indices:
+   * **Directories**: Uses the preprocessing run directory (`params.preprocessing_dir`, `${launchDir}/results/preprocessing` by default) and stages execution there.
+   * **Container Configuration**: Writes a `custom.config` inside that directory. When `params.child_config` points at an existing file it is copied verbatim; otherwise the default only overrides the simpleaf index/quant tools with version `0.24.1--hd612981_0`:
      ```groovy
      process {
          withName: 'SIMPLEAF_INDEX|SIMPLEAF_QUANT' {
-             container = 'https://depot.galaxyproject.org/singularity/simpleaf:0.22.0--hd612981_0'
+             container = 'https://depot.galaxyproject.org/singularity/simpleaf:0.24.1--hd612981_0'
          }
      }
      ```
+     The per-run `runs/<dataset>/custom.config` is what carries the child's cpus/memory (via `child_config = "custom.config"`).
    * **Execution**: Natively unsets `NXF_OPTS` and `NXF_CONFIG_FILES`, exports `NXF_SYNTAX_PARSER=v1` (forces parser compatibility with nf-core/scrnaseq 4.1.0 under Nextflow 26+), and starts the child pipeline:
      ```bash
      nextflow run nf-core/scrnaseq \
@@ -64,8 +66,6 @@ params {
          -profile singularity \
          -resume \
          -c custom.config \
-         -params-file nf-params.json \
-         --max_cpus 72 \
-         --max_memory "2 TB"
+         -params-file nf-params.json
      ```
-3. **Space Reclamation**: Deletes the child workflow's temporary `work/` folder inside `runs/${dataset}_simpleaf` upon successful completion to save disk space.
+3. **Space Reclamation**: Deletes the child workflow's temporary `work/` folder inside the preprocessing directory upon successful completion to save disk space.

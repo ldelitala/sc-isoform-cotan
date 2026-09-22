@@ -1,0 +1,6 @@
+name: cotanisoform-pipeline
+channels: [conda-forge, bioconda]
+dependencies:
+  - nextflow=26.04.4
+  - openjdk=21
+  - pigz

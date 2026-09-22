@@ -2,7 +2,7 @@
 
 This document describes the design, process interfaces, and workflow execution flow for the single-cell RNA-seq processing pipeline. 
 
-The pipeline is coordinated by the **Nextflow DSL2** pipeline engine. Execution parameters and limits are declared in [nextflow.config](../nextflow.config), while the flow logic is defined in [main.nf](../main.nf).
+The pipeline is coordinated by the **Nextflow DSL2** pipeline engine. Execution parameters and limits are declared in [nextflow.config](../src/pipeline/nextflow.config), while the flow logic is defined in [main.nf](../src/pipeline/main.nf).
 
 ---
 
@@ -40,8 +40,8 @@ Download sequence data and format/extract them to standard compressed fastq pair
   * `srr_id`: SRA run ID to fetch.
   * `dataset`: Target dataset name.
 * **Directives**:
-  * `maxForks`: 6 (concurrency limit on shared resources).
-  * `cpus`: 12 (allocated for pigz and fasterq-dump threads).
+  * `maxForks`: 4 (concurrency limit on shared resources).
+  * `cpus`: 2 (the `process` default — `DOWNLOAD_BAM`/`DOWNLOAD_FASTQ` carry no `cpus` override).
   * `scratch`: `'/dev/shm'` (stages intermediate files completely in RAM).
   * `storeDir`: Automatically caches completed fastq files.
 * **Outputs**: A tuple containing `srr_id` and the two paths to the generated FASTQ files (`_1.fastq.gz`, `_2.fastq.gz`).
@@ -50,8 +50,8 @@ Download sequence data and format/extract them to standard compressed fastq pair
 Instead of manual setups, reference builds and config files are generated natively:
 * **Index Compilation (`BUILD_INDEX`)**: Automatically downloads genome sources from Ensembl and compiles indices using the Simpleaf Singularity container if they do not exist.
 * **Transcript Identity Customizer (`applyCheatIndex`)**: Natively modifies `t2g_3col.tsv` to establish identity mapping and deletes gene symbols files.
-* **Samplesheet (`input.csv`)**: Generated using the Nextflow `.collectFile()` operator. Gathers all FASTQ paths and builds a CSV file stored in `runs/${dataset}/preprocessing/`.
-* **Parameters (`nf-params.json`)**: Constructed via the `createParamsFile()` helper function which creates a JSON config file mapping Piscem index and parameter configurations.
+* **Samplesheet (`input.csv`)**: Generated using the Nextflow `.collectFile()` operator. Gathers all FASTQ paths and builds a CSV file stored in the preprocessing run directory (`params.preprocessing_dir`).
+* **Parameters (`nf-params.json`)**: Constructed via the `writeParamsJson()` helper function which creates a JSON config file mapping Piscem index and parameter configurations.
 
 ### D. Process: `ALIGN_SIMPLEAF`
 Wraps the execution of the `nf-core/scrnaseq` pipeline using the `nf-cascade` pattern via a native `exec:` block.
@@ -75,5 +75,5 @@ Executes R quality control cell-filtering using parameters passed from the confi
   * `dataset`: Target dataset name.
   * `raw_matrix_rds`: Path to the raw Seurat matrix RDS file.
 * **Execution**:
-  * Runs [filter_matrix.R](../bin/filter_matrix.R) using parameters.
+  * Runs [filter_matrix.R](../src/pipeline/bin/filter_matrix.R) using parameters.
 * **Outputs**: Filtered Seurat/SingleCellExperiment RDS matrix file written to the `filtered/` output folder.

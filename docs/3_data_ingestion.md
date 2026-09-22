@@ -1,6 +1,6 @@
 # 3. Data Ingestion & Storage Policy
 
-This document describes the process of acquiring raw single-cell sequencing datasets from the NCBI Sequence Read Archive (SRA), the target datasets for the thesis, and the storage policy for the shared server.
+This document describes the process of acquiring raw single-cell sequencing datasets from the NCBI Sequence Read Archive (SRA), the datasets the thesis reports on, and the storage policy for the shared server. Dataset identifiers, accessions and assemblies are listed in [`data_availability.md`](data_availability.md).
 
 ---
 
@@ -34,9 +34,8 @@ Because this analysis is conducted on a **shared university server** with other 
 * **Zipped FASTQs Size**: ~8 GB per sample.
 * **Total Storage (Both Formats)**: ~26 GB per sample.
 
-### Storage Projections (500 Samples across 10 Datasets)
-* **FASTQs only (Zipped)**: **~4.0 TB** (Safe and polite storage usage).
-* **BAMs + FASTQs**: **~13.0 TB** (Risky; will fill the 14TB disk and cause system warnings).
+### Storage Projections
+Per sample, budget roughly ~26 GB if both formats are staged (~18 GB BAM, ~8 GB zipped FASTQ). The exact footprint on athena — where `/data` is an 18 TB array — is measured in [`athena_layout.md`](athena_layout.md).
 
 ### Policy Protocol
 To minimize storage footprint and avoid disk I/O bottlenecks:
@@ -46,17 +45,17 @@ To minimize storage footprint and avoid disk I/O bottlenecks:
 
 ---
 
-## 3. Target Datasets Checklist
+## 3. Datasets Ingested
 
-Based on the [COTAN Datasets Analysis Index](https://seriph78.github.io/COTAN_Datasets_analysis/), the following single-cell datasets are targeted to evaluate isoform-aware expression mapping:
+Two datasets produced the reported results; both are fetched through the same
+`DOWNLOAD_FASTQ`/`DOWNLOAD_BAM` path. Accessions, assemblies and workspace paths
+are in [`data_availability.md`](data_availability.md):
 
-1. **Mouse Brain (La Manno 2021)**:
-   * **Tissue**: ForebrainDorsal (E13.5)
-   * **SRR IDs**: `SRR11947578` to `SRR11947627`
-2. **Mouse Cortex (Yuzwa 2017)**:
-   * **Ages**: E13.5 and E17.5
-   * **SRR IDs**: `GSM2861511`, `GSM2861514` (SRA counterparts)
-3. **Mouse Cortex (Loo 2019)**:
-   * **Age**: E14.5
-4. **Arrigoni 2023 / Morabito 2021**:
-   * Comparative controls for pipeline testing.
+1. **Arrigoni 2023** (GEO `GSE243665`) — human lung-cancer cell lines + PBMCs,
+   GRCh38, transcript level. SRA runs `SRR26127904`–`SRR26127911`.
+2. **Ding cortex_2** (GEO `GSE132044`) — mouse cortex, GRCm39, gene and
+transcript levels. SRA runs `SRR9170683`…`SRR9170886` (8).
+
+Samplesheets live on athena at `runs/<dataset>/samplesheet.csv`. The other
+datasets once considered for evaluation (La Manno 2021, Yuzwa 2017, Loo 2019)
+were not used.

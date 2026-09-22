@@ -1,9 +1,0 @@
-Package: cotan.deli.dtu
-Title: Sub-package cotan.deli.dtu
-Version: 0.0.0.9000
-Description: Part of the split cotan.deli library.
-License: GPL-3
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 8.0.0
-Imports: project.base, project.logger, deli.cotan.core, cotan.deli.vis, deli.seurat

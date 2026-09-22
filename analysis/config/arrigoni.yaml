@@ -1,0 +1,104 @@
+# analysis/config/arrigoni.yaml
+#
+# GSE243665 — eight human lung-cancer cell lines plus PBMCs, transcript level.
+# Every value below was transcribed from
+# data/project_files/arrigoni/Rscripts/transcript/*.R (July 2026 runs); the source
+# script is named in a comment wherever the value is not self-evident.
+#
+# root: is the only machine-specific value in this file — override it with
+# --root DIR or COTANISO_ROOT without editing the config.
+
+root: /data/lorenzo_delitala
+dataset: arrigoni
+level: transcript
+
+meta:
+  geo_id: GSE243665
+  seq_method: 10xv1
+  condition: Transcript_Arrigoni
+
+logging_level: 3
+
+# Steps to run, in order, for this dataset (see analysis/run_all.R).
+run: ["00", "01", "02", "03", "04", "05", "07"]
+
+paths:
+  workdir: data/project_files/arrigoni
+  logs: data/project_files/arrigoni/logs
+  objects: data/project_files/arrigoni/objects
+  plots: data/project_files/arrigoni/plots
+
+  # genome index of the aligner run (used to rebuild t2gene_name.tsv)
+  t2g: data/genomes/GRCh38/gene_index/index/t2g_3col.tsv
+  gene_id_to_name: data/genomes/GRCh38/gene_index/index/gene_id_to_name.tsv
+  t2gene_name: data/project_files/arrigoni/t2gene_name.tsv
+
+  input_seurat: data/project_files/arrigoni/raw_matrix.seurat.rds
+
+  # 8 GEO barcode files; they are also the cell-type annotation of
+  # "Known_Cell_Types", and are combined into part_qc_tsv before use.
+  part_qc_tsv: data/project_files/arrigoni/GSE243665_combined_QC_barcodes.tsv
+  cell_type_files:
+    A549: data/geo_metadata/arrigoni/GSE243665_A549_barcodes.tsv.gz
+    CCL-185-IG: data/geo_metadata/arrigoni/GSE243665_CCL-185-IG_barcodes.tsv.gz
+    CRL5868: data/geo_metadata/arrigoni/GSE243665_CRL5868_barcodes.tsv.gz
+    DV90: data/geo_metadata/arrigoni/GSE243665_DV90_barcodes.tsv.gz
+    HCC78: data/geo_metadata/arrigoni/GSE243665_HCC78_barcodes.tsv.gz
+    HTB178: data/geo_metadata/arrigoni/GSE243665_HTB178_barcodes.tsv.gz
+    PBMCs: data/geo_metadata/arrigoni/GSE243665_PBMCs_barcodes.tsv.gz
+    PC9: data/geo_metadata/arrigoni/GSE243665_PC9_barcodes.tsv.gz
+
+# File names inside paths.objects.
+# NOTE: step 03 wrote calculated.transcript.cotan.rds on 2026-07-28, but the
+# published DTU table was extracted on 2026-07-27 from calculated.cotan.rds
+# (verified byte-identical by scripts/verify_dtu_parity.R). `calculated` therefore
+# names the object the released analysis actually read, not the later re-run.
+objects:
+  ready_seurat: ready_to_coex.seurat.rds
+  initialized: initialized.transcript.cotan.rds
+  calculated: calculated.cotan.rds
+  clustered: clustered.transcript.rds
+
+steps:
+  prepare_seurat:
+    # NULL keeps the library default "^ENST" (human transcripts)
+    spliced_prefix: null
+
+  init_cotan:
+    cluster_name: Known_Cell_Types
+    drop_fully_expressed: true
+
+  calc:
+    cores: 40
+    chunk_size: 512
+    gdi_chunk_size: 1024
+
+  gdi:
+    # the released arrigoni script hardcoded this COTAN plot condition
+    condition: Cortex2_transcripts
+    threshold: 1.5
+    file_name: GDI_transcript_plot_markers.png
+    markers:
+      Housekeeping: [B2M, RPL13A]
+      PBMCs: [PTPRC, CD3D, CD79A, CD14]
+      Epithelial_Lung: [EPCAM, KRT8, NKX2-1]
+      Tumor_Lines: [EGFR, KRAS, ALK, VIM, MET]
+
+  clustering:
+    cl_name: local_transcript_cluster
+    # guided clustering: the known cell types seed the optimisation
+    initial_clusters: Known_Cell_Types
+    cores: 1
+
+  dtu:
+    input_object: calculated
+    recompute_dea: auto
+    p_value_threshold: 0.05
+    # The released arrigoni run used 0.2 (not the 0.5 of an abandoned scratch
+    # variant that never produced a published table). Conflict filtering is the
+    # hard-coded "COEX <= 0" inside extract_dtu_candidates().
+    min_dea_contrast: 0.2
+    gene_name_col: gene_name
+    outputs:
+      - clusterization: Known_Cell_Types
+        file_name: dtu_candidates.csv

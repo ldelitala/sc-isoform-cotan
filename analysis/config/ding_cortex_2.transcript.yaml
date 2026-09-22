@@ -1,0 +1,107 @@
+# analysis/config/ding_cortex_2.transcript.yaml
+#
+# GSE132044 — mouse cortex, "Cortex2 10x-Chromium-v2" cells, transcript level.
+# Values transcribed from
+# data/project_files/ding/cortex_2/Rscripts/transcript/*.R and confront_dtu.R.
+
+root: /data/lorenzo_delitala
+dataset: ding_cortex_2
+level: transcript
+
+meta:
+  geo_id: GSE132044
+  seq_method: 10XV2
+  condition: Ding_Cortex_2_Transcript
+
+logging_level: 3
+
+run: ["00", "01", "02", "03", "04", "05", "06", "07", "08"]
+
+paths:
+  workdir: data/project_files/ding/cortex_2
+  logs: data/project_files/ding/cortex_2/logs
+  objects: data/project_files/ding/cortex_2/objects
+  plots: data/project_files/ding/cortex_2/plots
+
+  t2g: data/genomes/GRCm39/gene_index/index/t2g_3col.tsv
+  gene_id_to_name: data/genomes/GRCm39/gene_index/index/gene_id_to_name.tsv
+  # the released transcript run kept its map inside objects/
+  t2gene_name: data/project_files/ding/cortex_2/objects/t2gene_name.tsv
+
+  input_seurat: data/project_files/ding/cortex_2/raw_matrix.seurat.rds
+
+  # the cortex_2 cells were already QC-filtered upstream
+  valid_cells_tsv: data/geo_metadata/ding/cortex_2/clean_Cortex2_QC_barcodes.tsv.gz
+
+objects:
+  ready_seurat: ready_to_cotan.transcript.seurat.rds
+  initialized: initialized.transcript.cotan.rds
+  calculated: calculated.transcript.cotan.rds
+  clustered: clustered.transcript.rds
+  # the gene-level object (built by the gene config) whose cluster labels are
+  # transferred onto the transcript object
+  clustered_gene: clustered.gene.rds
+  # produced by step 06: the transcript object carrying the gene-level labels
+  with_gene_labels: clustered.transcript.with_gene_labels.rds
+
+steps:
+  prepare_seurat:
+    # mouse Ensembl transcripts (the library default targets human ENST ids)
+    spliced_prefix: "^ENSMUST"
+
+  init_cotan:
+    # no cell types for this dataset: valid cells come from valid_cells_tsv
+    drop_fully_expressed: true
+
+  calc:
+    cores: 80
+    chunk_size: 512
+    gdi_chunk_size: 1024
+
+  gdi:
+    condition: Cortex2_transcripts
+    threshold: 1.5
+    file_name: GDI_transcript_plot_markers.png
+    markers:
+      NPGs: [Nes, Vim, Sox2, Sox1, Notch1, Hes1, Hes5, Pax6]
+      PNGs: [Map2, Tubb3, Neurod1, Nefm, Nefl, Dcx, Tbr1]
+      HK: [Calm1, Cox6b1, Ppia, Rpl18, Cox7c, Erh, H3f3a, Taf1, Taf2,
+           Gapdh, Actb, Golph3, Zfr, Sub1, Tars, Amacr]
+
+  clustering:
+    # unguided clustering of the transcript object
+    cl_name: local_transcript_cluster
+    initial_clusters: null
+    cores: 40
+
+  transfer_cluster:
+    # gene-level labels (from the gene config's clustering) are copied onto the
+    # transcript object so that both clusterizations can be compared
+    source_object: clustered_gene
+    target_object: clustered
+    source_cluster: local_gene_cluster
+    file_name: clustered.transcript.with_gene_labels.rds
+
+  dtu:
+    input_object: with_gene_labels
+    recompute_dea: auto
+    p_value_threshold: 0.05
+    min_dea_contrast: 0.05
+    gene_name_col: gene_name
+    # The released clusterization names are the COTAN defaults: "merged" holds the
+    # DEA of the clustering itself, "local_gene_cluster" the transferred labels.
+    outputs:
+      - clusterization: merged
+        file_name: dtu_candidates.transcript_cluster.csv
+      - clusterization: local_gene_cluster
+        file_name: dtu_candidates.gene_cluster.csv
+
+  compare_dtu:
+    # transcript-level candidates vs gene-cluster-level candidates
+    files:
+      - dtu_candidates.transcript_cluster.csv
+      - dtu_candidates.gene_cluster.csv
+    outputs:
+      shared: dtu_shared.csv
+      exclusive1: dtu_exclusive_file1.csv
+      exclusive2: dtu_exclusive_file2.csv
