@@ -27,8 +27,7 @@ calculate_gdi <- function(
   file_name = "cotan_gdi.rds"
 ) {
     log_header("calculate gdi")
-    log_cotan_execution("calculateGDI()")
-    log_parameters(statType = stat_type, rowsFraction = rows_fraction, cores = cores, chunkSize = chunk_size)
+    log_cotan_execution("calculateGDI()", statType = stat_type, rowsFraction = rows_fraction, cores = cores, chunkSize = chunk_size)
 
     cotan_obj <- storeGDI(
         cotan_obj,
@@ -41,9 +40,10 @@ calculate_gdi <- function(
         )
     )
 
-    log_cotan_execution("calculateGDI()", is_complete = TRUE)
+    log_cotan_execution(is_complete = TRUE)
 
     if (!is.null(output_dir)) {
+        log_info("Saving COTAN object...")
         save_object(cotan_obj, output_dir, file_name)
     }
 
@@ -95,8 +95,9 @@ calculate_gdi <- function(
 #' @import project.logger
 #' @import project.utils
 #' @export
-perform_uniform_clustering <- function(
+perform_clustering <- function(
   cotan_obj,
+  cl_name = "merged",
   gdi_threshold = NaN,
   cores = 1L,
   optimize_for_speed = TRUE,
@@ -134,8 +135,7 @@ perform_uniform_clustering <- function(
 
 
     log_info("Starting Step 1/2: Splitting clusters...")
-    log_cotan_execution("cellsUniformClustering()")
-    log_parameters(
+    log_cotan_execution("cellsUniformClustering()",
         GDIThreshold = gdi_threshold,
         cores = cores,
         optimizeForSpeed = optimize_for_speed,
@@ -153,10 +153,11 @@ perform_uniform_clustering <- function(
         numGenes = num_genes,
         numReducedComp = num_reduced_comp,
         hclustMethod = hclust_method,
-        initialClusters = initial_clusters,
         minimumUTClusterSize = minimum_ut_cluster_size,
         initialIteration = initial_iteration
-    )
+   )
+    old_log_level <- getOption("COTAN.LogLevel", default = 1L)
+    setLoggingLevel(0L)
 
     split_list <- COTAN::cellsUniformClustering(
         objCOTAN = cotan_obj,
@@ -181,6 +182,8 @@ perform_uniform_clustering <- function(
         saveObj = save_obj,
         outDir = out_dir_val
     )
+    setLoggingLevel(old_log_level)
+
     log_cotan_execution("cellsUniformClustering()", is_complete = TRUE)
 
     log_info("Adding 'split' clusterization to the COTAN object...")
@@ -195,15 +198,14 @@ perform_uniform_clustering <- function(
     num_split_clusters <- length(unique(split_list[["clusters"]]))
 
     log_info("Starting Step 2/2: Merging clusters...")
-    log_cotan_execution("mergeUniformCellsClusters()")
-    log_parameters(
+    log_cotan_execution("mergeUniformCellsClusters()",
         GDIThreshold = gdi_threshold,
         cores = cores,
         optimizeForSpeed = optimize_for_speed,
         deviceStr = device_str,
         saveObj = save_obj,
         outDir = out_dir_val,
-        clusters = split_list[["clusters"]],
+        clusters = length(unique(split_list[["clusters"]])), # we just print num
         checkers = checkers,
         batchSize = batch_size,
         useDEA = use_dea,
@@ -212,7 +214,8 @@ perform_uniform_clustering <- function(
         allCheckResults = all_check_results,
         initialIteration = initial_iteration
     )
-
+    old_log_level <- getOption("COTAN.LogLevel", default = 1L)
+    setLoggingLevel(0L)
     merged_list <- COTAN::mergeUniformCellsClusters(
         objCOTAN = cotan_obj,
         clusters = clusters,
@@ -230,12 +233,13 @@ perform_uniform_clustering <- function(
         saveObj = save_obj,
         outDir = out_dir_val
     )
+    setLoggingLevel(old_log_level)
     log_cotan_execution("mergeUniformCellsClusters()", is_complete = TRUE)
 
     log_info("Adding 'merged' clusterization to the COTAN object...")
     cotan_obj <- COTAN::addClusterization(
         objCOTAN = cotan_obj,
-        clName = "merged",
+        clName = cl_name,
         clusters = merged_list[["clusters"]],
         coexDF = merged_list[["coex"]],
         override = TRUE

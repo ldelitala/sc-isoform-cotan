@@ -3,9 +3,9 @@
 #' @param cotan_object A `COTAN` object with calculated COEX, a valid clusterization, stored DEA, and stored p-values.
 #' @param clusterization_name Character. The name of the clusterization to use for DEA. Default is `"Known_Cell_Types"`.
 #' @param p_value_threshold Numeric. Maximum p-value to consider a COEX score significant. Default is `0.05`.
-#' @param coex_threshold Numeric. Maximum COEX score (must be negative) to define mutual exclusivity. Default is `-0.1`.
 #' @param min_dea_contrast Numeric. Minimum absolute difference in enrichment scores to define a valid switch.
 #'                         Default is `1.0`.
+#' @param gene_name_col Character. Optional column name in metaGenes containing the gene name. Default is `NULL`.
 #' @param output_directory Character. Directory to save the output CSV. Default is `NULL`.
 #' @param file_name Character. Name of the output file. Default is `"dtu_candidates.csv"`.
 #'
@@ -20,8 +20,8 @@ extract_dtu_candidates <- function(
   cotan_object,
   clusterization_name = "Known_Cell_Types",
   p_value_threshold = 0.05,
-  coex_threshold = -0.1,
   min_dea_contrast = 1.0,
+  gene_name_col = NULL,
   output_directory = NULL,
   file_name = "dtu_candidates.csv"
 ) {
@@ -29,7 +29,6 @@ extract_dtu_candidates <- function(
 
     log_info("Retrieving stored inputs...")
     
-    # Try exact name, then with CL_ prefix
     all_dea <- COTAN::getClustersCoex(cotan_object)
     diff_expression_matrix <- NULL
     if (clusterization_name %in% names(all_dea)) {
@@ -43,7 +42,6 @@ extract_dtu_candidates <- function(
     
     coex_matrix <- COTAN::getGenesCoex(cotan_object)
     
-    # Retrieve p-values from package cache, object attribute, or metaDataset attribute
     p_value_matrix <- NULL
     tryCatch({
         key <- project.cotan:::.get_object_key(cotan_object)
@@ -70,6 +68,11 @@ extract_dtu_candidates <- function(
         log_error("Column 'gene_id' not found in metadata. Run add_gene_info_from_t2g first.", stop_exec = TRUE)
     }
 
+    if (!is.null(gene_name_col) && !gene_name_col %in% colnames(feature_metadata)) {
+        log_warn(sprintf("Column '%s' not found in metadata. Gene names will be skipped.", gene_name_col))
+        gene_name_col <- NULL
+    }
+
     log_info("Identifying genes with multiple transcripts...")
     multi_genes <- Filter(function(x) length(x) >= 2, split(rownames(feature_metadata), feature_metadata$gene_id))
 
@@ -93,13 +96,12 @@ extract_dtu_candidates <- function(
             next
         }
 
-        # Convert subsets to base R matrices to avoid Matrix package conflicts with which()
         sub_coex <- as.matrix(coex_matrix[transcripts, transcripts, drop = FALSE])
         sub_pval <- as.matrix(p_value_matrix[transcripts, transcripts, drop = FALSE])
 
         pairs <- which(
             upper.tri(sub_coex) &
-            sub_coex <= coex_threshold &
+            sub_coex <= 0 &
             sub_pval <= p_value_threshold,
             arr.ind = TRUE
         )
@@ -130,8 +132,8 @@ extract_dtu_candidates <- function(
                 next
             }
 
-            dtu_list[[length(dtu_list) + 1]] <- data.frame(
-                Gene = gene,
+            df_row <- data.frame(
+                Gene_ID = gene,
                 Transcript_A = t_A, Transcript_B = t_B,
                 COEX_Score = coex_val, 
                 P_Value = pval_val,
@@ -139,6 +141,13 @@ extract_dtu_candidates <- function(
                 Max_Contrast_A = max(contrast[cl_A]), Max_Contrast_B = abs(min(contrast[cl_B])),
                 stringsAsFactors = FALSE
             )
+
+            if (!is.null(gene_name_col)) {
+                df_row$Gene_Name <- feature_metadata[t_A, gene_name_col]
+                df_row <- df_row[, c("Gene_ID", "Gene_Name", "Transcript_A", "Transcript_B", "COEX_Score", "P_Value", "Enriched_Cell_Types_A", "Enriched_Cell_Types_B", "Max_Contrast_A", "Max_Contrast_B")]
+            }
+
+            dtu_list[[length(dtu_list) + 1]] <- df_row
         }
     }
 
@@ -167,7 +176,6 @@ extract_dtu_candidates <- function(
         log_warn(sprintf("Skipped %d genes with missing transcripts in COEX matrix.", missing_count))
     }
     
-    # Detailed math breakdown log
     log_stat(sprintf("Genes with multiple transcripts: %d", length(multi_genes)))
     if (zero_pairs_count > 0) {
         log_stat(sprintf("Genes with zero significant mutually exclusive pairs: %d", zero_pairs_count))
@@ -181,7 +189,7 @@ extract_dtu_candidates <- function(
         log_stat(sprintf("Filtered out %d transcript pairs lacking reciprocal cluster switch.", weak_count))
     }
     if (nrow(final_df) > 0) {
-        log_stat(sprintf("Identified %d DTU events across %d unique genes.", nrow(final_df), length(unique(final_df$Gene))))
+        log_stat(sprintf("Identified %d DTU events across %d unique genes.", nrow(final_df), length(unique(final_df$Gene_ID))))
     }
 
     if (length(all_evaluated_coex) > 0) {

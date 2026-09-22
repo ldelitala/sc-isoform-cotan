@@ -11,12 +11,13 @@
 #' @param genes_cutoff Numeric. Fraction of genes a cell must express to be kept (Default 0.002).
 #' @param cells_threshold Numeric. Genes expressed in > fraction of cells marked as fully-expressed (Default 0.99).
 #' @param genes_threshold Numeric. Cells expressing > fraction of genes marked as fully-expressing (Default 0.99).
+#' @param drop_fully_expressed Logical. Whether to physically drop fully-expressed genes/transcripts from the object. Default is `FALSE`.
 #' @param output_dir Character. Optional directory to save the output object as an RDS file. Default is `NULL`.
 #' @param file_name Character. Optional file name for saving the output object. Default is `"cotan_cleaned.rds"`.
 #'
 #' @return A cleaned `COTAN` object with updated `nu` estimators.
 #'
-#' @importFrom COTAN clean getNumCells getNumGenes
+#' @importFrom COTAN clean getNumCells getNumGenes getFullyExpressedGenes dropGenesCells
 #' @import project.logger
 #' @import project.utils
 #' @export
@@ -26,6 +27,7 @@ clean_cotan_data <- function(
   genes_cutoff = 0.002,
   cells_threshold = 0.99,
   genes_threshold = 0.99,
+  drop_fully_expressed = FALSE,
   output_dir = NULL,
   file_name = "cotan_cleaned.rds"
 ) {
@@ -47,6 +49,19 @@ clean_cotan_data <- function(
       genesThreshold = genes_threshold
     )
     log_cotan_execution("clean()", is_complete = TRUE)
+
+    # If requested, physically remove fully-expressed genes/transcripts
+    if (drop_fully_expressed) {
+      log_info("Identifying and dropping fully-expressed genes/transcripts...")
+      fully_expressed <- getFullyExpressedGenes(cotan_obj)
+      
+      if (length(fully_expressed) > 0) {
+        log_info(sprintf("Found %d fully-expressed genes/transcripts. Dropping them...", length(fully_expressed)))
+        cotan_obj <- dropGenesCells(cotan_obj, genes = fully_expressed)
+      } else {
+        log_info("No fully-expressed genes found to drop.")
+      }
+    }
 
     num_cells_after <- getNumCells(cotan_obj)
     num_genes_after <- getNumGenes(cotan_obj)

@@ -30,16 +30,16 @@
 #' Configure the COTAN workflow with Log Rotation
 #'
 #' @param output_dir Character. Directory where logs and outputs will be saved. Default is ".".
-#' @param log_file_name Character. Name of the log file. Default is "cotan_pipeline.log".
+#' @param file_name Character. Name of the log file. Default is "cotan_pipeline.log".
 #' @param parallel Boolean. Enable parallel processing. Default is TRUE.
-#' @param logging_level Integer. Logging verbosity level (0-3). Default is 2L.
+#' @param logging_level Integer. Logging verbosity level (0-/data/lorenzo_delitala/src/libs/project.logger3). Default is 2L.
 #'
 #' @return The normalized path to the output directory.
 #'
 #' @export
 config_workflow <- function(
   output_dir = ".",
-  log_file_name = "cotan_pipeline.log",
+  file_name = "cotan_pipeline.log",
   parallel = TRUE,
   logging_level = 2L
 ) {
@@ -60,7 +60,7 @@ config_workflow <- function(
   data_dir <- normalizePath(output_dir, mustWork = FALSE)
   dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
 
-  log_path <- .generate_unique_log_path(data_dir, log_file_name)
+  log_path <- .generate_unique_log_path(data_dir, file_name)
 
   log_cotan_execution("setLoggingFile()", logFileName = log_path)
   COTAN::setLoggingFile(log_path)

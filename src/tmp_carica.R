@@ -47,8 +47,8 @@ cotan_obj <- add_origin_samples(cotan_obj, b2sample_tsv = tsv_path)
 base_dir <- "runs/arrigoni2023/geo_metadata/"
 
 tsv_files <- c(
-  "A549"       = paste0(base_dir, "GSE243665_A549_barcodes.tsv"),
-  "CCL-185-IG" = paste0(base_dir, "GSE243665_CCL-185-IG_barcodes.tsv"),
+  "A549"       = paste0(base_dir, "GSE243665_A549_barcodes.tsv.gz"),
+  "CCL-185-IG" = paste0(base_dir, "GSE243665_CCL-185-IG_barcodes.tsv.gz"),
   "CRL5868"    = paste0(base_dir, "GSE243665_CRL5868_barcodes.tsv.gz"),
   "DV90"       = paste0(base_dir, "GSE243665_DV90_barcodes.tsv.gz"),
   "HCC78"      = paste0(base_dir, "GSE243665_HCC78_barcodes.tsv.gz"),
@@ -64,11 +64,11 @@ cotan_obj <- flag_valid_cells_from_tsv(cotan_obj, tsv_file = output_file, has_he
 
 cotan_obj <- filter_cotan_by_condition(cotan_obj, "passed_QC", TRUE)
 
+cotan_obj <- clean_cotan_data(cotan_obj, cells_cutoff = 0.001, genes_cutoff = 0.002)
+
 cotan_obj <- add_cell_types_from_tsv(cotan_obj, cluster_name = "Known_Cell_Types", tsv_files = tsv_files)
 
 cotan_obj <- add_gene_info_from_t2g(cotan_obj, t2g_path)
-
-cotan_obj <- clean_cotan_data(cotan_obj, cells_cutoff = 0.001, genes_cutoff = 0.002)
 
 cotan_obj <- prepare_to_coex(cotan_obj, cores = 80L, chunk_size = 512L)
 

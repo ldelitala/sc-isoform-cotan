@@ -9,7 +9,7 @@
 #' @import project.logger
 #' @import project.utils
 #' @export
-filter_cotan_by_condition <- function(cotan_obj, cond_name, cond_value) {
+filter_cotan_by_condition <- function(cotan_obj, cond_name, cond_value, output_dir = NULL, file_name) {
     log_header("filter cotan by condition")
 
     new_cotan_obj <- cotan_obj
@@ -33,6 +33,12 @@ filter_cotan_by_condition <- function(cotan_obj, cond_name, cond_value) {
         COTAN::getNumCells(cotan_obj), COTAN::getNumCells(new_cotan_obj),
         COTAN::getNumGenes(cotan_obj), COTAN::getNumGenes(new_cotan_obj)
     )
+
+    if (!is.null(output_dir)) {
+      log_info("Saving COTAN object...")
+      save_object(cotan_obj, output_dir, file_name)
+    }
+
     log_header(is_complete = TRUE)
 
     return(new_cotan_obj)

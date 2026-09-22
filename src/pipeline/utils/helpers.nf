@@ -33,85 +33,77 @@ def ensureDir(paths, context: String = "directory") {
     return val.split(',').collect { srr -> srr.trim() }.findAll()
 } */
 
-def sendWebhook(webhookUrl, message) {
-    sendWebhook(webhookUrl, message, 'info')
-}
 
 def sendWebhook(webhookUrl, message, status, duration = null) {
     if (!webhookUrl || !webhookUrl.toString().startsWith("http")) {
         return null
     }
-    log.warn(message)
 
-    // 1. Capture Nextflow variables immediately before moving to the background
     def datasetName = launchDir.getName()
     def normalizedStatus = status?.toLowerCase()
     def durText = duration ? duration.toString() : null
 
-    // 2. FIRE AND FORGET (Daemon Thread)
-    // The JVM will automatically kill this thread the millisecond Nextflow finishes its work.
-    // It is physically impossible for this to hold your terminal hostage.
-    Thread.startDaemon {
-        try {
-            def colorBlue = 3447003
-            def colorGreen = 3066993
-            def colorRed = 15158332
-            def colorOrange = 15105570
+    try {
+        def colorBlue = 3447003
+        def colorGreen = 3066993
+        def colorRed = 15158332
+        def colorOrange = 15105570
 
-            def colorCode = colorBlue
+        def colorCode = colorBlue
 
-            if (normalizedStatus == 'success') {
-                colorCode = colorGreen
-            }
-            else if (normalizedStatus == 'failed' || normalizedStatus == 'error') {
-                colorCode = colorRed
-            }
-            else if (normalizedStatus == 'warning') {
-                colorCode = colorOrange
-            }
-
-            def timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            timestamp.setTimeZone(TimeZone.getTimeZone("UTC"))
-
-            def descriptionText = "${message}"
-            if (durText) {
-                descriptionText += "\n⏱*${durText}*"
-            }
-
-            def embed = [title: datasetName, description: descriptionText, color: colorCode, timestamp: timestamp.format(new Date())]
-
-            def payload = groovy.json.JsonOutput.toJson([embeds: [embed]])
-
-            def connection = new URL(webhookUrl).openConnection()
-            connection.setRequestMethod("POST")
-            connection.setDoOutput(true)
-            connection.setRequestProperty("Content-Type", "application/json")
-            connection.setConnectTimeout(5000)
-            connection.setReadTimeout(10000)
-
-            // Send the payload
-            def outStream = connection.getOutputStream()
-            outStream.write(payload.getBytes("UTF-8"))
-            outStream.flush()
-            outStream.close()
-
-            // 3. Clear the socket buffers to prevent memory leaks on HTTP 429 Errors
-            if (connection.getResponseCode() >= 400) {
-                def errStream = connection.getErrorStream()
-                if (errStream != null) {
-                    errStream.text
-                }
-            }
-            else {
-                def inStream = connection.getInputStream()
-                if (inStream != null) {
-                    inStream.text
-                }
-            }
-
-            connection.disconnect()
+        if (normalizedStatus == 'success') {
+            colorCode = colorGreen
         }
-        catch (e) {
+        else if (normalizedStatus == 'failed' || normalizedStatus == 'error') {
+            colorCode = colorRed
         }
+        else if (normalizedStatus == 'warning') {
+            colorCode = colorOrange
+        }
+
+        def timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        timestamp.setTimeZone(TimeZone.getTimeZone("UTC"))
+
+        def descriptionText = "${message}"
+        if (durText) {
+            descriptionText += "\n⏱*${durText}*"
+        }
+
+        def embed = [title: datasetName, description: descriptionText, color: colorCode, timestamp: timestamp.format(new Date())]
+        def payload = groovy.json.JsonOutput.toJson([embeds: [embed]])
+
+        def connection = new URL(webhookUrl).openConnection()
+        connection.setRequestMethod("POST")
+        connection.setDoOutput(true)
+        connection.setRequestProperty("Content-Type", "application/json")
+        connection.setConnectTimeout(5000)
+        connection.setReadTimeout(10000)
+
+        // Send the payload
+        def outStream = connection.getOutputStream()
+        outStream.write(payload.getBytes("UTF-8"))
+        outStream.flush()
+        outStream.close()
+
+        // Clear the socket buffers to prevent memory leaks on HTTP 429 Errors
+        if (connection.getResponseCode() >= 400) {
+            def errStream = connection.getErrorStream()
+            if (errStream != null) {
+                errStream.text
+            }
+        }
+        else {
+            def inStream = connection.getInputStream()
+            if (inStream != null) {
+                inStream.text
+            }
+        }
+
+        connection.disconnect()
+        return true
+    }
+    catch (e) {
+        log.warn("Something wrong with sendWebhook: ${e.message}")
+        return false
     }
 }

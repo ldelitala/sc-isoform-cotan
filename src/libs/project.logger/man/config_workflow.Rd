@@ -6,7 +6,7 @@
 \usage{
 config_workflow(
   output_dir = ".",
-  log_file_name = "cotan_pipeline.log",
+  file_name = "cotan_pipeline.log",
   parallel = TRUE,
   logging_level = 2L
 )
@@ -14,7 +14,7 @@ config_workflow(
 \arguments{
 \item{output_dir}{Character. Directory where logs and outputs will be saved. Default is ".".}
 
-\item{log_file_name}{Character. Name of the log file. Default is "cotan_pipeline.log".}
+\item{file_name}{Character. Name of the log file. Default is "cotan_pipeline.log".}
 
 \item{parallel}{Boolean. Enable parallel processing. Default is TRUE.}
 
