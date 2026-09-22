@@ -1,0 +1,35 @@
+Package: cotanisoform
+Type: Package
+Title: Isoform-Aware COTAN for Differential Transcript Usage
+Version: 0.1.0
+Authors@R: person("Lorenzo", "Delitala", email = "ldelitala@gmail.com",
+                  role = c("aut", "cre"))
+Description: Adapts COTAN co-expression and zero-count statistics from gene level to
+    transcript (isoform) level to detect differential transcript usage in single-cell
+    RNA-seq data. Provides COTAN object construction from Seurat objects, cell, gene and
+    cluster metadata handling, co-expression, p-value and GDI computation, guided
+    clustering, cluster-level differential expression analysis and differential
+    transcript usage candidate extraction, together with structured workflow logging and
+    Seurat clean-up helpers.
+License: GPL-3
+URL: https://github.com/ldelitala/sc-isoform-cotan
+BugReports: https://github.com/ldelitala/sc-isoform-cotan/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
+Imports:
+    COTAN,
+    Seurat,
+    SeuratObject,
+    Matrix,
+    methods,
+    utils,
+    tools,
+    stats,
+    conflicted
+Suggests:
+    testthat (>= 3.0.0),
+    lintr,
+    devtools,
+    roxygen2
+Config/testthat/edition: 3
