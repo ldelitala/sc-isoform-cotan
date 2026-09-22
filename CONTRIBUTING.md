@@ -1,0 +1,86 @@
+# Contributing
+
+This is a bachelor's thesis project. Contributions are mostly fixes and clarifications, but
+the workflow below is what any change should follow.
+
+## Prerequisites
+
+- **athena** (the university server, `/data/lorenzo_delitala`) for anything that computes:
+  88 cores, the conda environments, the datasets and the Nextflow run directories live there.
+  There is **no sudo**, which is why the tooling lives in conda (`envs/README.md`).
+- **Singularity** for the Nextflow half — the aligner and indexer run in containers, not conda.
+- **The Mac** is where the repository is edited and pushed from.
+
+## Setting up the environment (athena)
+
+```bash
+conda env create -f envs/analysis.yml
+conda activate cotanisoform-analysis
+Rscript scripts/install_deps.R     # COTAN, pinned at be93aa8 (v2.13.1)
+R CMD INSTALL cotanisoform         # this repository's R package
+
+conda env create -f envs/pipeline.yml   # Nextflow launcher (nextflow + JDK + pigz)
+```
+
+`COTAN` is deliberately outside the conda file: the commit is the reproducibility-critical
+part. See [`envs/README.md`](envs/README.md) for what was dropped and why.
+
+## Running the analysis layer
+
+The downstream R half is `analysis/`; every step is driven by a YAML config:
+
+```bash
+Rscript analysis/run_all.R --config analysis/config/arrigoni.yaml
+Rscript analysis/run_all.R --config analysis/config/ding_cortex_2.transcript.yaml --from 07 --to 08
+Rscript analysis/run_all.R --config analysis/config/arrigoni.yaml --dry-run   # resolve paths only
+```
+
+`--out-dir /tmp/...` redirects every output and shadows the inputs, so the published
+`dtu_candidates.csv` files are never overwritten. Only step `07_dtu.R` writes the reported
+tables. Do not re-run steps `01`–`06` casually: they are faithful transcriptions of the
+released runs and have not been re-executed (hours of COEX).
+
+## Running the pipeline
+
+Run from the per-dataset directory, so `launchDir` resolves correctly:
+
+```bash
+cd runs/<dataset>          # only exists on athena; runs/ is gitignored
+./run_pipeline.sh
+```
+
+The steps are `download | index | align`; `align` (the default) runs the full chain. See
+`src/pipeline/main.nf` and `src/pipeline/nextflow.config`.
+
+## Style
+
+- R: 2-space indent, 120-column limit, styler `tidyverse_style` (see `.lintr.R`, `.Rprofile`).
+- roxygen2 for documentation. New exported function ⇒ `@export`, regenerated `NAMESPACE`, and
+  a committed `man/*.Rd`.
+- No absolute paths in tracked code. Nothing hardcoded to `/data/lorenzo_delitala` except in
+  documentation examples.
+- Shell/Nextflow: `.editorconfig` wins (4-space indent for `.nf` / `.config`).
+
+## Before committing
+
+```bash
+Rscript -e 'lintr::lint_dir("cotanisoform"); lintr::lint_dir("analysis")'
+Rscript -e 'devtools::test("cotanisoform")'
+Rscript -e 'styler::style_dir("cotanisoform/R")'          # optional, tidyverse style
+
+# after any change to the DTU pipeline or the stored objects
+Rscript scripts/verify_dtu_parity.R                       # must print 3/3, exit 0
+```
+
+`scripts/` currently trips three harmless `commented_code_linter` false positives, which is
+why CI lints `cotanisoform` and `analysis` only.
+
+## Commits and pull requests
+
+- Imperative subject line; prefix with the workstream when it helps (`S1:`, `analysis:`,
+  `envs:`).
+- Keep data out of git: `runs/`, `data/`, `*.rds`, agent files (`AGENTS.md`, `plans/`) are
+  gitignored — never force-add them.
+- Update `CHANGELOG.md` when a change is user-visible.
+- In a pull request, state what was tested; the checklist in
+  `.github/pull_request_template.md` is the minimum.

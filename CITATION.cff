@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated bachelor's thesis."
+title: "sc-Isoform COTAN: isoform-aware COTAN for differential transcript usage in scRNA-seq"
+type: software
+authors:
+  - family-names: Delitala
+    given-names: Lorenzo
+    email: ldelitala@gmail.com
+repository-code: "https://github.com/ldelitala/sc-isoform-cotan"
+license: GPL-3.0-only
+year: 2026
+keywords:
+  - single-cell RNA-seq
+  - differential transcript usage
+  - isoform
+  - co-expression
+  - COTAN
+notes: >-
+  Bachelor's thesis project. Supervisors: Prof. Silvia Galfré and Prof. Corrado
+  Priami, University of Pisa, Department of Computer Science.
+references:
+  - type: thesis
+    title: "Can we recover differential transcript usage (DTU) from scRNA-seq?"
+    authors:
+      - family-names: Delitala
+        given-names: Lorenzo
+    year: 2026
+    institution:
+      name: "University of Pisa, Department of Computer Science"
+    url: "https://github.com/ldelitala/cotan-dtu-thesis"
