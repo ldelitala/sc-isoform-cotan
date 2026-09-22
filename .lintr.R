@@ -15,5 +15,9 @@ linters <- linters_with_defaults(
 )
 
 # `analysis/deprecated/` holds superseded code kept for provenance only (S7). It is
-# unmaintained and deliberately excluded from linting.
-exclusions <- list("deprecated")
+# unmaintained and deliberately excluded from linting. lintr resolves exclusions
+# against the working directory, so give them as paths from the repository root.
+exclusions <- list(
+  normalizePath("analysis/deprecated/06_det_dtu.R", mustWork = FALSE),
+  normalizePath("analysis/deprecated/02_ext_dtu.R", mustWork = FALSE)
+)
