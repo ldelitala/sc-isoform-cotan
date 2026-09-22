@@ -1,0 +1,19 @@
+[2026-07-29 18:21:24] ⇡   ✔ Done.
+[2026-07-29 18:21:24] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-29 18:21:24] ┃   ❖ Setting up parallel processing...
+[2026-07-29 18:21:24] ┃    » Logging level set to: 3
+[2026-07-29 18:21:24] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/arrigoni/logs/create_seurat.gene_1.log
+[2026-07-29 18:21:24] ┗━━
+[2026-07-29 18:21:24] ❖ Loading cells type matrices...
+[2026-07-29 18:21:24]  » Processing: A549
+[2026-07-29 18:21:40]  » Processing: CCL-185-IG
+[2026-07-29 18:21:48]  » Processing: CRL5868
+[2026-07-29 18:21:51]  » Processing: DV90
+[2026-07-29 18:21:54]  » Processing: HCC78
+[2026-07-29 18:21:59]  » Processing: HTB178
+[2026-07-29 18:22:02]  » Processing: PBMCs
+[2026-07-29 18:22:02]  » Processing: PC9
+[2026-07-29 18:22:09] ❖ All matrices where loaded.
+[2026-07-29 18:22:09] ❖ Merging...
+[2026-07-29 18:22:13] ❖ Cleaning RAM...
+[2026-07-29 18:22:14] ❖ Saving Seurat object...

@@ -1,0 +1,71 @@
+[2026-07-23 00:31:55] ⇡   ✔ Done.
+[2026-07-23 00:31:55] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-23 00:31:55] ┃   ❖ Setting up parallel processing...
+[2026-07-23 00:31:55] ┃    » Logging level set to: 3
+[2026-07-23 00:31:55] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/arrigoni/logs/init_cotan_2.log
+[2026-07-23 00:31:55] ┗━━
+[2026-07-23 00:31:55] ┏━━ INITIALIZE COTAN FROM SEURAT
+[2026-07-23 00:31:58] ┃   ❖ Checking for non-integer values in counts...
+[2026-07-23 00:32:06] ┃   ❖ Creating COTAN object...
+[2026-07-23 00:32:06] ⇣   ▶ COTAN()
+[2026-07-23 00:32:09] ⇡   ✔ Done.
+[2026-07-23 00:32:09] ┃   ❖ Initializing base metadata...
+[2026-07-23 00:32:09] ⇣   ▶ initializeMetaDataset()
+[2026-07-23 00:32:09]       ◦ GEO: GSE243665 ◦ sequencingMethod: 10xv1 ◦ sampleCondition: Arrigoni2023
+[2026-07-23 00:32:09] Initializing `COTAN` meta-data
+[2026-07-23 00:32:09] ⇡   ✔ Done.
+[2026-07-23 00:32:09] ┃   ❖ Matrix snapshot:
+[2026-07-23 00:32:09] ┃     ⎡     Cells           Features    ⎤
+[2026-07-23 00:32:09] ┃     ⎣    488,342          232,024     ⎦
+[2026-07-23 00:32:09] ┗━━
+[2026-07-23 00:32:09] ┏━━ FLAG VALID CELLS FROM TSV
+[2026-07-23 00:32:09] ┃   ❖ Getting flagging vector...
+[2026-07-23 00:32:09] ┃   ┏━━ GET UNIFORM VECTOR
+[2026-07-23 00:32:09] ┃   ┃   ❖ Retrieving the data...
+[2026-07-23 00:32:10] ┃   ┃   ❖ Creating the vector...
+[2026-07-23 00:32:10] ┃   ┃    » TSV file path: /data/lorenzo_delitala/data/project_files/arrigoni/GSE243665_combined_QC_barcodes.tsv
+[2026-07-23 00:32:10] ┃   ┗━━
+[2026-07-23 00:32:10] ┃   ❖ Updating cell condition...
+[2026-07-23 00:32:10] ┃   ┏━━ UPDATE CELL CONDITION
+[2026-07-23 00:32:10] ┃   ┃   ❖ Creating new condition...
+[2026-07-23 00:32:10] ┃   ┃   ❖ Stripping suffixes...
+[2026-07-23 00:32:10] ┃   ┃   ❖ Finding matching barcodes...
+[2026-07-23 00:32:10] ┃   ┃   ❖ Adding Condition...
+[2026-07-23 00:32:10] ┃   ⇣   ▶ addCondition()
+[2026-07-23 00:32:10] ┃         ◦ condName: passed_QC
+[2026-07-23 00:32:10] ┃   ⇡   ✔ Done.
+[2026-07-23 00:32:10] ┃   ┃    » Cells updated:   29,606
+[2026-07-23 00:32:10] ┃   ┗━━
+[2026-07-23 00:32:10] ┗━━
+[2026-07-23 00:32:10] ┏━━ FILTER COTAN BY CONDITION
+[2026-07-23 00:32:10] ┃   ❖ Looking for cells that do not respect the condition...
+[2026-07-23 00:32:10] ┃   ❖ Dropping cells...
+[2026-07-23 00:32:10] ⇣   ▶ dropGenesCells()
+[2026-07-23 00:32:10] Asked to drop 0 genes and 458736 cells
+[2026-07-23 00:32:13] ⇡   ✔ Done.
+[2026-07-23 00:32:13] ┃    » Condition name: passed_QC
+[2026-07-23 00:32:13] ┃    » Condition value: TRUE
+[2026-07-23 00:32:13] ┃   ❖ Matrix variation:
+[2026-07-23 00:32:13] ┃     ⎡     Cells           Features    ⎤
+[2026-07-23 00:32:13] ┃     ⎢    488,342          232,024     ⎥
+[2026-07-23 00:32:13] ┃     ⎢  ▼ 458,736 ▼           0        ⎥
+[2026-07-23 00:32:13] ┃     ⎣     29,606          232,024     ⎦
+[2026-07-23 00:32:13] ┗━━
+[2026-07-23 00:32:13] ┏━━ CLEAN COTAN DATA
+[2026-07-23 00:32:13] ⇣   ▶ clean()
+[2026-07-23 00:32:13]       ◦ cellsCutoff: 0.003 ◦ genesCutoff: 0.002 ◦ cellsThreshold: 0.99 ◦ genesThreshold: 0.99
+[2026-07-23 00:32:16] Asked to drop 208349 genes and 0 cells
+[2026-07-23 00:32:18] Asked to drop 0 genes and 152 cells
+[2026-07-23 00:32:20] Genes/cells selection done: dropped [208349] genes and [152] cells
+[2026-07-23 00:32:20] Working on [23675] genes and [29454] cells
+[2026-07-23 00:32:22] ⇡   ✔ Done.
+[2026-07-23 00:32:22] ┃   ❖ Saving COTAN object...
+[2026-07-23 00:32:22] ┃   ┏━━ SAVE OBJECT
+[2026-07-23 00:32:22] ┃   ┃    » Saving object at: /data/lorenzo_delitala/data/project_files/arrigoni/initialized.cotan.rds
+[2026-07-23 00:32:44] ┃   ┗━━
+[2026-07-23 00:32:44] ┃   ❖ Matrix variation:
+[2026-07-23 00:32:44] ┃     ⎡     Cells           Features    ⎤
+[2026-07-23 00:32:44] ┃     ⎢     29,606          232,024     ⎥
+[2026-07-23 00:32:44] ┃     ⎢    ▼ 152 ▼        ▼ 208,349 ▼   ⎥
+[2026-07-23 00:32:44] ┃     ⎣     29,454           23,675     ⎦
+[2026-07-23 00:32:44] ┗━━

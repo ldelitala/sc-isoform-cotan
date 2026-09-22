@@ -1,0 +1,20 @@
+[2026-07-28 13:13:09] ⇡   ✔ Done.
+[2026-07-28 13:13:09] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-28 13:13:09] ┃   ❖ Setting up parallel processing...
+[2026-07-28 13:13:09] ┃    » Logging level set to: 3
+[2026-07-28 13:13:09] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/arrigoni/logs/plot_gdi.transcript_3.log
+[2026-07-28 13:13:09] ┗━━
+[2026-07-28 13:13:09] ❖ Loading Cotan object with gdi...
+[2026-07-28 13:13:53] ❖ Finding valid group markers for cotan object...
+[2026-07-28 13:13:53] ❖ Transcript found:
+[2026-07-28 13:13:53]  » Housekeeping:      24 transcripts
+[2026-07-28 13:13:53]  » PBMCs:             1 transcripts
+[2026-07-28 13:13:53]  » Epithelial_Lung:   13 transcripts
+[2026-07-28 13:13:53]  » Tumor_Lines_Panel: 11 transcripts
+[2026-07-28 13:13:53] ⇣   ▶ GDIPlot()
+[2026-07-28 13:13:53]       ◦ condition: Cortex2_transcripts ◦ GDIThreshold: 1.5
+[2026-07-28 13:13:53] GDI plot
+[2026-07-28 13:13:59] Removed 0 low GDI genes (such as the fully-expressed) in GDI plot
+[2026-07-28 13:13:59] ⇡   ✔ Done.
+[2026-07-28 13:13:59] ❖ Saving GDI plot...
+[2026-07-28 13:14:02]  » GDI plot saved at: /data/lorenzo_delitala/data/project_files/arrigoni/plots/GDI_transcript_plot_markers.png

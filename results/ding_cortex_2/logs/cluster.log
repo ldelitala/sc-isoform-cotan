@@ -1,0 +1,42 @@
+[2026-07-23 14:50:11] ⇡   ✔ Done.
+[2026-07-23 14:50:11] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-23 14:50:11] ┃   ❖ Setting up parallel processing...
+[2026-07-23 14:50:11] ┃    » Logging level set to: 3
+[2026-07-23 14:50:11] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/cluster.log
+[2026-07-23 14:50:11] ┗━━
+[2026-07-23 14:50:11] ❖ Loading Cotan object with coex and p_value...
+[2026-07-23 14:50:24] ┏━━ CALCULATE GDI
+[2026-07-23 14:50:24] ⇣   ▶ calculateGDI()
+[2026-07-23 14:50:24]       ◦ statType: S ◦ rowsFraction: 1 ◦ cores: 80 ◦ chunkSize: 1024
+[2026-07-23 14:50:24] Calculate GDI dataframe: START
+[2026-07-23 14:50:24] Using S
+[2026-07-23 14:50:24] Calculating S: START
+[2026-07-23 14:50:31] Calculating S: DONE
+[2026-07-23 14:50:31] Calculate `GDI`: START
+[2026-07-23 14:50:31] Effective number of cores used: 80
+[2026-07-23 14:50:33] Effective number of cores used: 80
+[2026-07-23 14:50:33] Executing 13 genes batches
+[2026-07-23 14:50:39] Total calculations elapsed time: 8.19164276123047
+[2026-07-23 14:50:39] Calculate `GDI`: DONE
+[2026-07-23 14:50:41] Total calculations elapsed time: 16.2536375522614
+[2026-07-23 14:50:41] Calculate GDI dataframe: DONE
+[2026-07-23 14:50:41] ⇡   ✔ Done.
+[2026-07-23 14:50:41] ┗━━
+[2026-07-23 14:50:41] ❖ Finding valid group markers for cotan object...
+[2026-07-23 14:50:41] ❖ Transcript found:
+[2026-07-23 14:50:41]  » NPGs: 5 transcripts
+[2026-07-23 14:50:41]  » PNGs: 7 transcripts
+[2026-07-23 14:50:41]  » HK:   25 transcripts
+[2026-07-23 14:50:41] GDI plot
+[2026-07-23 14:50:41] Removed 1 low GDI genes (such as the fully-expressed) in GDI plot
+[2026-07-23 14:50:43] ❖ Grafico salvato con successo in: 
+[2026-07-23 14:50:43] ┏━━ PERFORM UNIFORM CLUSTERING
+[2026-07-23 14:50:43] ┃   ❖ Starting Step 1/2: Splitting clusters...
+[2026-07-23 14:50:43] ⇣   ▶ cellsUniformClustering()
+[2026-07-23 14:50:43]       ◦ GDIThreshold: 0.1 ◦ cores: 80 ◦ optimizeForSpeed: TRUE ◦ deviceStr: cpu ◦ saveObj: TRUE ◦ outDir: /data/lorenzo_delitala/data/project_files/ding/cortex_2/objects ◦ checker: NULL ◦ initialResolution: 0.8 ◦ maxIterations: 25 ◦ useDEA: TRUE ◦ distance: NULL ◦ useCoexEigen: FALSE ◦ dataMethod:  ◦ genesSel: HVG_Seurat ◦ numGenes: 2000 ◦ numReducedComp: 25 ◦ hclustMethod: ward.D2 ◦ initialClusters: NULL ◦ minimumUTClusterSize: 50 ◦ initialIteration: 1
+[2026-07-23 14:50:43] Creating cells' uniform clustering: START
+[2026-07-23 14:50:43] ┏━━ DEA ON CLUSTERS
+[2026-07-23 14:50:43] ⇣   ▶ DEAOnClusters()
+[2026-07-23 14:50:43]       ◦ clName: Known_Cell_Types
+[2026-07-23 14:50:43] Differential Expression Analysis - START
+[2026-07-23 14:50:43] ┗━━

@@ -1,0 +1,87 @@
+[2026-07-27 20:16:56] ⇡   ✔ Done.
+[2026-07-27 20:16:56] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-27 20:16:56] ┃   ❖ Setting up parallel processing...
+[2026-07-27 20:16:56] ┃    » Logging level set to: 3
+[2026-07-27 20:16:56] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/cotan_calc_14.log
+[2026-07-27 20:16:56] ┗━━
+[2026-07-27 20:16:56] ┏━━ DEA ON CLUSTERS
+[2026-07-27 20:16:56] ⇣   ▶ DEAOnClusters()
+[2026-07-27 20:16:56]       ◦ clName: merged
+[2026-07-27 20:16:56] Differential Expression Analysis - START
+[2026-07-27 20:16:59] *[2026-07-27 20:16:59]  DEA on cluster '-1' with 21 cells
+[2026-07-27 20:16:59] *[2026-07-27 20:16:59]  DEA on cluster '02' with 279 cells
+[2026-07-27 20:16:59] *[2026-07-27 20:16:59]  DEA on cluster '03' with 104 cells
+[2026-07-27 20:16:59] *[2026-07-27 20:16:59]  DEA on cluster '04' with 575 cells
+[2026-07-27 20:16:59] *[2026-07-27 20:16:59]  DEA on cluster '05' with 192 cells
+[2026-07-27 20:16:59] *[2026-07-27 20:16:59]  DEA on cluster '06' with 123 cells
+[2026-07-27 20:16:59] *[2026-07-27 20:16:59]  DEA on cluster '07' with 552 cells
+[2026-07-27 20:17:00] *[2026-07-27 20:17:00]  DEA on cluster '08' with 269 cells
+[2026-07-27 20:17:00] *[2026-07-27 20:17:00]  DEA on cluster '09' with 703 cells
+[2026-07-27 20:17:00] *[2026-07-27 20:17:00]  DEA on cluster '10' with 634 cells
+[2026-07-27 20:17:00] *[2026-07-27 20:17:00]  DEA on cluster '11' with 572 cells
+[2026-07-27 20:17:00] *[2026-07-27 20:17:00]  DEA on cluster '12' with 53 cells
+[2026-07-27 20:17:00] 
+[2026-07-27 20:17:00] Total calculations elapsed time: 3.85460543632507
+[2026-07-27 20:17:00] Differential Expression Analysis - DONE
+[2026-07-27 20:17:00] ⇡   ✔ Done.
+[2026-07-27 20:17:00] ┗━━
+[2026-07-27 20:17:00] ┏━━ EXTRACT DTU CANDIDATES
+[2026-07-27 20:17:00] ┃   ❖ Retrieving stored inputs...
+[2026-07-27 20:17:06] ┃   ❖ Identifying genes with multiple transcripts...
+[2026-07-27 20:17:06] ┃   ❖ Scanning for DTU candidates...
+[2026-07-27 20:17:06] ┃   ❖ Phase 1: Filter transcript pairs by mutual exclusivity (COEX and P-value thresholds).
+[2026-07-27 20:17:06] ┃   ❖ Phase 2: Check DEA contrast across clusters for reciprocal expression switches.
+[2026-07-27 20:17:11] ┃   ❖ Assembling results...
+[2026-07-27 20:17:11] ┃   ❖ Formatting cell type arrays for CSV export...
+[2026-07-27 20:17:11] ┃    » Genes with multiple transcripts: 2122
+[2026-07-27 20:17:11] ┃    » Genes with zero significant mutually exclusive pairs: 2108
+[2026-07-27 20:17:11] ┃    » Genes with at least one significant mutually exclusive pair: 14
+[2026-07-27 20:17:11] ┃    » Total significant transcript pairs evaluated: 53
+[2026-07-27 20:17:11] ┃    » Filtered out 7 transcript pairs lacking reciprocal cluster switch.
+[2026-07-27 20:17:11] ┃    » Identified 46 DTU events across 8 unique genes.
+[2026-07-27 20:17:11] ┃    » Significant pairs coex scores: min = -0.1735, median = -0.0386, mean = -0.0441, max = -0.0308
+[2026-07-27 20:17:11] ┃    » Significant pairs p-values: min = 1.5848e-28, median = 1.3600e-02, mean = 2.1863e-02, max = 4.8888e-02
+[2026-07-27 20:17:11] ┃    » Significant pairs max DEA contrasts: min = 0.0447, median = 0.3272, mean = 0.2853, max = 0.6631
+[2026-07-27 20:17:11] ┗━━
+[2026-07-27 20:17:11] ┏━━ DEA ON CLUSTERS
+[2026-07-27 20:17:11] ⇣   ▶ DEAOnClusters()
+[2026-07-27 20:17:11]       ◦ clName: local_gene_cluster
+[2026-07-27 20:17:11] Differential Expression Analysis - START
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '-1' with 248 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '02' with 190 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '03' with 50 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '04' with 278 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '05' with 392 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '06' with 131 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '07' with 124 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '08' with 338 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '09' with 52 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '10' with 426 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '11' with 402 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '12' with 643 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '13' with 253 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '14' with 145 cells
+[2026-07-27 20:17:14] *[2026-07-27 20:17:14]  DEA on cluster '15' with 405 cells
+[2026-07-27 20:17:14] 
+[2026-07-27 20:17:14] Total calculations elapsed time: 3.37473297119141
+[2026-07-27 20:17:14] Differential Expression Analysis - DONE
+[2026-07-27 20:17:14] ⇡   ✔ Done.
+[2026-07-27 20:17:14] ┗━━
+[2026-07-27 20:17:14] ┏━━ EXTRACT DTU CANDIDATES
+[2026-07-27 20:17:14] ┃   ❖ Retrieving stored inputs...
+[2026-07-27 20:17:18] ┃   ❖ Identifying genes with multiple transcripts...
+[2026-07-27 20:17:18] ┃   ❖ Scanning for DTU candidates...
+[2026-07-27 20:17:18] ┃   ❖ Phase 1: Filter transcript pairs by mutual exclusivity (COEX and P-value thresholds).
+[2026-07-27 20:17:18] ┃   ❖ Phase 2: Check DEA contrast across clusters for reciprocal expression switches.
+[2026-07-27 20:17:23] ┃   ❖ Assembling results...
+[2026-07-27 20:17:23] ┃   ❖ Formatting cell type arrays for CSV export...
+[2026-07-27 20:17:23] ┃    » Genes with multiple transcripts: 2122
+[2026-07-27 20:17:23] ┃    » Genes with zero significant mutually exclusive pairs: 2108
+[2026-07-27 20:17:23] ┃    » Genes with at least one significant mutually exclusive pair: 14
+[2026-07-27 20:17:23] ┃    » Total significant transcript pairs evaluated: 53
+[2026-07-27 20:17:23] ┃    » Filtered out 7 transcript pairs lacking reciprocal cluster switch.
+[2026-07-27 20:17:23] ┃    » Identified 46 DTU events across 8 unique genes.
+[2026-07-27 20:17:23] ┃    » Significant pairs coex scores: min = -0.1735, median = -0.0386, mean = -0.0441, max = -0.0308
+[2026-07-27 20:17:23] ┃    » Significant pairs p-values: min = 1.5848e-28, median = 1.3600e-02, mean = 2.1863e-02, max = 4.8888e-02
+[2026-07-27 20:17:23] ┃    » Significant pairs max DEA contrasts: min = 0.0384, median = 0.4375, mean = 0.3394, max = 0.7852
+[2026-07-27 20:17:23] ┗━━

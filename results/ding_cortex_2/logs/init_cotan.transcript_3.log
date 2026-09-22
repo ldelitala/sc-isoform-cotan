@@ -1,0 +1,105 @@
+[2026-07-23 16:01:05] ⇡   ✔ Done.
+[2026-07-23 16:01:05] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-23 16:01:05] ┃   ❖ Setting up parallel processing...
+[2026-07-23 16:01:05] ┃    » Logging level set to: 3
+[2026-07-23 16:01:05] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/init_cotan.transcript_3.log
+[2026-07-23 16:01:05] ┗━━
+[2026-07-23 16:01:05] ┏━━ INITIALIZE COTAN FROM SEURAT
+[2026-07-23 16:01:05] ┃   ❖ Checking for non-integer values in counts...
+[2026-07-23 16:01:06] ┃   ❖ Creating COTAN object...
+[2026-07-23 16:01:06] ⇣   ▶ COTAN()
+[2026-07-23 16:01:07] ⇡   ✔ Done.
+[2026-07-23 16:01:07] ┃   ❖ Initializing base metadata...
+[2026-07-23 16:01:07] ⇣   ▶ initializeMetaDataset()
+[2026-07-23 16:01:07]       ◦ GEO: GSE132044 ◦ sequencingMethod: 10XV2 ◦ sampleCondition: Ding_Cortex_2_Transcript
+[2026-07-23 16:01:07] Initializing `COTAN` meta-data
+[2026-07-23 16:01:07] ⇡   ✔ Done.
+[2026-07-23 16:01:07] ┃   ❖ Matrix snapshot:
+[2026-07-23 16:01:07] ┃     ⎡     Cells           Features    ⎤
+[2026-07-23 16:01:07] ┃     ⎣    121,082          149,443     ⎦
+[2026-07-23 16:01:07] ┗━━
+[2026-07-23 16:01:07] ┏━━ FLAG VALID CELLS FROM TSV
+[2026-07-23 16:01:07] ┃   ❖ Getting flagging vector...
+[2026-07-23 16:01:07] ┃   ┏━━ GET UNIFORM VECTOR
+[2026-07-23 16:01:07] ┃   ┃   ❖ Retrieving the data...
+[2026-07-23 16:01:07] ┃   ┃   ❖ Creating the vector...
+[2026-07-23 16:01:07] ┃   ┃    » TSV file path: /data/lorenzo_delitala/data/geo_metadata/ding/cortex_2/clean_Cortex2_QC_barcodes.tsv.gz
+[2026-07-23 16:01:07] ┃   ┗━━
+[2026-07-23 16:01:07] ┃   ❖ Updating cell condition...
+[2026-07-23 16:01:07] ┃   ┏━━ UPDATE CELL CONDITION
+[2026-07-23 16:01:07] ┃   ┃   ❖ Creating new condition...
+[2026-07-23 16:01:07] ┃   ┃   ❖ Stripping suffixes...
+[2026-07-23 16:01:07] ┃   ┃   ❖ Finding matching barcodes...
+[2026-07-23 16:01:07] ┃   ┃   ❖ Adding Condition...
+[2026-07-23 16:01:07] ┃   ⇣   ▶ addCondition()
+[2026-07-23 16:01:07] ┃         ◦ condName: passed_QC
+[2026-07-23 16:01:07] ┃   ⇡   ✔ Done.
+[2026-07-23 16:01:07] ┃   ┃    » Cells updated:    4,091
+[2026-07-23 16:01:07] ┃   ┗━━
+[2026-07-23 16:01:07] ┗━━
+[2026-07-23 16:01:07] ┏━━ FILTER COTAN BY CONDITION
+[2026-07-23 16:01:07] ┃   ❖ Looking for cells that do not respect the condition...
+[2026-07-23 16:01:07] ┃   ❖ Dropping cells...
+[2026-07-23 16:01:07] ⇣   ▶ dropGenesCells()
+[2026-07-23 16:01:07] Asked to drop 0 genes and 116991 cells
+[2026-07-23 16:01:07] ⇡   ✔ Done.
+[2026-07-23 16:01:07] ┃    » Condition name: passed_QC
+[2026-07-23 16:01:07] ┃    » Condition value: TRUE
+[2026-07-23 16:01:07] ┃   ❖ Matrix variation:
+[2026-07-23 16:01:07] ┃     ⎡     Cells           Features    ⎤
+[2026-07-23 16:01:07] ┃     ⎢    121,082          149,443     ⎥
+[2026-07-23 16:01:07] ┃     ⎢  ▼ 116,991 ▼           0        ⎥
+[2026-07-23 16:01:07] ┃     ⎣     4,091           149,443     ⎦
+[2026-07-23 16:01:07] ┗━━
+[2026-07-23 16:01:07] ┏━━ ADD GENE INFO FROM T2G
+[2026-07-23 16:01:07] ┃   ❖ Getting mapping vector...
+[2026-07-23 16:01:07] ┃   ┏━━ GET MAPPING VECTOR
+[2026-07-23 16:01:07] ┃   ┃   ❖ Retrieving the data...
+[2026-07-23 16:01:07] ┃   ┃   ❖ Creating the vector...
+[2026-07-23 16:01:07] ┃   ┃    » TSV file path: /data/lorenzo_delitala/data/genomes/GRCm39/gene_index/index/t2g_3col.tsv
+[2026-07-23 16:01:07] ┃   ┗━━
+[2026-07-23 16:01:07] ┃   ❖ Adding genes metadata...
+[2026-07-23 16:01:07] ┃   ┏━━ ADD GENES METADATA
+[2026-07-23 16:01:07] ┃   ┃   ❖ Aligning data to transcripts...
+[2026-07-23 16:01:07] ┃   ┃   ❖ Setting column in metadata dataframe...
+[2026-07-23 16:01:07] ┃   ⇣   ▶ setColumnInDF()
+[2026-07-23 16:01:07] ┃         ◦ colName: gene_id
+[2026-07-23 16:01:07] ┃   ⇡   ✔ Done.
+[2026-07-23 16:01:07] ┃   ┃    » Transcripts targeted:  149,443
+[2026-07-23 16:01:07] ┃   ┗━━
+[2026-07-23 16:01:07] ┗━━
+[2026-07-23 16:01:07] ┏━━ ADD GENE INFO FROM T2G
+[2026-07-23 16:01:07] ┃   ❖ Getting mapping vector...
+[2026-07-23 16:01:07] ┃   ┏━━ GET MAPPING VECTOR
+[2026-07-23 16:01:07] ┃   ┃   ❖ Retrieving the data...
+[2026-07-23 16:01:07] ┃   ┃   ❖ Creating the vector...
+[2026-07-23 16:01:07] ┃   ┃    » TSV file path: /data/lorenzo_delitala/data/project_files/ding/cortex_2/objects/t2gene_name.tsv
+[2026-07-23 16:01:07] ┃   ┗━━
+[2026-07-23 16:01:07] ┃   ❖ Adding genes metadata...
+[2026-07-23 16:01:07] ┃   ┏━━ ADD GENES METADATA
+[2026-07-23 16:01:07] ┃   ┃   ❖ Aligning data to transcripts...
+[2026-07-23 16:01:07] ┃   ┃   ❖ Setting column in metadata dataframe...
+[2026-07-23 16:01:07] ┃   ⇣   ▶ setColumnInDF()
+[2026-07-23 16:01:07] ┃         ◦ colName: gene_name
+[2026-07-23 16:01:07] ┃   ⇡   ✔ Done.
+[2026-07-23 16:01:07] ┃   ┃    » Transcripts targeted:  149,443
+[2026-07-23 16:01:07] ┃   ┗━━
+[2026-07-23 16:01:07] ┗━━
+[2026-07-23 16:01:07] ┏━━ CLEAN COTAN DATA
+[2026-07-23 16:01:07] ⇣   ▶ clean()
+[2026-07-23 16:01:07]       ◦ cellsCutoff: 0.003 ◦ genesCutoff: 0.002 ◦ cellsThreshold: 0.9 ◦ genesThreshold: 0.99
+[2026-07-23 16:01:07] Asked to drop 136595 genes and 0 cells
+[2026-07-23 16:01:08] Asked to drop 0 genes and 14 cells
+[2026-07-23 16:01:08] Genes/cells selection done: dropped [136595] genes and [14] cells
+[2026-07-23 16:01:08] Working on [12848] genes and [4077] cells
+[2026-07-23 16:01:08] ⇡   ✔ Done.
+[2026-07-23 16:01:08] ┃   ❖ Saving COTAN object...
+[2026-07-23 16:01:08] ┃   ┏━━ SAVE OBJECT
+[2026-07-23 16:01:08] ┃   ┃    » Saving object at: /data/lorenzo_delitala/data/project_files/ding/cortex_2/objects/initialized.transcript.cotan.rds
+[2026-07-23 16:01:09] ┃   ┗━━
+[2026-07-23 16:01:09] ┃   ❖ Matrix variation:
+[2026-07-23 16:01:09] ┃     ⎡     Cells           Features    ⎤
+[2026-07-23 16:01:09] ┃     ⎢     4,091           149,443     ⎥
+[2026-07-23 16:01:09] ┃     ⎢     ▼ 14 ▼        ▼ 136,595 ▼   ⎥
+[2026-07-23 16:01:09] ┃     ⎣     4,077            12,848     ⎦
+[2026-07-23 16:01:09] ┗━━

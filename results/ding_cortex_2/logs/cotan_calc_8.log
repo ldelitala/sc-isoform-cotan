@@ -1,0 +1,83 @@
+[2026-07-24 14:18:11] ⇡   ✔ Done.
+[2026-07-24 14:18:11] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-24 14:18:11] ┃   ❖ Setting up parallel processing...
+[2026-07-24 14:18:11] ┃    » Logging level set to: 3
+[2026-07-24 14:18:11] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/cotan_calc_8.log
+[2026-07-24 14:18:11] ┗━━
+[2026-07-24 14:18:11] ┏━━ DEA ON CLUSTERS
+[2026-07-24 14:18:11] ⇣   ▶ DEAOnClusters()
+[2026-07-24 14:18:11]       ◦ clName: merged
+[2026-07-24 14:18:11] Differential Expression Analysis - START
+[2026-07-24 14:18:13] *[2026-07-24 14:18:13]  DEA on cluster '-1' with 21 cells
+[2026-07-24 14:18:13] *[2026-07-24 14:18:13]  DEA on cluster '02' with 279 cells
+[2026-07-24 14:18:13] *[2026-07-24 14:18:13]  DEA on cluster '03' with 104 cells
+[2026-07-24 14:18:13] *[2026-07-24 14:18:13]  DEA on cluster '04' with 575 cells
+[2026-07-24 14:18:13] *[2026-07-24 14:18:13]  DEA on cluster '05' with 192 cells
+[2026-07-24 14:18:13] *[2026-07-24 14:18:13]  DEA on cluster '06' with 123 cells
+[2026-07-24 14:18:13] *[2026-07-24 14:18:13]  DEA on cluster '07' with 552 cells
+[2026-07-24 14:18:14] *[2026-07-24 14:18:14]  DEA on cluster '08' with 269 cells
+[2026-07-24 14:18:14] *[2026-07-24 14:18:14]  DEA on cluster '09' with 703 cells
+[2026-07-24 14:18:14] *[2026-07-24 14:18:14]  DEA on cluster '10' with 634 cells
+[2026-07-24 14:18:14] *[2026-07-24 14:18:14]  DEA on cluster '11' with 572 cells
+[2026-07-24 14:18:14] *[2026-07-24 14:18:14]  DEA on cluster '12' with 53 cells
+[2026-07-24 14:18:14] 
+[2026-07-24 14:18:14] Total calculations elapsed time: 3.84167671203613
+[2026-07-24 14:18:14] Differential Expression Analysis - DONE
+[2026-07-24 14:18:14] ⇡   ✔ Done.
+[2026-07-24 14:18:14] ┗━━
+[2026-07-24 14:18:14] ┏━━ EXTRACT DTU CANDIDATES
+[2026-07-24 14:18:14] ┃   ❖ Retrieving stored inputs...
+[2026-07-24 14:18:20] ┃   ❖ Identifying genes with multiple transcripts...
+[2026-07-24 14:18:20] ┃   ❖ Scanning for DTU candidates...
+[2026-07-24 14:18:20] ┃   ❖ Phase 1: Filter transcript pairs by mutual exclusivity (COEX and P-value thresholds).
+[2026-07-24 14:18:20] ┃   ❖ Phase 2: Check DEA contrast across clusters for reciprocal expression switches.
+[2026-07-24 14:18:25] ┃   ❖ Assembling results...
+[2026-07-24 14:18:25] ┃    » Genes with multiple transcripts: 2122
+[2026-07-24 14:18:25] ┃    » Genes with zero significant mutually exclusive pairs: 2108
+[2026-07-24 14:18:25] ┃    » Genes with at least one significant mutually exclusive pair: 14
+[2026-07-24 14:18:25] ┃    » Total significant transcript pairs evaluated: 53
+[2026-07-24 14:18:25] ┃    » Filtered out 53 transcript pairs lacking reciprocal cluster switch.
+[2026-07-24 14:18:25] ┃    » Significant pairs coex scores: min = -0.1735, median = -0.0386, mean = -0.0441, max = -0.0308
+[2026-07-24 14:18:25] ┃    » Significant pairs p-values: min = 1.5848e-28, median = 1.3600e-02, mean = 2.1863e-02, max = 4.8888e-02
+[2026-07-24 14:18:25] ┃    » Significant pairs max DEA contrasts: min = 0.0447, median = 0.3272, mean = 0.2853, max = 0.6631
+[2026-07-24 14:18:25] ┗━━
+[2026-07-24 14:18:25] ┏━━ DEA ON CLUSTERS
+[2026-07-24 14:18:25] ⇣   ▶ DEAOnClusters()
+[2026-07-24 14:18:25]       ◦ clName: local_gene_cluster
+[2026-07-24 14:18:25] Differential Expression Analysis - START
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '-1' with 248 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '02' with 190 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '03' with 50 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '04' with 278 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '05' with 392 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '06' with 131 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '07' with 124 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '08' with 338 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '09' with 52 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '10' with 426 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '11' with 402 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '12' with 643 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '13' with 253 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '14' with 145 cells
+[2026-07-24 14:18:28] *[2026-07-24 14:18:28]  DEA on cluster '15' with 405 cells
+[2026-07-24 14:18:28] 
+[2026-07-24 14:18:28] Total calculations elapsed time: 3.39545226097107
+[2026-07-24 14:18:28] Differential Expression Analysis - DONE
+[2026-07-24 14:18:28] ⇡   ✔ Done.
+[2026-07-24 14:18:28] ┗━━
+[2026-07-24 14:18:28] ┏━━ EXTRACT DTU CANDIDATES
+[2026-07-24 14:18:28] ┃   ❖ Retrieving stored inputs...
+[2026-07-24 14:18:32] ┃   ❖ Identifying genes with multiple transcripts...
+[2026-07-24 14:18:32] ┃   ❖ Scanning for DTU candidates...
+[2026-07-24 14:18:32] ┃   ❖ Phase 1: Filter transcript pairs by mutual exclusivity (COEX and P-value thresholds).
+[2026-07-24 14:18:32] ┃   ❖ Phase 2: Check DEA contrast across clusters for reciprocal expression switches.
+[2026-07-24 14:18:37] ┃   ❖ Assembling results...
+[2026-07-24 14:18:37] ┃    » Genes with multiple transcripts: 2122
+[2026-07-24 14:18:37] ┃    » Genes with zero significant mutually exclusive pairs: 2108
+[2026-07-24 14:18:37] ┃    » Genes with at least one significant mutually exclusive pair: 14
+[2026-07-24 14:18:37] ┃    » Total significant transcript pairs evaluated: 53
+[2026-07-24 14:18:37] ┃    » Filtered out 53 transcript pairs lacking reciprocal cluster switch.
+[2026-07-24 14:18:37] ┃    » Significant pairs coex scores: min = -0.1735, median = -0.0386, mean = -0.0441, max = -0.0308
+[2026-07-24 14:18:37] ┃    » Significant pairs p-values: min = 1.5848e-28, median = 1.3600e-02, mean = 2.1863e-02, max = 4.8888e-02
+[2026-07-24 14:18:37] ┃    » Significant pairs max DEA contrasts: min = 0.0384, median = 0.4375, mean = 0.3394, max = 0.7852
+[2026-07-24 14:18:37] ┗━━

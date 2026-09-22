@@ -1,0 +1,17 @@
+[2026-07-24 11:06:44] ⇡   ✔ Done.
+[2026-07-24 11:06:44] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-24 11:06:44] ┃   ❖ Setting up parallel processing...
+[2026-07-24 11:06:44] ┃    » Logging level set to: 3
+[2026-07-24 11:06:44] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/plot_gdi.gene_1.log
+[2026-07-24 11:06:44] ┗━━
+[2026-07-24 11:06:44] ❖ Uploading COTAN object...
+[2026-07-24 11:07:10]  » 'NPGs' [8 genes]: Nes, Vim, Sox2, Sox1, Notch1, Hes1, Hes5, Pax6
+[2026-07-24 11:07:10]  » 'PNGs' [7 genes]: Map2, Tubb3, Neurod1, Nefm, Nefl, Dcx, Tbr1
+[2026-07-24 11:07:10]  » 'HK' [16 genes]: Calm1, Cox6b1, Ppia, Rpl18, Cox7c, Erh, H3f3a, Taf1, Taf2, Gapdh, Actb, Golph3, Zfr, Sub1, Tars, Amacr
+[2026-07-24 11:07:10] ⇣   ▶ GDIPlot()
+[2026-07-24 11:07:10]       ◦ condition: Cortex2_genes ◦ GDIThreshold: 0.3
+[2026-07-24 11:07:10] GDI plot
+[2026-07-24 11:07:11] Removed 0 low GDI genes (such as the fully-expressed) in GDI plot
+[2026-07-24 11:07:11] ⇡   ✔ Done.
+[2026-07-24 11:07:11] ❖ Saving graph...
+[2026-07-24 11:07:13]  » Graph successfully saved at: /data/lorenzo_delitala/data/project_files/ding/cortex_2/plots/GDI_genes_plot_markers.png

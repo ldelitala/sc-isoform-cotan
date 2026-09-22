@@ -1,18 +1,19 @@
-runs/
-.cache/
-.conda/
-.Trash-1000/
-ncbi_cache/
-data/
-.vscode/
-COTAN/
-logs/
+# Bulk data / caches / generated trees — machine-local, never versioned.
+# Anchored to the repo root so they do not match paths inside results/.
+/runs/
+/data/
+/.cache/
+/.conda/
+/.Trash-1000/
+/ncbi_cache/
+/COTAN/
+/logs/
+/.vscode/
 
-# Safety net: nextflow intermediates, bulk sequence/reference data, OS junk
-.nextflow/
-work/
-results/
-output/
+# Nextflow intermediates and bulk sequence/reference data
+/.nextflow/
+/work/
+/output/
 *.fastq
 *.fastq.gz
 *.fq
@@ -22,4 +23,4 @@ output/
 *.sam
 *.sra
 .DS_Store
-*.log
+/*.log

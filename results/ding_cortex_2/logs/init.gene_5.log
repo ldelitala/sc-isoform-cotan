@@ -1,0 +1,41 @@
+[2026-07-27 20:14:53] ⇡   ✔ Done.
+[2026-07-27 20:14:53] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-27 20:14:53] ┃   ❖ Setting up parallel processing...
+[2026-07-27 20:14:53] ┃    » Logging level set to: 3
+[2026-07-27 20:14:53] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/init.gene_5.log
+[2026-07-27 20:14:53] ┗━━
+[2026-07-27 20:14:53]  » Count Matrix path: /data/lorenzo_delitala/data/geo_metadata/ding/cortex_2/GSE132044_cortex_mm10_count_matrix.mtx.gz
+[2026-07-27 20:14:53]  » Genes names path: /data/lorenzo_delitala/data/geo_metadata/ding/cortex_2/GSE132044_cortex_mm10_gene.tsv.gz
+[2026-07-27 20:14:53]  » Cells barcodes path: /data/lorenzo_delitala/data/geo_metadata/ding/cortex_2/GSE132044_cortex_mm10_cell.tsv.gz.1
+[2026-07-27 20:14:53] ❖ Loading Gene Matrix data...
+[2026-07-27 20:15:08] ❖ Assigning names to matrix...
+[2026-07-27 20:15:08] ❖ Isolating "Cortex2 10x-Chromium-V2" cells...
+[2026-07-27 20:15:11] ❖ Cleaning names...
+[2026-07-27 20:15:11] ❖ Initializing COTAN object...
+[2026-07-27 20:15:12] ⇣   ▶ initializeMetaDataset()
+[2026-07-27 20:15:12]       ◦ GEO: GSE132044 ◦ sequencingMethod: 10XV2 ◦ sampleCondition: Cortex2
+[2026-07-27 20:15:12] Initializing `COTAN` meta-data
+[2026-07-27 20:15:12] ⇡   ✔ Done.
+[2026-07-27 20:15:12] ❖ Matrix snapshot:
+[2026-07-27 20:15:12]   ⎡     Cells           Features    ⎤
+[2026-07-27 20:15:12]   ⎣     4,091            28,692     ⎦
+[2026-07-27 20:15:12] ┏━━ CLEAN COTAN DATA
+[2026-07-27 20:15:12] ⇣   ▶ clean()
+[2026-07-27 20:15:12]       ◦ cellsCutoff: 0.003 ◦ genesCutoff: 0.002 ◦ cellsThreshold: 0.99 ◦ genesThreshold: 0.99
+[2026-07-27 20:15:12] Asked to drop 10558 genes and 0 cells
+[2026-07-27 20:15:12] Genes/cells selection done: dropped [10558] genes and [0] cells
+[2026-07-27 20:15:12] Working on [18134] genes and [4091] cells
+[2026-07-27 20:15:13] ⇡   ✔ Done.
+[2026-07-27 20:15:13] ┃   ❖ Identifying and dropping fully-expressed genes/transcripts...
+[2026-07-27 20:15:13] ┃   ❖ Found 1 fully-expressed genes/transcripts. Dropping them...
+[2026-07-27 20:15:13] Asked to drop 1 genes and 0 cells
+[2026-07-27 20:15:13] ┃   ❖ Saving COTAN object...
+[2026-07-27 20:15:13] ┃   ┏━━ SAVE OBJECT
+[2026-07-27 20:15:13] ┃   ┃    » Saving object at: /data/lorenzo_delitala/data/project_files/ding/cortex_2/objects/cleaned.gene.cotan.rds
+[2026-07-27 20:15:17] ┃   ┗━━
+[2026-07-27 20:15:17] ┃   ❖ Matrix variation:
+[2026-07-27 20:15:17] ┃     ⎡     Cells           Features    ⎤
+[2026-07-27 20:15:17] ┃     ⎢     4,091            28,692     ⎥
+[2026-07-27 20:15:17] ┃     ⎢       0            ▼ 10,559 ▼   ⎥
+[2026-07-27 20:15:17] ┃     ⎣     4,091            18,133     ⎦
+[2026-07-27 20:15:17] ┗━━

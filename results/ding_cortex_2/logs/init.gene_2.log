@@ -1,0 +1,38 @@
+[2026-07-24 10:46:22] ⇡   ✔ Done.
+[2026-07-24 10:46:22] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-24 10:46:22] ┃   ❖ Setting up parallel processing...
+[2026-07-24 10:46:22] ┃    » Logging level set to: 3
+[2026-07-24 10:46:22] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/init.gene_2.log
+[2026-07-24 10:46:22] ┗━━
+[2026-07-24 10:46:22]  » Count Matrix path: /data/lorenzo_delitala/data/geo_metadata/ding/cortex_2/GSE132044_cortex_mm10_count_matrix.mtx.gz
+[2026-07-24 10:46:22]  » Genes names path: /data/lorenzo_delitala/data/geo_metadata/ding/cortex_2/GSE132044_cortex_mm10_gene.tsv.gz
+[2026-07-24 10:46:22]  » Cells barcodes path: /data/lorenzo_delitala/data/geo_metadata/ding/cortex_2/GSE132044_cortex_mm10_cell.tsv.gz.1
+[2026-07-24 10:46:22] ❖ Loading Gene Matrix data...
+[2026-07-24 10:46:38] ❖ Assigning names to matrix...
+[2026-07-24 10:46:38] ❖ Isolating "Cortex2 10x-Chromium-V2" cells...
+[2026-07-24 10:46:40] ❖ Cleaning names...
+[2026-07-24 10:46:41] ❖ Initializing COTAN object...
+[2026-07-24 10:46:41] ⇣   ▶ initializeMetaDataset()
+[2026-07-24 10:46:41]       ◦ GEO: GSE132044 ◦ sequencingMethod: 10XV2 ◦ sampleCondition: Cortex2
+[2026-07-24 10:46:41] Initializing `COTAN` meta-data
+[2026-07-24 10:46:41] ⇡   ✔ Done.
+[2026-07-24 10:46:41] ❖ Matrix snapshot:
+[2026-07-24 10:46:41]   ⎡     Cells           Features    ⎤
+[2026-07-24 10:46:41]   ⎣     4,091            28,692     ⎦
+[2026-07-24 10:46:41] ┏━━ CLEAN COTAN DATA
+[2026-07-24 10:46:41] ⇣   ▶ clean()
+[2026-07-24 10:46:41]       ◦ cellsCutoff: 0.003 ◦ genesCutoff: 0.002 ◦ cellsThreshold: 0.99 ◦ genesThreshold: 0.99
+[2026-07-24 10:46:41] Asked to drop 10558 genes and 0 cells
+[2026-07-24 10:46:42] Genes/cells selection done: dropped [10558] genes and [0] cells
+[2026-07-24 10:46:42] Working on [18134] genes and [4091] cells
+[2026-07-24 10:46:42] ⇡   ✔ Done.
+[2026-07-24 10:46:42] ┃   ❖ Saving COTAN object...
+[2026-07-24 10:46:42] ┃   ┏━━ SAVE OBJECT
+[2026-07-24 10:46:42] ┃   ┃    » Saving object at: /data/lorenzo_delitala/data/project_files/ding/cortex_2/objects/cleaned.gene.cotan.rds
+[2026-07-24 10:46:46] ┃   ┗━━
+[2026-07-24 10:46:46] ┃   ❖ Matrix variation:
+[2026-07-24 10:46:46] ┃     ⎡     Cells           Features    ⎤
+[2026-07-24 10:46:46] ┃     ⎢     4,091            28,692     ⎥
+[2026-07-24 10:46:46] ┃     ⎢       0            ▼ 10,558 ▼   ⎥
+[2026-07-24 10:46:46] ┃     ⎣     4,091            18,134     ⎦
+[2026-07-24 10:46:46] ┗━━

@@ -1,0 +1,20 @@
+[2026-07-23 15:01:40] ⇡   ✔ Done.
+[2026-07-23 15:01:40] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-23 15:01:40] ┃   ❖ Setting up parallel processing...
+[2026-07-23 15:01:40] ┃    » Logging level set to: 3
+[2026-07-23 15:01:40] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/plot_gdi.log
+[2026-07-23 15:01:40] ┗━━
+[2026-07-23 15:01:40] ❖ Loading Cotan object with gdi...
+[2026-07-23 15:01:53] ❖ Finding valid group markers for cotan object...
+[2026-07-23 15:01:53] ❖ Transcript found:
+[2026-07-23 15:01:53]  » NPGs: 5 transcripts
+[2026-07-23 15:01:53]  » PNGs: 7 transcripts
+[2026-07-23 15:01:53]  » HK:   25 transcripts
+[2026-07-23 15:01:53] ⇣   ▶ GDIPlot()
+[2026-07-23 15:01:53]       ◦ gene: c("ENSMUST00000023171", "ENSMUST00000028062", "ENSMUST00000028288", "ENSMUST00000049621", "ENSMUST00000160592"),c("ENSMUST00000022638", "ENSMUST00000022639", "ENSMUST00000033642", "ENSMUST00000048934", "ENSMUST00000071134", "ENSMUST00000128673", "ENSMUST00000139920"),c("ENSMUST00000001204", "ENSMUST00000017922", "ENSMUST00000021559", "ENSMUST00000022816", "ENSMUST00000041733", "ENSMUST00000070877", "ENSMUST00000075738", "ENSMUST00000090749", "ENSMUST00000100497", "ENSMUST00000101341", "ENSMUST00000110082", "ENSMUST00000110504", "ENSMUST00000122941", "ENSMUST00000127300", "ENSMUST00000131011", "ENSMUST00000132233", "ENSMUST00000132846", "ENSMUST00000155824", "ENSMUST00000159441", "ENSMUST00000161308", "ENSMUST00000167721", "ENSMUST00000192506", "ENSMUST00000196997", 
+"ENSMUST00000213200", "ENSMUST00000228671") ◦ condition: Cortex_transcripts ◦ GDIThreshold: 1
+[2026-07-23 15:01:53] GDI plot
+[2026-07-23 15:01:54] Removed 1 low GDI genes (such as the fully-expressed) in GDI plot
+[2026-07-23 15:01:54] ⇡   ✔ Done.
+[2026-07-23 15:01:54] ❖ Saving GDI plot...
+[2026-07-23 15:01:56]  » GDI plot saved at: /data/lorenzo_delitala/data/project_files/ding/cortex_2/plots/GDI_transcript_plot_markers.png

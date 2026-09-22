@@ -1,0 +1,7 @@
+"","class","check.isCheckAbove","check.GDIThreshold","check.maxRatioBeyond","check.maxRankBeyond","check.fractionBeyond","check.thresholdRank","check.quantileAtRatio","check.quantileAtRank","isUniform","clusterSize"
+"04","SimpleGDIUniformityCheck",FALSE,1.43,0.01,0,NaN,0,1.39906699368582,NaN,TRUE,283
+"11","SimpleGDIUniformityCheck",FALSE,1.43,0.01,0,NaN,0,1.37454677372202,NaN,TRUE,402
+"10","SimpleGDIUniformityCheck",FALSE,1.43,0.01,0,NaN,0,1.36757191161119,NaN,TRUE,426
+"15","SimpleGDIUniformityCheck",FALSE,1.43,0.01,0,NaN,0,1.4244826085063,NaN,TRUE,405
+"12","SimpleGDIUniformityCheck",FALSE,1.43,0.01,0,0.00997935306262904,0,1.42991893505779,NaN,TRUE,643
+"07","SimpleGDIUniformityCheck",FALSE,1.43,0.01,0,0.0049022503100821,0,1.39475181548547,NaN,TRUE,124

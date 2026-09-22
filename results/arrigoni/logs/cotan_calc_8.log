@@ -1,0 +1,24 @@
+[2026-07-23 01:24:35] ⇡   ✔ Done.
+[2026-07-23 01:24:35] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-23 01:24:35] ┃   ❖ Setting up parallel processing...
+[2026-07-23 01:24:35] ┃    » Logging level set to: 3
+[2026-07-23 01:24:35] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/arrigoni/logs/cotan_calc_8.log
+[2026-07-23 01:24:35] ┗━━
+[2026-07-23 01:24:35] ┏━━ EXTRACT DTU CANDIDATES
+[2026-07-23 01:24:35] ┃   ❖ Retrieving stored inputs...
+[2026-07-23 01:24:51] ┃   ❖ Identifying genes with multiple transcripts...
+[2026-07-23 01:24:51] ┃   ❖ Scanning for DTU candidates...
+[2026-07-23 01:24:51] ┃   ❖ Phase 1: Filter transcript pairs by mutual exclusivity (COEX and P-value thresholds).
+[2026-07-23 01:24:51] ┃   ❖ Phase 2: Check DEA contrast across clusters for reciprocal expression switches.
+[2026-07-23 01:25:17] ┃   ❖ Assembling results...
+[2026-07-23 01:25:17] ┃   ❖ Formatting cell type arrays for CSV export...
+[2026-07-23 01:25:17] ┃    » Genes with multiple transcripts: 4958
+[2026-07-23 01:25:17] ┃    » Genes with zero significant mutually exclusive pairs: 4528
+[2026-07-23 01:25:17] ┃    » Genes with at least one significant mutually exclusive pair: 430
+[2026-07-23 01:25:17] ┃    » Total significant transcript pairs evaluated: 2006
+[2026-07-23 01:25:17] ┃    » Filtered out 1776 transcript pairs lacking reciprocal cluster switch.
+[2026-07-23 01:25:17] ┃    » Identified 230 DTU events across 67 unique genes.
+[2026-07-23 01:25:17] ┃    » Significant pairs coex scores: min = -0.2948, median = -0.0218, mean = -0.0274, max = -0.0114
+[2026-07-23 01:25:17] ┃    » Significant pairs p-values: min = 0.0000e+00, median = 1.8828e-04, mean = 6.6686e-03, max = 4.9944e-02
+[2026-07-23 01:25:17] ┃    » Significant pairs max DEA contrasts: min = 0.0086, median = 0.0731, mean = 0.0898, max = 0.6143
+[2026-07-23 01:25:17] ┗━━

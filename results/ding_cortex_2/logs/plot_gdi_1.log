@@ -1,0 +1,19 @@
+[2026-07-23 15:38:04] ⇡   ✔ Done.
+[2026-07-23 15:38:04] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-23 15:38:04] ┃   ❖ Setting up parallel processing...
+[2026-07-23 15:38:04] ┃    » Logging level set to: 3
+[2026-07-23 15:38:04] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/plot_gdi_1.log
+[2026-07-23 15:38:04] ┗━━
+[2026-07-23 15:38:04] ❖ Loading Cotan object with gdi...
+[2026-07-23 15:38:18] ❖ Finding valid group markers for cotan object...
+[2026-07-23 15:38:18] ❖ Transcript found:
+[2026-07-23 15:38:18]  » NPGs: 5 transcripts
+[2026-07-23 15:38:18]  » PNGs: 7 transcripts
+[2026-07-23 15:38:18]  » HK:   25 transcripts
+[2026-07-23 15:38:18] ⇣   ▶ GDIPlot()
+[2026-07-23 15:38:18]       ◦ condition: Cortex2_transcripts ◦ GDIThreshold: 1
+[2026-07-23 15:38:18] GDI plot
+[2026-07-23 15:38:18] Removed 0 low GDI genes (such as the fully-expressed) in GDI plot
+[2026-07-23 15:38:18] ⇡   ✔ Done.
+[2026-07-23 15:38:18] ❖ Saving GDI plot...
+[2026-07-23 15:38:20]  » GDI plot saved at: /data/lorenzo_delitala/data/project_files/ding/cortex_2/plots/GDI_transcript_plot_markers.png

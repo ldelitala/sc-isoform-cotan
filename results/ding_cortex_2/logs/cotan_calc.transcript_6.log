@@ -1,0 +1,111 @@
+[2026-07-27 20:04:19] ⇡   ✔ Done.
+[2026-07-27 20:04:19] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-27 20:04:19] ┃   ❖ Setting up parallel processing...
+[2026-07-27 20:04:19] ┃    » Logging level set to: 3
+[2026-07-27 20:04:19] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/cotan_calc.transcript_6.log
+[2026-07-27 20:04:19] ┗━━
+[2026-07-27 20:04:19] ┏━━ PREPARE TO COEX
+[2026-07-27 20:04:19] ⇣   ▶ estimateLambdaLinear()
+[2026-07-27 20:04:19] ⇡   ✔ Done.
+[2026-07-27 20:04:19] ⇣   ▶ estimateNuLinear()
+[2026-07-27 20:04:19] ⇡   ✔ Done.
+[2026-07-27 20:04:19] ⇣   ▶ estimateDispersionViaSolver()
+[2026-07-27 20:04:19]       ◦ threshold: 0.01 ◦ cores: 80 ◦ maxIterations: 100 ◦ chunkSize: 512
+[2026-07-27 20:04:19] Estimate `dispersion`: START
+[2026-07-27 20:04:19] Effective number of cores used: 80
+[2026-07-27 20:04:23] Executing 26 genes batches
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 5 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 5 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 8 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 20:04:26] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 20:04:27] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:27] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 20:04:27] Parallel dispersion Newton-Raphson: used up to 5 iterations
+[2026-07-27 20:04:27] Parallel dispersion Newton-Raphson: used up to 5 iterations
+[2026-07-27 20:04:27] Parallel dispersion Newton-Raphson: used up to 5 iterations
+[2026-07-27 20:04:30] Total calculations elapsed time: 10.8305988311768
+[2026-07-27 20:04:30] Estimate `dispersion`: DONE
+[2026-07-27 20:04:30] Estimate `dispersion`: DONE
+[2026-07-27 20:04:30] `dispersion` | min: -0.139271462487373 | max: 419.812148201194 | % negative: 30.5907994084222
+[2026-07-27 20:04:30] ⇡   ✔ Done.
+[2026-07-27 20:04:30] ┃   ❖ Lambda distribution:
+[2026-07-27 20:04:30] ┃    » avg: 0.032 | med: 0.011 | sd: 0.154
+[2026-07-27 20:04:30] ┃    » min: 0.003 | max: 9.006
+[2026-07-27 20:04:30] ┃   ❖ Nu distribution:
+[2026-07-27 20:04:30] ┃    » avg: 1.000 | med: 0.898 | sd: 0.729
+[2026-07-27 20:04:30] ┃    » min: 0.069 | max: 10.177
+[2026-07-27 20:04:30] ┃   ❖ Dispersion distribution:
+[2026-07-27 20:04:30] ┃    » avg: 10.839 | med: 2.048 | sd: 23.915
+[2026-07-27 20:04:30] ┃    » min: -0.139 | max: 419.812
+[2026-07-27 20:04:30] ┗━━
+[2026-07-27 20:04:30] ┏━━ CALCULATE COEX
+[2026-07-27 20:04:30] ⇣   ▶ calculateCoex()
+[2026-07-27 20:04:30]       ◦ actOnCells: FALSE ◦ returnPPFract: TRUE ◦ optimizeForSpeed: TRUE ◦ deviceStr: cpu
+[2026-07-27 20:04:30] Effective number of cores used: 1
+[2026-07-27 20:04:30] Calculate genes COEX (torch) on device cpu: START
+[2026-07-27 20:04:30] Retrieving expected genes contingency table
+[2026-07-27 20:04:31] Expected genes contingency table elapsed time: 0.828001022338867
+[2026-07-27 20:04:31] Calculating genes COEX normalization factor
+[2026-07-27 20:04:33] Fraction of genes with very low expected contingency tables: 0.383872455310566
+[2026-07-27 20:04:33] Calculating genes COEX normalization factor elapsed time: 2.01770639419556
+[2026-07-27 20:04:33] Retrieving observed genes yes/yes contingency table
+[2026-07-27 20:04:35] Observed genes contingency table elapsed time: 1.98727750778198
+[2026-07-27 20:04:45] Calculate genes COEX elapsed time: 10.3892977237701
+[2026-07-27 20:04:45] Total calculations elapsed time: 15.2222826480865
+[2026-07-27 20:04:45] Calculate genes COEX (torch) on device cpu: DONE
+[2026-07-27 20:04:45] ⇡   ✔ Done.
+[2026-07-27 20:04:45] ┃   ❖ Verifying integrity and extracting metrics...
+[2026-07-27 20:04:45] ┃    » Status: COEX matrix generated and aligned successfully.
+[2026-07-27 20:04:45] ┗━━
+[2026-07-27 20:04:45] ┏━━ CALCULATE P VALUE
+[2026-07-27 20:04:45] ⇣   ▶ calculatePValue()
+[2026-07-27 20:04:45] Using S
+[2026-07-27 20:04:45] Calculating S: START
+[2026-07-27 20:04:50] Calculating S: DONE
+[2026-07-27 20:04:50] calculating PValues: START
+[2026-07-27 20:04:50] Get p-values genome wide on columns and genome wide on rows
+[2026-07-27 20:04:50] Effective number of cores used: 80
+[2026-07-27 20:04:50] Effective number of cores used: 80
+[2026-07-27 20:04:50] Executing 26 genes batches
+[2026-07-27 20:05:00] Total calculations elapsed time: 15.5176596641541
+[2026-07-27 20:05:00] calculating PValues: DONE
+[2026-07-27 20:05:00] ⇡   ✔ Done.
+[2026-07-27 20:05:00] ┗━━
+[2026-07-27 20:05:00] ┏━━ CALCULATE GDI
+[2026-07-27 20:05:00] ⇣   ▶ calculateGDI()
+[2026-07-27 20:05:00]       ◦ statType: S ◦ rowsFraction: 0.05 ◦ cores: 80 ◦ chunkSize: 1024
+[2026-07-27 20:05:00] Calculate GDI dataframe: START
+[2026-07-27 20:05:00] Using S
+[2026-07-27 20:05:00] Calculating S: START
+[2026-07-27 20:05:06] Calculating S: DONE
+[2026-07-27 20:05:06] Calculate `GDI`: START
+[2026-07-27 20:05:06] Effective number of cores used: 80
+[2026-07-27 20:05:06] Effective number of cores used: 80
+[2026-07-27 20:05:06] Executing 13 genes batches
+[2026-07-27 20:05:09] Total calculations elapsed time: 3.04764699935913
+[2026-07-27 20:05:09] Calculate `GDI`: DONE
+[2026-07-27 20:05:11] Total calculations elapsed time: 10.1914532184601
+[2026-07-27 20:05:11] Calculate GDI dataframe: DONE
+[2026-07-27 20:05:11] ⇡   ✔ Done.
+[2026-07-27 20:05:11] ┃   ❖ Saving COTAN object...
+[2026-07-27 20:05:11] ┃   ┏━━ SAVE OBJECT
+[2026-07-27 20:05:11] ┃   ┃    » Saving object at: /data/lorenzo_delitala/data/project_files/ding/cortex_2/objects/calculated.transcript.cotan.rds
+[2026-07-27 20:06:54] ┃   ┗━━
+[2026-07-27 20:06:54] ┗━━

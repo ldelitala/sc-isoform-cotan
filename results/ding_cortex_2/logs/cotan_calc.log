@@ -1,0 +1,45 @@
+[2026-07-24 10:36:05] ⇡   ✔ Done.
+[2026-07-24 10:36:05] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-24 10:36:06] ┃   ❖ Setting up parallel processing...
+[2026-07-24 10:36:06] ┃    » Logging level set to: 3
+[2026-07-24 10:36:06] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/ding/cortex_2/logs/cotan_calc.log
+[2026-07-24 10:36:06] ┗━━
+[2026-07-24 10:36:06] ┏━━ DEA ON CLUSTERS
+[2026-07-24 10:36:06] ⇣   ▶ DEAOnClusters()
+[2026-07-24 10:36:06]       ◦ clName: merged
+[2026-07-24 10:36:06] Differential Expression Analysis - START
+[2026-07-24 10:36:08] *[2026-07-24 10:36:08]  DEA on cluster '-1' with 21 cells
+[2026-07-24 10:36:08] *[2026-07-24 10:36:08]  DEA on cluster '02' with 279 cells
+[2026-07-24 10:36:08] *[2026-07-24 10:36:08]  DEA on cluster '03' with 104 cells
+[2026-07-24 10:36:08] *[2026-07-24 10:36:08]  DEA on cluster '04' with 575 cells
+[2026-07-24 10:36:08] *[2026-07-24 10:36:08]  DEA on cluster '05' with 192 cells
+[2026-07-24 10:36:08] *[2026-07-24 10:36:08]  DEA on cluster '06' with 123 cells
+[2026-07-24 10:36:08] *[2026-07-24 10:36:08]  DEA on cluster '07' with 552 cells
+[2026-07-24 10:36:09] *[2026-07-24 10:36:09]  DEA on cluster '08' with 269 cells
+[2026-07-24 10:36:09] *[2026-07-24 10:36:09]  DEA on cluster '09' with 703 cells
+[2026-07-24 10:36:09] *[2026-07-24 10:36:09]  DEA on cluster '10' with 634 cells
+[2026-07-24 10:36:09] *[2026-07-24 10:36:09]  DEA on cluster '11' with 572 cells
+[2026-07-24 10:36:09] *[2026-07-24 10:36:09]  DEA on cluster '12' with 53 cells
+[2026-07-24 10:36:09] 
+[2026-07-24 10:36:09] Total calculations elapsed time: 3.85291981697083
+[2026-07-24 10:36:09] Differential Expression Analysis - DONE
+[2026-07-24 10:36:09] ⇡   ✔ Done.
+[2026-07-24 10:36:09] ┗━━
+[2026-07-24 10:36:09] ┏━━ EXTRACT DTU CANDIDATES
+[2026-07-24 10:36:09] ┃   ❖ Retrieving stored inputs...
+[2026-07-24 10:36:15] ┃   ❖ Identifying genes with multiple transcripts...
+[2026-07-24 10:36:15] ┃   ❖ Scanning for DTU candidates...
+[2026-07-24 10:36:15] ┃   ❖ Phase 1: Filter transcript pairs by mutual exclusivity (COEX and P-value thresholds).
+[2026-07-24 10:36:15] ┃   ❖ Phase 2: Check DEA contrast across clusters for reciprocal expression switches.
+[2026-07-24 10:36:20] ┃   ❖ Assembling results...
+[2026-07-24 10:36:20] ┃   ❖ Formatting cell type arrays for CSV export...
+[2026-07-24 10:36:20] ┃    » Genes with multiple transcripts: 2122
+[2026-07-24 10:36:20] ┃    » Genes with zero significant mutually exclusive pairs: 2108
+[2026-07-24 10:36:20] ┃    » Genes with at least one significant mutually exclusive pair: 14
+[2026-07-24 10:36:20] ┃    » Total significant transcript pairs evaluated: 53
+[2026-07-24 10:36:20] ┃    » Filtered out 17 transcript pairs lacking reciprocal cluster switch.
+[2026-07-24 10:36:20] ┃    » Identified 36 DTU events across 2 unique genes.
+[2026-07-24 10:36:20] ┃    » Significant pairs coex scores: min = -0.1735, median = -0.0386, mean = -0.0441, max = -0.0308
+[2026-07-24 10:36:20] ┃    » Significant pairs p-values: min = 1.5848e-28, median = 1.3600e-02, mean = 2.1863e-02, max = 4.8888e-02
+[2026-07-24 10:36:20] ┃    » Significant pairs max DEA contrasts: min = 0.0447, median = 0.3272, mean = 0.2853, max = 0.6631
+[2026-07-24 10:36:20] ┗━━

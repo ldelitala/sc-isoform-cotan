@@ -1,0 +1,132 @@
+[2026-07-27 19:33:14] ⇡   ✔ Done.
+[2026-07-27 19:33:14] ┃   ❖ Setting up conflict resolution (zeallot)...
+[2026-07-27 19:33:14] ┃   ❖ Setting up parallel processing...
+[2026-07-27 19:33:14] ┃    » Logging level set to: 3
+[2026-07-27 19:33:14] ┃    » Logging path set to: /data/lorenzo_delitala/data/project_files/arrigoni/logs/cotan_calc_15.log
+[2026-07-27 19:33:14] ┗━━
+[2026-07-27 19:33:14] ┏━━ PREPARE TO COEX
+[2026-07-27 19:33:14] ⇣   ▶ estimateLambdaLinear()
+[2026-07-27 19:33:15] ⇡   ✔ Done.
+[2026-07-27 19:33:15] ⇣   ▶ estimateNuLinear()
+[2026-07-27 19:33:15] ⇡   ✔ Done.
+[2026-07-27 19:33:15] ⇣   ▶ estimateDispersionViaSolver()
+[2026-07-27 19:33:15]       ◦ threshold: 0.01 ◦ cores: 80 ◦ maxIterations: 100 ◦ chunkSize: 512
+[2026-07-27 19:33:15] Estimate `dispersion`: START
+[2026-07-27 19:33:15] Effective number of cores used: 80
+[2026-07-27 19:33:20] Executing 47 genes batches
+[2026-07-27 19:33:32] Parallel dispersion Newton-Raphson: used up to 8 iterations
+[2026-07-27 19:33:32] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:35] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:35] Parallel dispersion Newton-Raphson: used up to 9 iterations
+[2026-07-27 19:33:37] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:37] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:37] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:37] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:38] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:38] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:39] Parallel dispersion Newton-Raphson: used up to 8 iterations
+[2026-07-27 19:33:39] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:40] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:40] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:40] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:40] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:40] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:40] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 8 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 8 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 8 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:41] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:42] Parallel dispersion Newton-Raphson: used up to 8 iterations
+[2026-07-27 19:33:42] Parallel dispersion Newton-Raphson: used up to 8 iterations
+[2026-07-27 19:33:42] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:42] Parallel dispersion Newton-Raphson: used up to 8 iterations
+[2026-07-27 19:33:42] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:42] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:43] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:43] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:43] Parallel dispersion Newton-Raphson: used up to 9 iterations
+[2026-07-27 19:33:43] Parallel dispersion Newton-Raphson: used up to 6 iterations
+[2026-07-27 19:33:43] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:44] Parallel dispersion Newton-Raphson: used up to 7 iterations
+[2026-07-27 19:33:46] Total calculations elapsed time: 31.7425038814545
+[2026-07-27 19:33:46] Estimate `dispersion`: DONE
+[2026-07-27 19:33:46] Estimate `dispersion`: DONE
+[2026-07-27 19:33:46] `dispersion` | min: -0.204865566676787 | max: 532.672404258338 | % negative: 5.38542766631468
+[2026-07-27 19:33:46] ⇡   ✔ Done.
+[2026-07-27 19:33:46] ┃   ❖ Lambda distribution:
+[2026-07-27 19:33:46] ┃    » avg: 0.189 | med: 0.017 | sd: 1.582
+[2026-07-27 19:33:46] ┃    » min: 0.003 | max: 76.450
+[2026-07-27 19:33:46] ┃   ❖ Nu distribution:
+[2026-07-27 19:33:46] ┃    » avg: 1.000 | med: 0.893 | sd: 0.630
+[2026-07-27 19:33:46] ┃    » min: 0.013 | max: 7.125
+[2026-07-27 19:33:46] ┃   ❖ Dispersion distribution:
+[2026-07-27 19:33:46] ┃    » avg: 16.417 | med: 7.132 | sd: 27.284
+[2026-07-27 19:33:46] ┃    » min: -0.205 | max: 532.672
+[2026-07-27 19:33:46] ┗━━
+[2026-07-27 19:33:46] ┏━━ CALCULATE COEX
+[2026-07-27 19:33:46] ⇣   ▶ calculateCoex()
+[2026-07-27 19:33:46]       ◦ actOnCells: FALSE ◦ returnPPFract: TRUE ◦ optimizeForSpeed: TRUE ◦ deviceStr: cpu
+[2026-07-27 19:33:46] Effective number of cores used: 1
+[2026-07-27 19:33:46] Calculate genes COEX (torch) on device cpu: START
+[2026-07-27 19:33:46] Retrieving expected genes contingency table
+[2026-07-27 19:33:58] Expected genes contingency table elapsed time: 11.6232676506042
+[2026-07-27 19:33:58] Calculating genes COEX normalization factor
+[2026-07-27 19:34:04] Fraction of genes with very low expected contingency tables: 0.00801159190072669
+[2026-07-27 19:34:04] Calculating genes COEX normalization factor elapsed time: 5.78162932395935
+[2026-07-27 19:34:04] Retrieving observed genes yes/yes contingency table
+[2026-07-27 19:34:22] Observed genes contingency table elapsed time: 17.7318234443665
+[2026-07-27 19:34:51] Calculate genes COEX elapsed time: 28.9859199523926
+[2026-07-27 19:34:51] Total calculations elapsed time: 64.1226403713226
+[2026-07-27 19:34:51] Calculate genes COEX (torch) on device cpu: DONE
+[2026-07-27 19:34:51] ⇡   ✔ Done.
+[2026-07-27 19:34:51] ┃   ❖ Verifying integrity and extracting metrics...
+[2026-07-27 19:34:51] ┃    » Status: COEX matrix generated and aligned successfully.
+[2026-07-27 19:34:51] ┗━━
+[2026-07-27 19:34:51] ┏━━ CALCULATE P VALUE
+[2026-07-27 19:34:51] ⇣   ▶ calculatePValue()
+[2026-07-27 19:34:51] Using S
+[2026-07-27 19:34:51] Calculating S: START
+[2026-07-27 19:35:09] Calculating S: DONE
+[2026-07-27 19:35:09] calculating PValues: START
+[2026-07-27 19:35:09] Get p-values genome wide on columns and genome wide on rows
+[2026-07-27 19:35:09] Effective number of cores used: 80
+[2026-07-27 19:35:09] Effective number of cores used: 80
+[2026-07-27 19:35:09] Executing 47 genes batches
+[2026-07-27 19:35:43] Total calculations elapsed time: 52.2477259635925
+[2026-07-27 19:35:43] calculating PValues: DONE
+[2026-07-27 19:35:43] ⇡   ✔ Done.
+[2026-07-27 19:35:43] ┗━━
+[2026-07-27 19:35:43] ┏━━ DEA ON CLUSTERS
+[2026-07-27 19:35:43] ⇣   ▶ DEAOnClusters()
+[2026-07-27 19:35:43]       ◦ clName: Known_Cell_Types
+[2026-07-27 19:35:43] Differential Expression Analysis - START
+[2026-07-27 19:36:13] *[2026-07-27 19:36:13]  DEA on cluster 'A549' with 6890 cells
+[2026-07-27 19:36:14] *[2026-07-27 19:36:14]  DEA on cluster 'CCL-185-IG' with 6344 cells
+[2026-07-27 19:36:15] *[2026-07-27 19:36:15]  DEA on cluster 'CRL5868' with 2550 cells
+[2026-07-27 19:36:16] *[2026-07-27 19:36:16]  DEA on cluster 'DV90' with 2993 cells
+[2026-07-27 19:36:16] *[2026-07-27 19:36:16]  DEA on cluster 'HCC78' with 2748 cells
+[2026-07-27 19:36:17] *[2026-07-27 19:36:17]  DEA on cluster 'HTB178' with 2963 cells
+[2026-07-27 19:36:18] *[2026-07-27 19:36:18]  DEA on cluster 'PBMCs' with 477 cells
+[2026-07-27 19:36:18] *[2026-07-27 19:36:18]  DEA on cluster 'PC9' with 4489 cells
+[2026-07-27 19:36:20] 
+[2026-07-27 19:36:20] Total calculations elapsed time: 36.7588865756989
+[2026-07-27 19:36:20] Differential Expression Analysis - DONE
+[2026-07-27 19:36:20] ⇡   ✔ Done.
+[2026-07-27 19:36:20] ┃   ❖ Saving COTAN object...
+[2026-07-27 19:36:20] ┃   ┏━━ SAVE OBJECT
+[2026-07-27 19:36:20] ┃   ┃    » Saving object at: /data/lorenzo_delitala/data/project_files/arrigoni/calculated.cotan.rds
+[2026-07-27 19:44:35] ┃   ┗━━
+[2026-07-27 19:44:35] ┗━━
