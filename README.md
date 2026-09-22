@@ -50,6 +50,8 @@ transcript-level matrix; the R half **consumes** it. They meet at
 | `src/libs/deli.*` | Refactor target of the same packages (in progress) |
 | `src/scripts/install_cotan.R` | Installs COTAN from `seriph78/COTAN` |
 | `src/tmp_*.R`, `src/clean.R` | Scratch drivers with hardcoded paths (not library code) |
+| `results/` | Curated analysis outputs (DTU tables, plots, logs, scripts) — see [results/README.md](results/README.md) |
+| `scripts/collect_results.sh` | Stages the curated result subset on Athena for publishing |
 | `docs/` | Design docs — partly stale, see `docs/README.md` |
 | `central.config.example` | Example high-resource overrides (not the actual mechanism) |
 

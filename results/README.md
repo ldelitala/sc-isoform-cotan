@@ -32,3 +32,14 @@ Large intermediate objects: `calculated.*.cotan.rds` (~3–5.5 GB),
 
 Produced on Athena by the R analysis layer in `src/libs/` (see the repository
 `README.md`). Files were copied verbatim; no post-processing.
+
+## Refreshing
+
+```bash
+# on Athena
+./scripts/collect_results.sh                 # stages data/publish_results (gitignored)
+# on the Mac
+rsync -a athena:/data/lorenzo_delitala/data/publish_results/ results/
+git add results && git commit -m "Update results"
+git push github master && git push origin master
+```
