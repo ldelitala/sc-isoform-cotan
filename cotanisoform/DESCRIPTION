@@ -26,7 +26,9 @@ Imports:
     utils,
     tools,
     stats,
-    conflicted
+    conflicted,
+    parallelly,
+    zeallot
 Suggests:
     testthat (>= 3.0.0),
     lintr,

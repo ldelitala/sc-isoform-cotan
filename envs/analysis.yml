@@ -1,0 +1,59 @@
+name: cotanisoform-analysis
+channels: [conda-forge, bioconda]
+dependencies:
+  # R runtime + the packages the tracked R code calls directly
+  - r-base=4.5.3
+  - r-matrix
+  - r-seurat
+  - r-dplyr
+  - r-readr
+  - r-ggplot2
+  - r-yaml
+  - r-optparse
+  - r-mclust
+  # COTAN Imports the specs above do NOT pull in as conda packages
+  - r-conflicted
+  - r-zeallot
+  - r-parallelly
+  - r-ggthemes
+  - r-dendextend
+  - bioconductor-biocstyle
+  # COTAN / Seurat dependency closure (explicit in the original env)
+  - r-data.table
+  - r-vroom
+  - r-tzdb
+  - r-getoptlong
+  - r-clue
+  - r-rentrez
+  - r-ggdist
+  - r-paralleldist
+  - r-rfast
+  - r-proxy
+  - r-xml
+  - r-xml2
+  - r-igraph
+  - r-dqrng
+  - r-spatstat.random
+  - r-spatstat.explore
+  - r-box
+  - bioconductor-singlecellexperiment
+  - bioconductor-complexheatmap
+  - bioconductor-limma
+  - bioconductor-biocsingular
+  - bioconductor-geoquery
+  - bioconductor-s4vectors
+  - bioconductor-sparsearray
+  # dev / CI tooling
+  - r-remotes
+  - r-devtools
+  - r-roxygen2
+  - r-testthat
+  - r-lintr
+  - r-styler
+  # build + plotting system libraries
+  - libxml2
+  - glpk
+  - pandoc
+  - sysroot_linux-64
+  - mkl
+  - openblas
