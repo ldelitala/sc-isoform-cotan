@@ -3,7 +3,7 @@
 # Step 08 — compare two DTU candidate tables (transcript-level vs gene-cluster
 # level) and write the shared / exclusive tables.
 #
-# Ported from ding_cortex_2/Rscripts/confront_dtu.R. The output format is the
+# Ported from the released `confront_dtu.R` (since removed). The output format is the
 # released one: dplyr-join semantics are kept (they append the `_file2` columns
 # after the `_file1` ones, which `merge()` would not), while the column maths use
 # base R.

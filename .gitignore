@@ -22,5 +22,9 @@
 *.bai
 *.sam
 *.sra
+
+# Third-party papers — cited, never redistributed.
+COTAN_*.pdf
+
 .DS_Store
 /*.log

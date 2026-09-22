@@ -20,7 +20,6 @@ they are Git-unfriendly and stay on the machine.
 - `dtu_shared.csv`, `dtu_exclusive_file*.csv` — gene-vs-transcript DTU comparison.
 - `plots/` — COTAN diagnostics: GDI plots, UMAPs, cluster/dendrogram plots.
 - `logs/` — per-step run logs (`init_cotan`, `cotan_calc`, `cluster`, `plot_gdi`, …).
-- `Rscripts/` — the analysis scripts that produced these outputs (`gene/`, `transcript/`).
 - `t2gene_name.tsv`, `GSE243665_combined_QC_barcodes.tsv` — feature/barcode maps.
 
 ## Excluded (remain on Athena under `/data/lorenzo_delitala`)

@@ -34,7 +34,7 @@ Two phases:
 
    `min_dea_contrast` is **0.2** for arrigoni and **0.05** for ding cortex_2: the
    values that produced the published tables. `-0.1 / 0.5` belong to an abandoned
-   variant (`src/tmp.R`) that never produced a published table.
+   scratch variant that never produced a published table.
 
 Output columns: `Gene_ID`, `Gene_Name` (when `gene_name_col` is set),
 `Transcript_A`, `Transcript_B`, `COEX_Score`, `P_Value`,
@@ -55,11 +55,12 @@ populates this before DTU extraction.
 
 ## Alternatives that are **not** used
 
-Both live under `src/libs/deli.dtu/R/` today and will be **deleted in S7**
-(`src/libs/**` is removed). Their semantics are recorded here because the code
-will no longer be available after the cleanup step.
+Two further implementations existed in the split `deli.*` packages and were never run
+on the published datasets. Both are kept, unmaintained, under
+[`analysis/deprecated/`](../analysis/deprecated/README.md). They no longer run: they
+depended on the removed `deli.*` / `project.logger` helpers.
 
-### `deli.dtu::detect_cotan_dtu` — `src/libs/deli.dtu/R/06_det_dtu.R`
+### `detect_cotan_dtu()` — `analysis/deprecated/06_det_dtu.R`
 
 Global negative COEX plus the chi-squared p-value, then a further
 **opposite-sign per-cluster COEX** test, and it computes a combined `DTU_Score`.
@@ -67,7 +68,7 @@ It reads row names as `GENE_TRANSCRIPT` and splits on `_` (delimiter argument).
 Difference from canonical: uses per-cluster COEX rather than the DEA-contrast
 switch, and reports a score instead of the two contrast columns.
 
-### `deli.dtu::extract_dtu_candidates` — `src/libs/deli.dtu/R/02_ext_dtu.R`
+### `extract_dtu_candidates()` (mutual exclusivity only) — `analysis/deprecated/02_ext_dtu.R`
 
 Only pairwise mutual exclusivity (negative COEX + p-value); **no cluster step**.
 Also assumes `GENE_TRANSCRIPT` row names split on `_`. It is the strict subset of

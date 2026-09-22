@@ -94,9 +94,9 @@ steps:
     input_object: calculated
     recompute_dea: auto
     p_value_threshold: 0.05
-    # The released arrigoni run used 0.2 (not the 0.5 of src/tmp.R, which never
-    # produced a published table). Conflict filtering is the hard-coded
-    # "COEX <= 0" inside extract_dtu_candidates().
+    # The released arrigoni run used 0.2 (not the 0.5 of an abandoned scratch
+    # variant that never produced a published table). Conflict filtering is the
+    # hard-coded "COEX <= 0" inside extract_dtu_candidates().
     min_dea_contrast: 0.2
     gene_name_col: gene_name
     outputs:

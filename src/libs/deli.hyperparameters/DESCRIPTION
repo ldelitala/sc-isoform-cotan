@@ -1,9 +1,0 @@
-Package: cotan.deli.hyperparameters
-Title: Sub-package cotan.deli.hyperparameters
-Version: 0.0.0.9000
-Description: Hyperparameter search and simulation package for cotan.deli.
-License: GPL-3
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 8.0.0
-Imports: project.base, project.logger, deli.cotan.core

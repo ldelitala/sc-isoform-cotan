@@ -51,7 +51,6 @@ Two independent units meet at one artifact, a filtered transcript-level matrix
 | `scripts/` | `install_deps.R` (pins COTAN), `verify_dtu_parity.R` (result parity check), `collect_results.sh`. |
 | `results/` | Curated published outputs. See [`results/README.md`](results/README.md). |
 | `docs/` | Design docs and reference material; `docs/legacy/` is historical. |
-| `src/libs/` | **Superseded; pending deletion (S7).** The old `project.*` / `deli.*` packages, kept only until the cleanup finishes. Do not build on them. |
 
 ## Installation
 
@@ -199,8 +198,8 @@ To get a **cell-by-isoform** matrix, `2.3_index_apply_cheat.sh`:
   `.cache/`, `COTAN/`, `logs/`). Only code and docs are versioned.
 - **RAM-disk policy.** Downloads stage in `/dev/shm` (`scratch '/dev/shm'`);
   never write raw SRA/BAM to persistent disk.
-- **`central.config.example` is illustrative only** — the real override is the
-  per-run `nextflow.config` (`-c`) plus `custom.config` for the child pipeline.
+- **Resource overrides.** The per-run `nextflow.config` (`-c`) plus `custom.config`
+  for the child pipeline are the only override mechanism; there is no `central.config`.
 - **Docs drift.** Older `docs/*.md` describe steps `all`/`filter`, old parameter
   names (`srr_ids`, `index_dir`, `genome`) and an outdated simpleaf container tag — they now live
   under `docs/legacy/`. Trust this README and the code over them.

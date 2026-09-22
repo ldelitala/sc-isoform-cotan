@@ -197,24 +197,26 @@ Deliberate deviations from the released drivers, all documented in the configs:
 * `objects.calculated` for arrigoni names `calculated.cotan.rds`, the object the released
   DTU step actually read, not the later re-run `calculated.transcript.cotan.rds`.
 * No `coex_threshold` parameter, and `min_dea_contrast` is 0.2 (arrigoni) / 0.05 (ding) —
-  the values that produced the published tables. `-0.1 / 0.5` belong to `src/tmp.R`, an
-  abandoned variant.
+  the values that produced the published tables. `-0.1 / 0.5` belonged to an abandoned
+  scratch variant that never produced a published table.
 
 ## Not ported
 
 * `confront_clusters.R` — compared two clusterizations of the same object as an
   intermediate sanity check; it produced none of the published results.
-* `arrigoni/Rscripts/gene/00_create_seurat.R` — builds a Seurat object from eight GEO
+* the `00_create_seurat.R` ingestion script — builds a Seurat object from eight GEO
   matrix triples. That is dataset ingestion; it is described above as a prerequisite
   instead of becoming a step.
-* the `deli.*` packages — alternative DTU formulations that were never run on the
-  published datasets. They are described in `docs/dtu_methods.md` rather than copied here.
+* the alternative DTU formulations from the removed `deli.*` packages — never run on the
+  published datasets. The two implementations are kept under
+  [`analysis/deprecated/`](deprecated/README.md), with their semantics in
+  `docs/dtu_methods.md`.
 
-One of the 22 archived driver scripts does not parse — `ding_cortex_2/…/transcript/05_cluster.R`
-misses a comma after `cl_name = "local_transcript_cluster"` — and `arrigoni/…/06_dtu.R` names
-its output `dtu_candidates.known_cell_types.csv` although the published artefact is
-`dtu_candidates.csv`. That same script also assigns the result of
+Two archived driver scripts were faulty and explain why the snapshots were illustrative,
+not an exact record of what ran: the `transcript/05_cluster.R` copy did not parse (a
+missing comma after `cl_name = "local_transcript_cluster"`), and the arrigoni `06_dtu.R`
+named its output `dtu_candidates.known_cell_types.csv` although the published artefact is
+`dtu_candidates.csv`. That same script also assigned the result of
 `extract_dtu_candidates()` over the COTAN object, which cannot work (the function returns
 the candidate table), so its second extraction never produced the second arrigoni table.
-The copies under `results/**/Rscripts/` are therefore illustrative, not an exact record of
-what ran — this directory is the record.
+This directory is the record; the `results/**/Rscripts/` snapshots were removed in S7.

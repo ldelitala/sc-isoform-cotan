@@ -131,7 +131,7 @@ log_stats <- function(log_path) {
 # --- comparison --------------------------------------------------------------
 
 # Order-independent DTU identity, as used by the released comparison script
-# results/ding_cortex_2/Rscripts/confront_dtu.R.
+# (since removed with the superseded `results/**/Rscripts/` snapshots).
 dtu_ids <- function(df) {
     sort(paste(df$Gene_ID, pmin(df$Transcript_A, df$Transcript_B),
                pmax(df$Transcript_A, df$Transcript_B), sep = "___"))

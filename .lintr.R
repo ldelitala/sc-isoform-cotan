@@ -13,3 +13,7 @@ linters <- linters_with_defaults(
   object_usage_linter = NULL,
   line_length_linter = line_length_linter(120)
 )
+
+# `analysis/deprecated/` holds superseded code kept for provenance only (S7). It is
+# unmaintained and deliberately excluded from linting.
+exclusions <- list("deprecated")
