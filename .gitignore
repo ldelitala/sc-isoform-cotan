@@ -7,3 +7,19 @@ data/
 .vscode/
 COTAN/
 logs/
+
+# Safety net: nextflow intermediates, bulk sequence/reference data, OS junk
+.nextflow/
+work/
+results/
+output/
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bam
+*.bai
+*.sam
+*.sra
+.DS_Store
+*.log
