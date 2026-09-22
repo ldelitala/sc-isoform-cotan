@@ -78,9 +78,10 @@ Only step `07_dtu.R` produces the reported tables. The rest are upstream.
 - **`03_calc`** (COEX) costs hours. If `objects.calculated` already exists, skip it:
   `run_all.R --from 04`, or run `07_dtu.R` directly.
 - **`05_cluster`** is a guided optimisation whose outcome is not fixed in advance.
-- The final COTAN object for the published DTU tables is
-  `data/test/cotan_coex.rds` (2.78 GB) — **never delete it**. It makes the parity
-  check possible without recomputing COEX.
+- The stored final COTAN object is `data/test/cotan_coex.rds` (2.78 GB) — **never
+  delete it**. It is **not** an input to the parity check (`verify_dtu_parity.R`
+  reads the per-dataset objects below); it is kept as the last checkpoint of the
+  coexistence state.
 
 ### Parity check
 

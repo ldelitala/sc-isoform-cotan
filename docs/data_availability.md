@@ -37,8 +37,8 @@ at both levels and the DTU candidate tables are intersected (step `08`). The
 cortex_2 cells arrive already QC-filtered; the barcode list is
 `data/geo_metadata/ding/cortex_2/clean_Cortex2_QC_barcodes.tsv.gz`.
 
-Two further Ding runs exist under `runs/ding/` (`brain1`, `pbmc1`) but produced no
-reported table.
+Two further Ding runs (`brain1`, `pbmc1`) were completed but produced no reported
+table; both were removed before submission (2026-09-22).
 
 ## Re-downloading
 

@@ -35,7 +35,7 @@ athena has **no `sudo`** and `/data` is root-owned, so scratch checkouts go unde
 
 ## Directory layout
 
-Root: `/data/lorenzo_delitala` (~1.3 TB total).
+Root: `/data/lorenzo_delitala` (~450 GB total).
 
 | Path | Size | Holds | Safe to delete? |
 | :--- | ---: | :--- | :--- |
@@ -45,8 +45,8 @@ Root: `/data/lorenzo_delitala` (~1.3 TB total).
 | `.conda/` | 19 GB | the `cotanisoform-*` conda envs | recreate with `conda env create` — keep |
 | `COTAN/` | 138 MB | COTAN source clone (pinned commit) | re-clonable, but keep |
 | `data/` | 295 GB | see below | partly |
-| `runs/` | 635 GB | per-dataset Nextflow run dirs + bulk outputs | bulk outputs only, with care |
-| `.cache/` | 379 GB | **`ncbi/` 376 GB** (SRA prefetch cache), `singularity/` 2.4 GB | `ncbi/` yes — re-downloadable |
+| `runs/` | 133 GB | `arrigoni/` 108 GB + `ding/cortex_2/` 26 GB — run dirs + preprocessing bulk | no |
+| `.cache/` | 3.1 GB | `ncbi/refseq` 635 MB, `singularity/` 2.4 GB (the SRA prefetch cache was deleted 2026-09-22) | — |
 | `/home/lorenzo_delitala/cleanup-checkout` | 280 MB | scratch clone that S8 deletes | yes (at S8) |
 
 ### `data/`
@@ -63,24 +63,29 @@ Root: `/data/lorenzo_delitala` (~1.3 TB total).
 
 | File | Size | Note |
 | :--- | ---: | :--- |
-| `cotan_coex.rds` | **2.78 GB** | **The final COTAN object used for the reported DTU results.** Makes the parity check possible without re-running `coex`. **Never delete.** |
+| `cotan_coex.rds` | **2.78 GB** | Stored final COTAN object. **Not** read by `analysis/config/*.yaml` or `scripts/verify_dtu_parity.R` (which use `calculated.cotan.rds` and `clustered.transcript.with_gene_labels.rds`), so it is not a parity input. Kept as the last coexistence-state checkpoint. **Never delete.** |
 | `b2sample.tsv` | 19 MB | two-sample test table |
 | `gdi_distribution.pdf` | 497 KB | scratch GDI plot (also in `results/`) |
 
 ### `runs/`
 
-Per-dataset dirs `runs/arrigoni/` and `runs/ding/{cortex_2,brain1,pbmc1}/`. Each
-holds `run_pipeline.sh`, `samplesheet.csv`, `nextflow.config`, `custom.config`,
-`.nextflow.log` and a `results/` tree (downloaded data, references, index,
-preprocessed matrices) — the bulk of the 635 GB. `runs/` is gitignored and exists
-only on athena. The handoff artefact to `analysis/` is a Seurat object under
+Per-dataset dirs `runs/arrigoni/` and `runs/ding/cortex_2/` — the two reported
+datasets. Each holds `run_pipeline.sh`, `samplesheet.csv`, `nextflow.config`,
+`custom.config`, `.nextflow.log` and a `results/` tree (downloaded data, references,
+index, preprocessed matrices). `runs/` is gitignored and exists only on athena. The
+handoff artefact to `analysis/` is a Seurat object under
 `data/project_files/<dataset>/`.
+
+> Two further Ding runs, `runs/ding/pbmc1/` (395 GB) and `runs/ding/brain1/`
+> (108 GB), were completed (2026-06-24, no failures) but produced no reported table
+> and no analysis workspace. Both were **deleted 2026-09-22** with the SRA download
+> cache; re-create them from the ingest instructions if ever needed.
 
 > `runs/` paths in old scratch scripts say `arrigoni2023`; the real directory is
 > `runs/arrigoni/`.
 
 ## Disk pressure
 
-- `/data` — 18 TB, 12 TB free (30 % used).
+- `/data` — 18 TB, 13 TB free (25 % used) as of 2026-09-22.
 - `/` (and `/home`) — 436 GB, **30 GB free (93 % used)**. Keep new scratch under
   `/data`, not `$HOME`.
