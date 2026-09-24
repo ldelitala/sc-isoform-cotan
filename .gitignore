@@ -2,6 +2,7 @@
 # Anchored to the repo root so they do not match paths inside results/.
 /runs/
 /data/
+/scratch/
 /.cache/
 /.conda/
 /.Trash-1000/
