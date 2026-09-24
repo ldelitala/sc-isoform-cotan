@@ -22,7 +22,9 @@ they are Git-unfriendly and stay on the machine.
   thesis appendix tables are built from it. Step `08_compare_dtu.R` on the final 46/46
   tables yields 45 / 1 + 1, so re-running that step does not reproduce these files; see
   [`../docs/dtu_methods.md`](../docs/dtu_methods.md).
-- `plots/` — COTAN diagnostics: GDI plots, UMAPs, cluster/dendrogram plots.
+- `plots/` — COTAN diagnostics: GDI plots, UMAPs, cluster/dendrogram plots. Includes
+  the `*_tau_sweep.{csv,png}` contrast-threshold sensitivity sweep (step `09_sweep_tau.R`;
+  the copies here were produced by the earlier standalone script and moved from `work/`).
 - `logs/` — per-step run logs (`init_cotan`, `cotan_calc`, `cluster`, `plot_gdi`, …).
 - `t2gene_name.tsv`, `GSE243665_combined_QC_barcodes.tsv` — feature/barcode maps.
 
