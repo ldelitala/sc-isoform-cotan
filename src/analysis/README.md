@@ -179,6 +179,76 @@ a file with that name already exists. The released runs logged step 07 under the
 `cotan_calc` name (copied from the calc step), so the DTU logs in `results/**/logs/` are
 called `cotan_calc*.log`.
 
+## Reproducibility
+
+How to recreate the reported results from scratch, and which objects let you skip
+the expensive parts. Everything heavy runs on athena.
+
+### Environment
+
+```bash
+conda env create -f envs/analysis.yml      # R 4.5.3 + R libraries
+conda env create -f envs/pipeline.yml      # Nextflow launcher + JDK + pigz
+conda activate cotanisoform-analysis
+Rscript scripts/install_deps.R             # COTAN 2.13.1 @ be93aa8
+R CMD INSTALL src/cotanisoform
+```
+
+Pinned versions: `envs/README.md`. COTAN is installed from a pinned commit, not
+from conda.
+
+### Steps per dataset
+
+| Dataset / level | `run:` steps |
+| :--- | :--- |
+| arrigoni (transcript) | `00 01 02 03 04 05 07` |
+| ding cortex_2 (transcript) | `00 01 02 03 04 05 06 07 08` |
+| ding cortex_2 (gene) | `02 03 04 05` |
+
+The gene-level run exists for one reason: its `local_gene_cluster` labels are
+transferred onto the transcript object by step `06` of the transcript config, so
+gene-level and transcript-level DTU candidates can be compared. It starts from the
+GEO count matrix (`input_matrix`), not a Seurat object, and has no DTU step of its
+own.
+
+### Skipping expensive steps
+
+Only step `07_dtu.R` produces the reported tables. The rest are upstream.
+
+- **`03_calc`** (COEX) costs hours. If `objects.calculated` already exists, skip
+  it: `run_all.R --from 04`, or run `07_dtu.R` directly.
+- **`05_cluster`** is a guided optimisation whose outcome is not fixed in advance.
+
+### Parity gate
+
+```bash
+Rscript scripts/verify_dtu_parity.R
+```
+
+On athena, against the stored objects, this must print
+`3/3 cases reproduced exactly` and exit 0. Two of the three published tables
+reproduce byte-identically; the third matches in value (it was re-serialised
+unquoted after production).
+
+### Known limitations
+
+- Steps `01`–`06` are faithful transcriptions of the released drivers but have
+  **not** been re-executed (hours of COEX, plus an undefined optimisation); they
+  are validated with `--dry-run` only. Step `08` on the final tables gives
+  45 shared / 1 + 1 exclusive, whereas the released `dtu_shared.csv` (39 / 3 / 4) came
+  from an earlier 40/38 candidate pair and is kept for the thesis appendix — see
+  [`../../docs/dtu_methods.md`](../../docs/dtu_methods.md).
+- The child `nf-core/scrnaseq` run honours a user-supplied `custom.config`
+  (`child_config` → `custom.config`, `src/pipeline/modules/align.nf`), but the
+  in-repo default only overrides the simpleaf container — it does not scale the
+  child's cpus/memory automatically.
+
+## COTAN p-value ceiling
+
+`COTAN::calculatePValue()` segfaults at ≥46,341 features (32-bit overflow when
+subsetting `dspMatrix`); keep features < ~41,000. See
+[`../../docs/dtu_methods.md`](../../docs/dtu_methods.md) for the p-value model.
+
 ## Data prerequisites
 
 Kept on athena, not in git (too large):
@@ -227,7 +297,7 @@ Deliberate deviations from the released drivers, all documented in the configs:
 * the alternative DTU formulations from the removed `deli.*` packages — never run on the
   published datasets. The two implementations are kept under
   [`src/analysis/deprecated/`](deprecated/README.md), with their semantics in
-  `docs/dtu_methods.md`.
+  [`../../docs/dtu_methods.md`](../../docs/dtu_methods.md).
 
 Two archived driver scripts were faulty and explain why the snapshots were illustrative,
 not an exact record of what ran: the `transcript/05_cluster.R` copy did not parse (a

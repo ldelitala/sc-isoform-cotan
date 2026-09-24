@@ -7,121 +7,116 @@
 
 This repository is the code behind a bachelor's thesis that asks whether
 **differential transcript usage (DTU)** can be recovered from single-cell RNA-seq
-data using **COTAN**, a co-expression method based on zero-count statistics. The
-thesis runs on transcript (isoform) level, not gene level.
+data using **COTAN**, a co-expression method based on zero-count statistics.
+COTAN is adapted here from gene level to **transcript (isoform) level**: a
+cell-by-isoform count matrix is produced, then COTAN is run on it to detect,
+within a parent gene, pairs of transcripts that switch their relative usage
+across cell clusters. Those candidate pairs are the DTU tables the thesis
+reports. The exact definition is in [`docs/dtu_methods.md`](docs/dtu_methods.md).
 
-COTAN is adapted here from gene level to **transcript level**: a filtered
-cell-by-isoform count matrix is produced by a Nextflow pipeline, then COTAN is
-run on it to detect, within a parent gene, pairs of transcripts that switch their
-relative usage across cell clusters. The candidate pairs form the DTU tables the
-thesis reports. See [`docs/dtu_methods.md`](docs/dtu_methods.md) for the exact
-definition.
+The thesis sources are at <https://github.com/ldelitala/cotan-dtu-thesis>; cite
+this software with [`CITATION.cff`](CITATION.cff).
 
-> Authoritative overview: this file. The downstream R analysis is documented in
-> [`src/analysis/README.md`](src/analysis/README.md). `docs/` holds design notes, some
-> historical — see [`docs/README.md`](docs/README.md) for which is current.
+## Three tools in one
+
+The repository is really three independent pieces that meet at one artifact (a
+filtered cell-by-isoform matrix). Each has its own README; use the one that
+matches what you want to do.
+
+| Tool | What it is | Read |
+| :--- | :--- | :--- |
+| `src/pipeline/` | Nextflow: SRA accessions → cell-by-isoform Seurat matrix. The transcript "cheat" lives here. | [`src/pipeline/README.md`](src/pipeline/README.md) |
+| `src/cotanisoform/` | The R package: every analysis stage as a documented function, plus the logging layer. | [`src/cotanisoform/README.md`](src/cotanisoform/README.md) |
+| `src/analysis/` | The R drivers that compose the package into per-dataset runs and produce the DTU tables. | [`src/analysis/README.md`](src/analysis/README.md) |
 
 ## Data flow
 
 ```mermaid
 graph LR
-  A["SRA accessions (.csv)"] --> B["download<br/>src/pipeline/bin/1.x"]
-  B --> C["index<br/>src/pipeline/bin/2.x"]
-  C --> D["align<br/>nf-core/scrnaseq + simpleaf"]
-  D --> E["raw_matrix.seurat.rds"]
-  E --> H["src/analysis/: COTAN object"]
-  H --> I["coex -> GDI -> clustering -> DEA"]
-  I --> J["DTU candidates"]
+  A["SRA accessions (.csv)"] --> B["src/pipeline/<br/>download, index, align"]
+  B --> C["raw_matrix.seurat.rds"]
+  C --> D["src/analysis/<br/>COTAN -> coex -> GDI -> clustering -> DEA"]
+  D --> E["DTU candidates"]
 ```
 
-Two independent units meet at one artifact, an unfiltered transcript-level Seurat
-matrix (`raw_matrix.seurat.rds`): the Nextflow half **produces** it, the
-`src/analysis/` half **consumes** it and does its own QC clean-up.
+Two independent units meet at one artifact, an **unfiltered** transcript-level
+Seurat matrix (`raw_matrix.seurat.rds`): `src/pipeline/` produces it, `src/analysis/`
+consumes it and does its own QC clean-up.
+
+## Quick start
+
+Everything heavy runs on athena (the university machine). Create the R environment,
+install the pinned COTAN and this repository's package once:
+
+```bash
+conda env create -f envs/analysis.yml     # R 4.5.3 + R libraries
+conda activate cotanisoform-analysis
+Rscript scripts/install_deps.R            # installs COTAN 2.13.1 @ be93aa8
+R CMD INSTALL src/cotanisoform            # this repository's package
+```
+
+Then run one dataset config (the full recipe is in the tool READMEs):
+
+```bash
+Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml
+```
+
+The cheap real check — resolve and validate every path without computing:
+
+```bash
+Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml --dry-run
+```
+
+Add `--out-dir /tmp/scratch` to write to scratch and shadow configured inputs, so
+the published tables are never overwritten. Only step `07_dtu.R` produces the
+reported DTU tables.
 
 ## Repository layout
 
 | Path | Role |
 | :--- | :--- |
+| `src/pipeline/` | Nextflow half: `main.nf`, `nextflow.config`, `modules/`, `subworkflows/`, `bin/` stage scripts. |
 | `src/cotanisoform/` | The R package with the COTAN/Seurat/logging algorithms. Source of truth. |
-| `src/analysis/` | The downstream driver steps (`00`–`08`), one YAML per dataset + level. See [`src/analysis/README.md`](src/analysis/README.md). |
-| `src/pipeline/` | The Nextflow half: `main.nf`, `nextflow.config`, `modules/`, `subworkflows/`, `bin/` stage scripts. |
-| `envs/` | Conda environments for athena (`analysis.yml`, `pipeline.yml`). See [`envs/README.md`](envs/README.md). |
-| `scripts/` | `install_deps.R` (pins COTAN), `verify_dtu_parity.R` (result parity check), `collect_results.sh`. |
-| `results/` | Curated published outputs. See [`results/README.md`](results/README.md). |
-| `docs/` | Design docs and reference material; `docs/legacy/` is historical. |
-
-## Installation
-
-The analysis runs in conda on the university machine (athena). COTAN itself is
-installed from a pinned GitHub commit, not from conda.
-
-```bash
-conda env create -f envs/analysis.yml      # R 4.5.3 + R libraries
-conda env create -f envs/pipeline.yml      # Nextflow launcher + JDK + pigz
-
-conda activate cotanisoform-analysis
-Rscript scripts/install_deps.R             # installs COTAN 2.13.1 @ be93aa8
-R CMD INSTALL src/cotanisoform            # this repository's package
-```
-
-## Quick start
-
-### Nextflow half — produce a filtered matrix
-
-Each dataset has a run directory **on athena** under `work/<dataset>/pipeline/`
-containing `run_pipeline.sh`, `samplesheet.csv`, `nextflow.config` and
-`custom.config`. The script is run **from inside that directory** so
-`launchDir` resolves the output paths (`work/` is gitignored and exists only on
-athena):
-
-```bash
-cd work/<dataset>/pipeline
-./run_pipeline.sh        # -> nextflow run .../src/pipeline/main.nf \
-                         #      -c nextflow.config -profile singularity -resume
-```
-
-`--step` selects `download`, `index` or `align`; `align` is the default and runs
-the full chain. The samplesheet is a CSV with columns `sample,sra`.
-
-### Analysis half — extract DTU candidates
-
-From the repository root, with `cotanisoform` installed:
-
-```bash
-Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml
-Rscript src/analysis/run_all.R --config src/analysis/config/ding_cortex_2.transcript.yaml --from 07 --to 08
-Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml --dry-run   # resolve paths only
-```
-
-Add `--out-dir /tmp/scratch` to write to scratch and shadow configured inputs —
-the published tables are never overwritten. Only step `07_dtu.R` produces the
-reported DTU tables. Step `09_sweep_tau.R` sweeps the contrast threshold `tau`
-(`min_dea_contrast`) over a grid and reports the stable threshold (see
-[`src/analysis/README.md`](src/analysis/README.md)). Full option reference in
-[`src/analysis/README.md`](src/analysis/README.md).
+| `src/analysis/` | Config-driven driver steps (`00`–`09`), one YAML per dataset + level. |
+| `envs/` | Conda environments for athena (`analysis.yml`, `pipeline.yml`). |
+| `scripts/` | `install_deps.R` (pins COTAN), `verify_dtu_parity.R` (parity gate), `collect_results.sh`. |
+| `results/` | Curated published outputs (DTU tables, plots, logs). |
+| `docs/` | Cross-cutting docs: `data.md`, `dtu_methods.md`, `TODO.md`. |
 
 ## Results
 
 The reported DTU candidate tables and diagnostic plots are in
 [`results/`](results/README.md). They can be re-checked against the stored COTAN
-objects with:
+objects on athena:
 
 ```bash
-Rscript scripts/verify_dtu_parity.R      # on athena; must print "3/3 cases reproduced exactly"
+Rscript scripts/verify_dtu_parity.R      # must print "3/3 cases reproduced exactly"
 ```
 
-## Data availability
+The three `dtu_shared.csv` / `dtu_exclusive_file{1,2}.csv` files in
+`results/ding_cortex_2/tables/` are a **released** comparison computed from an
+earlier candidate pair and are kept deliberately for the thesis appendix — step
+`08` on the final tables does not reproduce them (see
+[`docs/dtu_methods.md`](docs/dtu_methods.md)).
 
-Public datasets, GEO accessions, genome builds and re-download instructions are
-in [`docs/data_availability.md`](docs/data_availability.md). Third-party papers
-are cited, not redistributed; the COTAN paper and documentation PDFs are **not**
-shipped in this repository.
+## Documentation
+
+Three cross-cutting docs, one line each:
+
+| Doc | Covers |
+| :--- | :--- |
+| [`docs/data.md`](docs/data.md) | The two datasets, accessions/assemblies, re-download; athena layout, access + tunnel, what is safe to delete. |
+| [`docs/dtu_methods.md`](docs/dtu_methods.md) | The exact DTU definition, the p-value model, the mapping to the published tables. |
+| [`docs/TODO.md`](docs/TODO.md) | Open backlog (currently: per-cluster isoform-proportion plots for the headline candidates). |
+
+Everything else sits next to the tool it documents: `src/pipeline/README.md`,
+`src/cotanisoform/README.md`, `src/analysis/README.md`, `envs/README.md`,
+`results/README.md`, `CONTRIBUTING.md` (dev workflow).
 
 ## Citation
 
 If you use this software, cite the associated bachelor's thesis — see
-[`CITATION.cff`](CITATION.cff). The thesis sources are at
-<https://github.com/ldelitala/cotan-dtu-thesis>.
+[`CITATION.cff`](CITATION.cff).
 
 <!-- TODO(supervisor): add ORCID iDs and/or a DOI here when available. -->
 
@@ -133,71 +128,3 @@ If you use this software, cite the associated bachelor's thesis — see
 
 Supervisors: Prof. Silvia Galfré and Prof. Corrado Priami, University of Pisa,
 Department of Computer Science.
-
----
-
-## Reference: the Nextflow half in detail
-
-### Steps
-
-| Step | What it does |
-| :--- | :--- |
-| `download` | Fetch FASTQs/BAMs for the accessions in the samplesheet |
-| `index` | Download Ensembl FASTA/GTF and build a simpleaf (Piscem) index |
-| `align` | `download` + `index` as needed, then run `nf-core/scrnaseq` and stage the raw matrix (default) |
-
-`main.nf` accepts only these three (`valid_steps`); there is no `all`/`filter`
-step. `align` runs `PREPROCESSING` = `ALIGN_SIMPLEAF`, which stages
-`raw_matrix.seurat.rds`; the R analysis does its own QC.
-
-### Stage scripts
-
-| Process | Script (`src/pipeline/bin/`) | Notes |
-| :--- | :--- | :--- |
-| `CHECK_LAYOUT` | `1.1_ingest_check_layout.sh` | Queries ENA API → `SINGLE`/`PAIRED` |
-| `DOWNLOAD_BAM` | `1.2_ingest_download_bam.sh` | `prefetch --type TenX` + `bamtofastq` |
-| `DOWNLOAD_FASTQ` | `1.3_ingest_download_fastq.sh` | `prefetch` + `fasterq-dump` + `pigz` |
-| `DOWNLOAD_REFERENCE` | `2.1_index_download_reference.sh` | Ensembl download, `primary_assembly`→`toplevel` fallback |
-| `BUILD_INDEX` | `2.2_index_build_index.sh` | `simpleaf index` |
-| `APPLY_TRANSCRIPT_CHEAT` | `2.3_index_apply_cheat.sh` | Identity `t2g` + `mt_transcripts.txt` extraction |
-
-### The transcript "cheat"
-
-To get a **cell-by-isoform** matrix, `2.3_index_apply_cheat.sh`:
-
-1. Rewrites `t2g_3col.tsv` so each transcript maps to **itself** (isoforms stop
-   collapsing into genes).
-2. Deletes `gene_id_to_name.tsv` so `nf-core/scrnaseq` skips gene-symbol
-   annotation and keeps Ensembl transcript IDs (`ENSMUST…`/`ENST…`) as rows.
-3. Writes `mt_transcripts.txt` (mitochondrial transcript IDs) into the index.
-
-### Containers
-
-- Index build: `simpleaf:0.24.0--hd612981_1` (`modules/index.nf`)
-- Child alignment/quant: `simpleaf:0.24.1--hd612981_0` (`modules/align.nf`)
-- `nf-core/scrnaseq` pinned to **4.1.0**, launched as a child Nextflow run inside
-  an `exec:` block with `NXF_SYNTAX_PARSER=v1`.
-
-### Gotchas
-
-- **COTAN p-value segfault.** `COTAN::calculatePValue()` segfaults at ≥46,341
-  features (32-bit overflow when subsetting `dspMatrix`); keep features < ~41,000.
-  See [`docs/cotan_pvalue_segfault.md`](docs/cotan_pvalue_segfault.md).
-- **`data/`, `work/` and all bulk data are gitignored** (`.conda/`, `.cache/`,
-  `COTAN/`, `logs/`, `scratch/`). Only code and docs are versioned.
-- **RAM-disk policy.** Downloads stage in `/dev/shm` (`scratch '/dev/shm'`);
-  never write raw SRA/BAM to persistent disk.
-- **Resource overrides.** The per-run `nextflow.config` (`-c`) plus `custom.config`
-  for the child pipeline are the only override mechanism; there is no `central.config`.
-- **Docs drift.** Older `docs/*.md` describe steps `all`/`filter`, old parameter
-  names (`srr_ids`, `index_dir`, `genome`) and an outdated simpleaf container tag — they now live
-  under `docs/legacy/`. Trust this README and the code over them.
-
-### Working on this project
-
-This clone is synced to athena over git (`git pull` → edit → `git push`; athena's
-tree updates in place). Heavy runs happen only on athena. Before changing a stage
-script, check its Nextflow caller for the exact argument order
-(`src/pipeline/modules/*.nf`). R style is 2-space indent, 120-column limit
-(`.lintr.R`); a new exported function needs `@export` plus regenerated
-`NAMESPACE` and `man/*.Rd`.

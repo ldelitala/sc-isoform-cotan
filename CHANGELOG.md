@@ -6,6 +6,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- Rewrote documentation around the reader: `README.md` is the single entry point
+  (thesis framing, three tools in one, data flow, quick start, layout, results,
+  docs index). New `src/pipeline/README.md`, `src/cotanisoform/README.md`,
+  `docs/data.md`; `src/analysis/README.md` absorbs `docs/reproducibility.md` and
+  the COTAN p-value ceiling; `envs/README.md` absorbs `docs/software_versions.md`;
+  `docs/dtu_methods.md` trimmed, deprecated-script detail moved to
+  `src/analysis/deprecated/README.md`; `CONTRIBUTING.md` and `results/README.md`
+  trimmed to point at the READMEs. Deleted the eleven redundant `docs/*` files
+  and `docs/legacy/`; each fact now lives in exactly one place.
+- Added `src/cotanisoform/.Rbuildignore` (`^README\.md$`) so the new package
+  root README keeps `R CMD check` note-free.
 - Moved `cotanisoform/` and `analysis/` under `src/` (`src/cotanisoform/`, `src/analysis/`);
   all references (README, docs, CI, lintr, CONTRIBUTING) updated to the new paths.
 - Restructured the athena data tree by provenance: `data/` + `runs/` → `inputs/`

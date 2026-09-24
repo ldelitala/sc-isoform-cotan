@@ -1,8 +1,7 @@
 # DTU methods
 
 The exact definition of a differential transcript usage (DTU) candidate used for
-the reported results, and the two alternative formulations that were explored and
-deliberately **not** used.
+the reported results, and the mapping to the published tables.
 
 ## The canonical definition
 
@@ -51,29 +50,17 @@ p <- stats::pchisq(n_cells * coex^2, df = 1, lower.tail = FALSE)
 ```
 
 where `n_cells` is the number of cells in the COTAN object. `calculate_p_value()`
-populates this before DTU extraction.
+populates this before DTU extraction. (Note the COTAN segfault ceiling: at
+≥46,341 features `COTAN::calculatePValue()` aborts R — keep features < ~41,000.)
 
 ## Alternatives that are **not** used
 
-Two further implementations existed in the split `deli.*` packages and were never run
-on the published datasets. Both are kept, unmaintained, under
-[`src/analysis/deprecated/`](../src/analysis/deprecated/README.md). They no longer run: they
-depended on the removed `deli.*` / `project.logger` helpers.
-
-### `detect_cotan_dtu()` — `src/analysis/deprecated/06_det_dtu.R`
-
-Global negative COEX plus the chi-squared p-value, then a further
-**opposite-sign per-cluster COEX** test, and it computes a combined `DTU_Score`.
-It reads row names as `GENE_TRANSCRIPT` and splits on `_` (delimiter argument).
-Difference from canonical: uses per-cluster COEX rather than the DEA-contrast
-switch, and reports a score instead of the two contrast columns.
-
-### `extract_dtu_candidates()` (mutual exclusivity only) — `src/analysis/deprecated/02_ext_dtu.R`
-
-Only pairwise mutual exclusivity (negative COEX + p-value); **no cluster step**.
-Also assumes `GENE_TRANSCRIPT` row names split on `_`. It is the strict subset of
-the canonical method without phase 2. Note it shares its name with the canonical
-function but not its behaviour or its gene/transcript naming convention.
+Two further implementations existed in the split `deli.*` packages and were never
+run on the published datasets. Both are kept, unmaintained, under
+[`src/analysis/deprecated/`](../src/analysis/deprecated/README.md), with their
+semantics recorded there. They no longer run: they depended on the removed
+`deli.*` / `project.logger` helpers. The canonical definition above is what
+produced every published table.
 
 ## Mapping to the published tables
 

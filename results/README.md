@@ -10,7 +10,6 @@ they are Git-unfriendly and stay on the machine.
 | :--- | :--- | :--- |
 | `arrigoni/` | Arrigoni 2023 (GSE243665), human cell lines | transcript (isoform) |
 | `ding_cortex_2/` | Ding mouse cortex | gene vs transcript comparison |
-| `gdi_distribution.pdf` | scratch/test run | transcript |
 
 Each dataset dir has the same shape: `tables/` (the thesis deliverables), `plots/`, `logs/`.
 
@@ -25,8 +24,7 @@ Each dataset dir has the same shape: `tables/` (the thesis deliverables), `plots
   tables yields 45 / 1 + 1, so re-running that step does not reproduce these files; see
   [`../docs/dtu_methods.md`](../docs/dtu_methods.md).
 - `plots/` — COTAN diagnostics: GDI plots, UMAPs, cluster/dendrogram plots. Includes
-  the `*_tau_sweep.{csv,png}` contrast-threshold sensitivity sweep (step `09_sweep_tau.R`;
-  the copies here were produced by the earlier standalone script and moved from `work/`).
+  the `*_tau_sweep.{csv,png}` contrast-threshold sensitivity sweep.
 - `logs/` — per-step run logs (`init_cotan`, `cotan_calc`, `cluster`, `plot_gdi`, …).
 - `tables/t2gene_name.tsv`, `tables/GSE243665_combined_QC_barcodes.tsv` — feature/barcode maps.
 
@@ -41,6 +39,7 @@ Large intermediate objects: `calculated.*.cotan.rds` (~3–5.5 GB),
 
 Produced on Athena by the `src/analysis/` driver steps (`src/analysis/run_all.R`) using the
 `src/cotanisoform` R package. Files were copied verbatim; no post-processing.
+See [`../src/analysis/README.md`](../src/analysis/README.md).
 
 ## Refreshing
 

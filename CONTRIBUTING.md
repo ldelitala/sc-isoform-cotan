@@ -1,56 +1,16 @@
 # Contributing
 
-This is a bachelor's thesis project. Contributions are mostly fixes and clarifications, but
-the workflow below is what any change should follow.
+This is a bachelor's thesis project. Contributions are mostly fixes and
+clarifications, but any change follows the workflow below.
 
-## Prerequisites
+## Where things run
 
-- **athena** (the university server, `/data/lorenzo_delitala`) for anything that computes:
-  88 cores, the conda environments, the datasets and the Nextflow run directories live there.
-  There is **no sudo**, which is why the tooling lives in conda (`envs/README.md`).
-- **Singularity** for the Nextflow half — the aligner and indexer run in containers, not conda.
+- **athena** (the university server, `/data/lorenzo_delitala`) is where anything
+  computes: 88 cores, the conda environments, the datasets and the Nextflow run
+  directories live there. There is **no sudo**, which is why the tooling lives in
+  conda. Set up the environment and run the pipeline/analysis on athena exactly as
+  documented in `envs/README.md`, `src/pipeline/README.md` and `src/analysis/README.md`.
 - **The Mac** is where the repository is edited and pushed from.
-
-## Setting up the environment (athena)
-
-```bash
-conda env create -f envs/analysis.yml
-conda activate cotanisoform-analysis
-Rscript scripts/install_deps.R     # COTAN, pinned at be93aa8 (v2.13.1)
-R CMD INSTALL src/cotanisoform    # this repository's R package
-
-conda env create -f envs/pipeline.yml   # Nextflow launcher (nextflow + JDK + pigz)
-```
-
-`COTAN` is deliberately outside the conda file: the commit is the reproducibility-critical
-part. See [`envs/README.md`](envs/README.md) for what was dropped and why.
-
-## Running the analysis layer
-
-The downstream R half is `src/analysis/`; every step is driven by a YAML config:
-
-```bash
-Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml
-Rscript src/analysis/run_all.R --config src/analysis/config/ding_cortex_2.transcript.yaml --from 07 --to 08
-Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml --dry-run   # resolve paths only
-```
-
-`--out-dir /tmp/...` redirects every output and shadows the inputs, so the published
-`dtu_candidates.csv` files are never overwritten. Only step `07_dtu.R` writes the reported
-tables. Do not re-run steps `01`–`06` casually: they are faithful transcriptions of the
-released runs and have not been re-executed (hours of COEX).
-
-## Running the pipeline
-
-Run from the per-dataset directory, so `launchDir` resolves correctly:
-
-```bash
-cd work/<dataset>/pipeline   # only exists on athena; work/ is gitignored
-./run_pipeline.sh
-```
-
-The steps are `download | index | align`; `align` (the default) runs the full chain. See
-`src/pipeline/main.nf` and `src/pipeline/nextflow.config`.
 
 ## Style
 
@@ -62,6 +22,8 @@ The steps are `download | index | align`; `align` (the default) runs the full ch
   example, `scripts/verify_dtu_parity.R` default `--root`), and the released run logs under
   `results/**/logs/` — those logs are the parity evidence and are never edited.
 - Shell/Nextflow: `.editorconfig` wins (4-space indent for `.nf` / `.config`).
+- Before changing a stage script, check its Nextflow caller for the exact argument order
+  (`src/pipeline/modules/*.nf`).
 
 ## Before committing
 

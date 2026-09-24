@@ -85,6 +85,37 @@ versions float with current repodata; the original env had `r-matrix` 1.7_5, `r-
 3.3.0 and `r-roxygen2` 8.0.0, and a fresh solve now picks 1.7_6 / 3.4.0 / 8.1.0. Pin those
 too if a byte-exact reproduction is ever needed.
 
+### What the published results were produced with
+
+Measured in the `deli` env on 2026-09-22. The **load-bearing pins** are the R
+version, the COTAN commit and the container tags; other R packages float with
+current repodata unless pinned (see the caveat above).
+
+| Package | Version |
+| :--- | :--- |
+| R | **4.5.3** (2026-03-11) |
+| COTAN | **2.13.1** — `seriph78/COTAN` @ **`be93aa8`** |
+| Seurat | 5.5.1 |
+| SeuratObject | 5.4.0 |
+| Matrix | 1.7.5 |
+| ggplot2 | 4.0.3 |
+| mclust | 6.1.3 |
+| conflicted | 1.2.0 |
+| devtools | 2.5.2 |
+| roxygen2 | 8.0.0 |
+| testthat | 3.3.2 |
+| lintr | 3.3.0-1 |
+| styler | 1.11.0 |
+
+Pipeline launcher (`envs/pipeline.yml`): Nextflow **26.04.4**, OpenJDK 21, pigz
+(conda-forge current).
+
+Alignment (Singularity containers): simpleaf (index build)
+`0.24.0--hd612981_1`, simpleaf (align / quant) `0.24.1--hd612981_0`, `nf-core/scrnaseq`
+**4.1.0**, Ensembl reference release **102**. Tags are hard-coded in
+`src/pipeline/modules/index.nf` and `src/pipeline/modules/align.nf`; `nf-core/scrnaseq`
+is launched as a child run with `NXF_SYNTAX_PARSER=v1`.
+
 ## Verifying a change to these files
 
 ```bash
