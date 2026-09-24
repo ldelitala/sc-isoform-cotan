@@ -53,11 +53,6 @@ def printPipelineInfo(params, launchDir, workDir, profile) {
       ${c_bold}UMI Resolution       ${c_reset}: ${fmtVal(params.scrnaseq_params?.simpleaf_umi_resolution)}
       ${c_bold}Custom Geometry      ${c_reset}: ${fmtVal(params.scrnaseq_params?.custom_geometry)}
 
-    ${c_cyan}${c_bold}▶ QC THRESHOLDS${c_reset}
-      ${c_bold}Min / Max Features   ${c_reset}: ${c_yellow}${params.min_features}${c_reset} / ${c_yellow}${params.max_features}${c_reset}
-      ${c_bold}Minimum Counts       ${c_reset}: ${c_yellow}${params.min_counts}${c_reset}
-      ${c_bold}Max Mito (%)         ${c_reset}: ${c_yellow}${params.max_percent_mt}%${c_reset}
-
     ${c_cyan}${c_bold}▶ FILE SYSTEM${c_reset}
       ${c_bold}Dataset Dir          ${c_reset}: ${c_dim}${params.dataset_dir}${c_reset}
       ${c_bold}Reference Dir        ${c_reset}: ${c_dim}${params.reference_dir}${c_reset}

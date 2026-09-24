@@ -1,5 +1,5 @@
 include { CHECK_LAYOUT ; DOWNLOAD_BAM ; DOWNLOAD_FASTQ } from '../modules/ingest'
-include { require ; ensureDir ; sendWebhook } from '../utils/helpers'
+include { require ; ensureDir } from '../utils/helpers'
 
 // ========================================================================
 // LIGHTWEIGHT LOGGING PROCESS (Replaces .subscribe)

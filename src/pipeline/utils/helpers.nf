@@ -19,29 +19,13 @@ def ensureDir(paths, context: String = "directory") {
     }
 }
 
-//legacy function before moving to input samplesheet
-/* def parseSrrIds(val) {
-    if (!val) {
-        return []
-    }
-    def m = (val =~ /^([A-Za-z]+)(\d+)\s*-\s*[A-Za-z]+(\d+)$/)
-    if (m.matches()) {
-        def prefix = m[0][1]
-        def (start, end) = [m[0][2].toInteger(), m[0][3].toInteger()]
-        return (start..end).collect { num -> prefix + num.toString().padLeft(m[0][2].length(), '0') }
-    }
-    return val.split(',').collect { srr -> srr.trim() }.findAll()
-} */
-
-
-def sendWebhook(webhookUrl, message, status, duration = null) {
+def sendWebhook(webhookUrl, message, status) {
     if (!webhookUrl || !webhookUrl.toString().startsWith("http")) {
         return null
     }
 
     def datasetName = launchDir.getName()
     def normalizedStatus = status?.toLowerCase()
-    def durText = duration ? duration.toString() : null
 
     try {
         def colorBlue = 3447003
@@ -65,9 +49,6 @@ def sendWebhook(webhookUrl, message, status, duration = null) {
         timestamp.setTimeZone(TimeZone.getTimeZone("UTC"))
 
         def descriptionText = "${message}"
-        if (durText) {
-            descriptionText += "\n⏱*${durText}*"
-        }
 
         def embed = [title: datasetName, description: descriptionText, color: colorCode, timestamp: timestamp.format(new Date())]
         def payload = groovy.json.JsonOutput.toJson([embeds: [embed]])

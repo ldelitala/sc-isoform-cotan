@@ -21,7 +21,6 @@ graph TD
     A --> O["Process: BUILD_INDEX"]
     O -->|applyCheatIndex| H
     F & G & O --> H["Process: ALIGN_SIMPLEAF (exec: block)"]
-    H --> I["Process: QC_FILTER (R Script)"]
 ```
 
 ---
@@ -68,12 +67,3 @@ Wraps the execution of the `nf-core/scrnaseq` pipeline using the `nf-cascade` pa
   * Consumes logs/outputs natively in real time, waits for completion, and throws an error on non-zero exit codes.
   * Safely cleans up the child pipeline's `work/` directory upon success.
 * **Outputs**: Path to the raw Seurat matrix relative to the task work directory (type: `path`). The file `raw_matrix.seurat.rds` is staged to both the target `unfiltered_dir` and the local `task.workDir`.
-
-### D. Process: `QC_FILTER`
-Executes R quality control cell-filtering using parameters passed from the configuration.
-* **Inputs**:
-  * `dataset`: Target dataset name.
-  * `raw_matrix_rds`: Path to the raw Seurat matrix RDS file.
-* **Execution**:
-  * Runs [filter_matrix.R](../src/pipeline/bin/filter_matrix.R) using parameters.
-* **Outputs**: Filtered Seurat/SingleCellExperiment RDS matrix file written to the `filtered/` output folder.

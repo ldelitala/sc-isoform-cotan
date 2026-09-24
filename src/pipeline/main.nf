@@ -7,7 +7,7 @@ include { printPipelineInfo } from './utils/init'
 
 include { DOWNLOAD_READS } from './subworkflows/download'
 include { PREPARE_INDEX } from './subworkflows/index'
-include { PREPROCESSING } from './subworkflows/preprocessing.nf'
+include { PREPROCESSING } from './subworkflows/preprocessing'
 
 def success(msg) {
     sendWebhook(params.webhook_url, msg.toUpperCase(), "success")

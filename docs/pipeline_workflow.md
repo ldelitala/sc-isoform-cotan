@@ -27,10 +27,7 @@ graph TD
     
     H -->|Run nf-core/scrnaseq| J["combined_raw_matrix.seurat.rds"]
     J -->|Publish Matrix Copy| K["work/<dataset>/analysis/"]
-    
-    J -->|Input RDS| L["Process: QC_FILTER"]
-    L -->|Execute filter_matrix.R| M["work/<dataset>/pipeline/results/"]
-    M -->|QC-Filtered RDS Matrix| N["Final Preprocessed Output"]
+    K -->|Handoff to R analysis| N["Final Preprocessed Output"]
 ```
 
 ## 2. Stage Breakdown
@@ -49,6 +46,7 @@ graph TD
 - **`ALIGN_SIMPLEAF`**: Spawns a child `nf-core/scrnaseq` pipeline run inside `work/<dataset>/pipeline/results/preprocessing/`.
 - **Publish raw matrix**: Writes the unfiltered concatenated matrix to `work/<dataset>/analysis/raw_matrix.seurat.rds` (the `unfiltered_dir`), which is the handoff to the R analysis.
 
-### Stage 4: Quality Control (`filter.nf`)
-- **`QC_FILTER`**: Executes the modular `filter_matrix.R` script using criteria (mitochondrial transcripts, UMI counts, feature ranges) set in `src/nextflow.config`.
-- **Publish filtered matrix**: Writes the final filtered matrix to `work/<dataset>/pipeline/results/sample_filtered.rds` as the starting point for COTAN analysis.
+### Stage 4: Downstream R analysis (`src/analysis/`)
+- The `src/analysis/` steps take `raw_matrix.seurat.rds`, do their own Seurat
+  clean-up and QC against the published GEO barcode lists, then run COTAN. QC
+  filtering is not part of the Nextflow half.

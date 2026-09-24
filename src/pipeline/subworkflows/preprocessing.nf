@@ -1,5 +1,4 @@
 include { ALIGN_SIMPLEAF } from '../modules/align'
-include { QC_FILTER } from '../modules/filter'
 include { require } from '../utils/helpers'
 
 workflow PREPROCESSING {
@@ -31,15 +30,6 @@ workflow PREPROCESSING {
             if (row.sra && row.sample) {
                 srr_to_sample[row.sra.trim()] = row.sample.trim()
             }
-        }
-
-    def mt_transcripts_ch = index_ch
-        .map { idx_path ->
-            def mt_file = file(idx_path).resolve('mt_transcripts.txt')
-            if (!mt_file.exists()) {
-                error("\033[0;31mPipeline Validation Error: Required file 'mt_transcripts.txt' not found inside index directory: ${idx_path}\033[0m")
-            }
-            return mt_file.toString()
         }
 
     def raw_matrix_ch
@@ -74,9 +64,7 @@ workflow PREPROCESSING {
         raw_matrix_ch = channel.fromPath(raw_matrix_path)
     }
 
-    QC_FILTER(raw_matrix_ch, mt_transcripts_ch)
-
     emit:
-    QC_FILTER.out.filtered_matrix
+    raw_matrix_ch
 }
 

@@ -27,18 +27,16 @@ definition.
 graph LR
   A["SRA accessions (.csv)"] --> B["download<br/>src/pipeline/bin/1.x"]
   B --> C["index<br/>src/pipeline/bin/2.x"]
-  C --> D["align + QC<br/>nf-core/scrnaseq + simpleaf"]
+  C --> D["align<br/>nf-core/scrnaseq + simpleaf"]
   D --> E["raw_matrix.seurat.rds"]
-  E --> F["filter_matrix.R"]
-  F --> G["*_filtered.rds"]
-  G --> H["src/analysis/: COTAN object"]
+  E --> H["src/analysis/: COTAN object"]
   H --> I["coex -> GDI -> clustering -> DEA"]
   I --> J["DTU candidates"]
 ```
 
-Two independent units meet at one artifact, a filtered transcript-level matrix
-(`*_filtered.rds`): the Nextflow half **produces** it, the `src/analysis/` half
-**consumes** it.
+Two independent units meet at one artifact, an unfiltered transcript-level Seurat
+matrix (`raw_matrix.seurat.rds`): the Nextflow half **produces** it, the
+`src/analysis/` half **consumes** it and does its own QC clean-up.
 
 ## Repository layout
 
@@ -146,10 +144,11 @@ Department of Computer Science.
 | :--- | :--- |
 | `download` | Fetch FASTQs/BAMs for the accessions in the samplesheet |
 | `index` | Download Ensembl FASTA/GTF and build a simpleaf (Piscem) index |
-| `align` | `download` + `index` as needed, then run `nf-core/scrnaseq` and QC-filter (default) |
+| `align` | `download` + `index` as needed, then run `nf-core/scrnaseq` and stage the raw matrix (default) |
 
 `main.nf` accepts only these three (`valid_steps`); there is no `all`/`filter`
-step. `align` runs `PREPROCESSING` = `ALIGN_SIMPLEAF` then `QC_FILTER`.
+step. `align` runs `PREPROCESSING` = `ALIGN_SIMPLEAF`, which stages
+`raw_matrix.seurat.rds`; the R analysis does its own QC.
 
 ### Stage scripts
 
@@ -161,7 +160,6 @@ step. `align` runs `PREPROCESSING` = `ALIGN_SIMPLEAF` then `QC_FILTER`.
 | `DOWNLOAD_REFERENCE` | `2.1_index_download_reference.sh` | Ensembl download, `primary_assembly`→`toplevel` fallback |
 | `BUILD_INDEX` | `2.2_index_build_index.sh` | `simpleaf index` |
 | `APPLY_TRANSCRIPT_CHEAT` | `2.3_index_apply_cheat.sh` | Identity `t2g` + `mt_transcripts.txt` extraction |
-| `QC_FILTER` | `filter_matrix.R` + `lib_qc.R` + `lib_io.R` | Per-cell QC filtering |
 
 ### The transcript "cheat"
 
@@ -171,18 +169,7 @@ To get a **cell-by-isoform** matrix, `2.3_index_apply_cheat.sh`:
    collapsing into genes).
 2. Deletes `gene_id_to_name.tsv` so `nf-core/scrnaseq` skips gene-symbol
    annotation and keeps Ensembl transcript IDs (`ENSMUST…`/`ENST…`) as rows.
-3. Writes `mt_transcripts.txt` (mitochondrial transcript IDs) into the index —
-   required later by QC, because the regex `^MT-|^mt-` **never** matches
-   transcript IDs.
-
-### QC filtering (R)
-
-- Computes per-cell `nFeatures`, `nCounts`, `percent_mt`.
-- Mitochondrial detection uses `mt_transcripts.txt` when provided (required for
-  transcript-level matrices); falls back to `^MT-|^mt-` for gene-level.
-- Thresholds (`nextflow.config`): `min_features=200`, `max_features=8000`,
-  `min_counts=500`, `max_percent_mt=10.0`.
-- Writes `<sample>_filtered.rds` (a list with `matrix` + `metadata`).
+3. Writes `mt_transcripts.txt` (mitochondrial transcript IDs) into the index.
 
 ### Containers
 

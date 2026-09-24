@@ -27,6 +27,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   sensitivity sweep reusing the stored COTAN objects and cached DEA/p-values.
 
 ### Removed
+- The `QC_FILTER` Nextflow stage (`src/pipeline/modules/filter.nf`) whose output
+  (`*_filtered.rds`) nothing read; the analysis handoff is the **unfiltered**
+  `raw_matrix.seurat.rds` staged by `ALIGN_SIMPLEAF`. Dropped the QC stage scripts
+  (`bin/{filter_matrix.R,lib_qc.R,lib_io.R,4.1_filter_seurat_qc.R,5.1_downstream_cotan.R}`),
+  the dead QC params (`min_features`, `max_features`, `min_counts`, `max_percent_mt`,
+  `filtered_dir`), the `withName: 'QC_FILTER'` resource block, `conf/empty_mt.txt`, and
+  the orphan `docs/5_qc_filtering.md`. `mt_transcripts.txt` extraction stays in
+  `2.3_index_apply_cheat.sh` (kept as a dormant hook).
 - `scripts/sweep_tau.R` standalone script — superseded by step `09_sweep_tau.R`.
 - `data/test/cotan_coex.rds` (2.78 GB, not a parity input) and the duplicate
   `data/test/gdi_distribution.pdf`; `b2sample.tsv` moved to `scratch/`.

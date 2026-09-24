@@ -6,8 +6,8 @@ the differential transcript usage (DTU) candidate tables that the thesis reports
 It sits between two other pieces of the repository:
 
 ```
-src/pipeline/            Nextflow: SRA -> simpleaf index -> align -> QC filter
-   |                     (last artefact: work/<dataset>/pipeline/results/sample_filtered.rds)
+src/pipeline/            Nextflow: SRA -> simpleaf index -> align
+   |                     (last artefact: work/<dataset>/analysis/raw_matrix.seurat.rds)
    v
 src/analysis/            this layer: Seurat clean-up -> COTAN -> COEX -> GDI -> clustering
    |                     -> DTU candidates -> gene/transcript comparison
@@ -16,8 +16,7 @@ src/cotanisoform/        the R package with the actual algorithms, used by every
 ```
 
 `src/analysis/` is **not** invoked by Nextflow. The hand-off is a Seurat object placed under
-`work/<dataset>/analysis/`; `src/pipeline/bin/5.1_downstream_cotan.R` is an empty
-placeholder and is handled separately (see the cleanup plan S7).
+`work/<dataset>/analysis/` (`raw_matrix.seurat.rds`).
 
 ## Layout
 

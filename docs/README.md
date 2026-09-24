@@ -11,7 +11,6 @@ documents** — when they disagree, trust `src/pipeline/`, `src/analysis/` and
 | :--- | :--- |
 | [`3_data_ingestion.md`](3_data_ingestion.md) | SRA ingestion layouts (FASTQ / BAM), RAM-disk storage policy, datasets ingested |
 | [`4_transcript_quantification.md`](4_transcript_quantification.md) | The simpleaf transcript "cheat" and the child `nf-core/scrnaseq` run |
-| [`5_qc_filtering.md`](5_qc_filtering.md) | QC thresholds and mitochondrial detection at transcript level |
 | [`7_script_architecture.md`](7_script_architecture.md) | Per-process interfaces and resource directives |
 | [`pipeline_workflow.md`](pipeline_workflow.md) | Short flow diagram of the Nextflow stages |
 | [`athena_layout.md`](athena_layout.md) | Folder layout and sizes on athena, access/tunnel notes, what is safe to delete |

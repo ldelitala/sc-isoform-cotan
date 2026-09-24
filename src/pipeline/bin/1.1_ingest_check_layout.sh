@@ -18,7 +18,6 @@ layout=$(curl -f -s "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=$
 # Check if the result is empty
 if [ -z "$layout" ]; then
     echo "UNKNOWN"
-    # echo "Warning: '${srr_id}' not found in ENA. It may be invalid or too new." >&2
     exit 1
 fi
 
