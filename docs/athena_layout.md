@@ -63,7 +63,7 @@ Root: `/data/lorenzo_delitala` (~450 GB total).
 
 | File | Size | Note |
 | :--- | ---: | :--- |
-| `cotan_coex.rds` | **2.78 GB** | Stored final COTAN object. **Not** read by `analysis/config/*.yaml` or `scripts/verify_dtu_parity.R` (which use `calculated.cotan.rds` and `clustered.transcript.with_gene_labels.rds`), so it is not a parity input. Kept as the last coexistence-state checkpoint. **Never delete.** |
+| `cotan_coex.rds` | **2.78 GB** | Stored final COTAN object. **Not** read by `src/analysis/config/*.yaml` or `scripts/verify_dtu_parity.R` (which use `calculated.cotan.rds` and `clustered.transcript.with_gene_labels.rds`), so it is not a parity input. Kept as the last coexistence-state checkpoint. **Never delete.** |
 | `b2sample.tsv` | 19 MB | two-sample test table |
 | `gdi_distribution.pdf` | 497 KB | scratch GDI plot (also in `results/`) |
 
@@ -73,7 +73,7 @@ Per-dataset dirs `runs/arrigoni/` and `runs/ding/cortex_2/` — the two reported
 datasets. Each holds `run_pipeline.sh`, `samplesheet.csv`, `nextflow.config`,
 `custom.config`, `.nextflow.log` and a `results/` tree (downloaded data, references,
 index, preprocessed matrices). `runs/` is gitignored and exists only on athena. The
-handoff artefact to `analysis/` is a Seurat object under
+handoff artefact to `src/analysis/` is a Seurat object under
 `data/project_files/<dataset>/`.
 
 > Two further Ding runs, `runs/ding/pbmc1/` (395 GB) and `runs/ding/brain1/`

@@ -5,6 +5,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Moved `cotanisoform/` and `analysis/` under `src/` (`src/cotanisoform/`, `src/analysis/`);
+  all references (README, docs, CI, lintr, CONTRIBUTING) updated to the new paths.
+
 ## [0.2.0] - 2026-09-22
 
 ### Added

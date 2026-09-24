@@ -1,4 +1,4 @@
-# `analysis/` — downstream DTU analysis
+# `src/analysis/` — downstream DTU analysis
 
 The R half of the project. It takes a filtered single-cell count matrix and produces
 the differential transcript usage (DTU) candidate tables that the thesis reports.
@@ -9,20 +9,20 @@ It sits between two other pieces of the repository:
 src/pipeline/            Nextflow: SRA -> simpleaf index -> align -> QC filter
    |                     (last artefact: runs/<dataset>/results/sample_filtered.rds)
    v
-analysis/                this layer: Seurat clean-up -> COTAN -> COEX -> GDI -> clustering
+src/analysis/            this layer: Seurat clean-up -> COTAN -> COEX -> GDI -> clustering
    |                     -> DTU candidates -> gene/transcript comparison
    v
-cotanisoform/            the R package with the actual algorithms, used by every step here
+src/cotanisoform/        the R package with the actual algorithms, used by every step here
 ```
 
-`analysis/` is **not** invoked by Nextflow. The hand-off is a Seurat object placed under
+`src/analysis/` is **not** invoked by Nextflow. The hand-off is a Seurat object placed under
 `data/project_files/<dataset>/`; `src/pipeline/bin/5.1_downstream_cotan.R` is an empty
 placeholder and is handled separately (see the cleanup plan S7).
 
 ## Layout
 
 ```
-analysis/
+src/analysis/
 ├── run_all.R              runs the steps listed in a config, in order
 ├── lib/common.R           CLI, config loading, path resolution, logging (sourced by every step)
 ├── config/
@@ -46,9 +46,9 @@ analysis/
 Every step takes the same options:
 
 ```bash
-Rscript analysis/R/07_dtu.R --config analysis/config/arrigoni.yaml              # do the work
-Rscript analysis/R/07_dtu.R --config analysis/config/arrigoni.yaml --dry-run    # print the plan, change nothing
-Rscript analysis/R/07_dtu.R --config analysis/config/arrigoni.yaml --out-dir /tmp/scratch
+Rscript src/analysis/R/07_dtu.R --config src/analysis/config/arrigoni.yaml              # do the work
+Rscript src/analysis/R/07_dtu.R --config src/analysis/config/arrigoni.yaml --dry-run    # print the plan, change nothing
+Rscript src/analysis/R/07_dtu.R --config src/analysis/config/arrigoni.yaml --out-dir /tmp/scratch
 ```
 
 | Option | Meaning |
@@ -65,21 +65,21 @@ and a single-step re-run reads the real objects but never overwrites them.
 Whole pipelines:
 
 ```bash
-Rscript analysis/run_all.R --config analysis/config/arrigoni.yaml
-Rscript analysis/run_all.R --config analysis/config/ding_cortex_2.transcript.yaml --from 07 --to 08
-Rscript analysis/run_all.R --config analysis/config/ding_cortex_2.gene.yaml --dry-run
+Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml
+Rscript src/analysis/run_all.R --config src/analysis/config/ding_cortex_2.transcript.yaml --from 07 --to 08
+Rscript src/analysis/run_all.R --config src/analysis/config/ding_cortex_2.gene.yaml --dry-run
 ```
 
 `run_all.R` executes one R process per step, in the order given by the config's `run:`
 list, and stops at the first failure. `--from`/`--to` take step numbers, which is how the
 hours-long `03_calc` is skipped when the calculated object already exists.
 
-Always run from inside the repository (`analysis/...` paths above are relative to it) and
+Always run from inside the repository (`src/analysis/...` paths above are relative to it) and
 with an R environment that has `cotanisoform` installed — the conda environment `deli` on
 athena is the one used for the published results:
 
 ```bash
-Rscript analysis/run_all.R --config analysis/config/arrigoni.yaml
+Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml
 ```
 
 ## Config
@@ -209,7 +209,7 @@ Deliberate deviations from the released drivers, all documented in the configs:
   instead of becoming a step.
 * the alternative DTU formulations from the removed `deli.*` packages — never run on the
   published datasets. The two implementations are kept under
-  [`analysis/deprecated/`](deprecated/README.md), with their semantics in
+  [`src/analysis/deprecated/`](deprecated/README.md), with their semantics in
   `docs/dtu_methods.md`.
 
 Two archived driver scripts were faulty and explain why the snapshots were illustrative,

@@ -18,7 +18,7 @@ assignees: ""
 
 ```bash
 # the exact command(s), e.g.
-# Rscript analysis/run_all.R --config analysis/config/arrigoni.yaml --from 07 --to 08
+# Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml --from 07 --to 08
 ```
 
 ## Environment
@@ -30,7 +30,7 @@ assignees: ""
 
 ## Dataset / config used
 
-<!-- e.g. arrigoni transcript level, analysis/config/arrigoni.yaml -->
+<!-- e.g. arrigoni transcript level, src/analysis/config/arrigoni.yaml -->
 
 ## Anything else
 

@@ -18,7 +18,7 @@ thesis reports. See [`docs/dtu_methods.md`](docs/dtu_methods.md) for the exact
 definition.
 
 > Authoritative overview: this file. The downstream R analysis is documented in
-> [`analysis/README.md`](analysis/README.md). `docs/` holds design notes, some
+> [`src/analysis/README.md`](src/analysis/README.md). `docs/` holds design notes, some
 > historical — see [`docs/README.md`](docs/README.md) for which is current.
 
 ## Data flow
@@ -31,21 +31,21 @@ graph LR
   D --> E["raw_matrix.seurat.rds"]
   E --> F["filter_matrix.R"]
   F --> G["*_filtered.rds"]
-  G --> H["analysis/: COTAN object"]
+  G --> H["src/analysis/: COTAN object"]
   H --> I["coex -> GDI -> clustering -> DEA"]
   I --> J["DTU candidates"]
 ```
 
 Two independent units meet at one artifact, a filtered transcript-level matrix
-(`*_filtered.rds`): the Nextflow half **produces** it, the `analysis/` half
+(`*_filtered.rds`): the Nextflow half **produces** it, the `src/analysis/` half
 **consumes** it.
 
 ## Repository layout
 
 | Path | Role |
 | :--- | :--- |
-| `cotanisoform/` | The R package with the COTAN/Seurat/logging algorithms. Source of truth. |
-| `analysis/` | The downstream driver steps (`00`–`08`), one YAML per dataset + level. See [`analysis/README.md`](analysis/README.md). |
+| `src/cotanisoform/` | The R package with the COTAN/Seurat/logging algorithms. Source of truth. |
+| `src/analysis/` | The downstream driver steps (`00`–`08`), one YAML per dataset + level. See [`src/analysis/README.md`](src/analysis/README.md). |
 | `src/pipeline/` | The Nextflow half: `main.nf`, `nextflow.config`, `modules/`, `subworkflows/`, `bin/` stage scripts. |
 | `envs/` | Conda environments for athena (`analysis.yml`, `pipeline.yml`). See [`envs/README.md`](envs/README.md). |
 | `scripts/` | `install_deps.R` (pins COTAN), `verify_dtu_parity.R` (result parity check), `collect_results.sh`. |
@@ -63,7 +63,7 @@ conda env create -f envs/pipeline.yml      # Nextflow launcher + JDK + pigz
 
 conda activate cotanisoform-analysis
 Rscript scripts/install_deps.R             # installs COTAN 2.13.1 @ be93aa8
-R CMD INSTALL cotanisoform                 # this repository's package
+R CMD INSTALL src/cotanisoform            # this repository's package
 ```
 
 ## Quick start
@@ -90,15 +90,15 @@ the full chain. The samplesheet is a CSV with columns `sample,sra`.
 From the repository root, with `cotanisoform` installed:
 
 ```bash
-Rscript analysis/run_all.R --config analysis/config/arrigoni.yaml
-Rscript analysis/run_all.R --config analysis/config/ding_cortex_2.transcript.yaml --from 07 --to 08
-Rscript analysis/run_all.R --config analysis/config/arrigoni.yaml --dry-run   # resolve paths only
+Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml
+Rscript src/analysis/run_all.R --config src/analysis/config/ding_cortex_2.transcript.yaml --from 07 --to 08
+Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml --dry-run   # resolve paths only
 ```
 
 Add `--out-dir /tmp/scratch` to write to scratch and shadow configured inputs —
 the published tables are never overwritten. Only step `07_dtu.R` produces the
 reported DTU tables. Full option reference in
-[`analysis/README.md`](analysis/README.md).
+[`src/analysis/README.md`](src/analysis/README.md).
 
 ## Results
 

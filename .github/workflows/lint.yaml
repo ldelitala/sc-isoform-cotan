@@ -22,7 +22,7 @@ jobs:
       - name: Lint
         run: |
           Rscript -e '
-            dirs <- c("cotanisoform", "analysis")
+            dirs <- c("src/cotanisoform", "src/analysis")
             dirs <- dirs[dir.exists(dirs)]
             lints <- unlist(lapply(dirs, lintr::lint_dir), recursive = FALSE)
             print(lints)

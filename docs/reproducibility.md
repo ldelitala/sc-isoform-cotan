@@ -11,7 +11,7 @@ conda env create -f envs/pipeline.yml      # Nextflow launcher + JDK + pigz
 
 conda activate cotanisoform-analysis
 Rscript scripts/install_deps.R             # COTAN 2.13.1 @ be93aa8
-R CMD INSTALL cotanisoform
+R CMD INSTALL src/cotanisoform
 ```
 
 Pinned versions: [`software_versions.md`](software_versions.md).
@@ -40,12 +40,12 @@ From the repository root (`/data/lorenzo_delitala/src`), with `cotanisoform`
 installed:
 
 ```bash
-Rscript analysis/run_all.R --config analysis/config/arrigoni.yaml
-Rscript analysis/run_all.R --config analysis/config/ding_cortex_2.transcript.yaml
-Rscript analysis/run_all.R --config analysis/config/ding_cortex_2.gene.yaml
+Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml
+Rscript src/analysis/run_all.R --config src/analysis/config/ding_cortex_2.transcript.yaml
+Rscript src/analysis/run_all.R --config src/analysis/config/ding_cortex_2.gene.yaml
 ```
 
-Or one step at a time, e.g. `Rscript analysis/R/07_dtu.R --config analysis/config/arrigoni.yaml`.
+Or one step at a time, e.g. `Rscript src/analysis/R/07_dtu.R --config src/analysis/config/arrigoni.yaml`.
 
 Options: `--root DIR` (override the config's machine root), `--out-dir DIR` (write
 outputs and log to `DIR`; also **shadows inputs**, so a re-run never overwrites the
@@ -109,4 +109,4 @@ unquoted after production).
   `docs/todo.txt`.
 - `confront_clusters.R`, the eight-GEO-matrix Seurat build, and the `deli.*`
   DTU formulations are **not** ported (see [`dtu_methods.md`](dtu_methods.md) and
-  [`../analysis/README.md`](../analysis/README.md)).
+  [`../src/analysis/README.md`](../src/analysis/README.md)).

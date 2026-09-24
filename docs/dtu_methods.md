@@ -7,7 +7,7 @@ deliberately **not** used.
 ## The canonical definition
 
 Implemented as `cotanisoform::extract_dtu_candidates()`
-(`cotanisoform/R/35_dtu.R`) and driven by `analysis/R/07_dtu.R`.
+(`src/cotanisoform/R/35_dtu.R`) and driven by `src/analysis/R/07_dtu.R`.
 
 Idea: within one parent gene, two transcripts that are **mutually exclusive**
 (negative COEX, significant) and that **switch** their relative enrichment across
@@ -57,10 +57,10 @@ populates this before DTU extraction.
 
 Two further implementations existed in the split `deli.*` packages and were never run
 on the published datasets. Both are kept, unmaintained, under
-[`analysis/deprecated/`](../analysis/deprecated/README.md). They no longer run: they
+[`src/analysis/deprecated/`](../src/analysis/deprecated/README.md). They no longer run: they
 depended on the removed `deli.*` / `project.logger` helpers.
 
-### `detect_cotan_dtu()` — `analysis/deprecated/06_det_dtu.R`
+### `detect_cotan_dtu()` — `src/analysis/deprecated/06_det_dtu.R`
 
 Global negative COEX plus the chi-squared p-value, then a further
 **opposite-sign per-cluster COEX** test, and it computes a combined `DTU_Score`.
@@ -68,7 +68,7 @@ It reads row names as `GENE_TRANSCRIPT` and splits on `_` (delimiter argument).
 Difference from canonical: uses per-cluster COEX rather than the DEA-contrast
 switch, and reports a score instead of the two contrast columns.
 
-### `extract_dtu_candidates()` (mutual exclusivity only) — `analysis/deprecated/02_ext_dtu.R`
+### `extract_dtu_candidates()` (mutual exclusivity only) — `src/analysis/deprecated/02_ext_dtu.R`
 
 Only pairwise mutual exclusivity (negative COEX + p-value); **no cluster step**.
 Also assumes `GENE_TRANSCRIPT` row names split on `_`. It is the strict subset of

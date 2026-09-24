@@ -1,9 +1,9 @@
 # Docs index
 
 Design notes and reference material for the repository. **Code wins over these
-documents** — when they disagree, trust `src/pipeline/`, `analysis/` and
-`cotanisoform/`. Start with the repository [`README.md`](../README.md) and
-[`analysis/README.md`](../analysis/README.md).
+documents** — when they disagree, trust `src/pipeline/`, `src/analysis/` and
+`src/cotanisoform/`. Start with the repository [`README.md`](../README.md) and
+[`src/analysis/README.md`](../src/analysis/README.md).
 
 ## Current
 
@@ -40,5 +40,5 @@ which exist any more. Kept for the design record only — see
 - `src/pipeline/main.nf` + `src/pipeline/nextflow.config` — actual steps/params
 - `src/pipeline/modules/*.nf` — process definitions and script arguments
 - `src/pipeline/bin/*` — what each stage actually does
-- `analysis/README.md` — the downstream driver
-- `cotanisoform/NAMESPACE` — exported R functions
+- `src/analysis/README.md` — the downstream driver
+- `src/cotanisoform/NAMESPACE` — exported R functions

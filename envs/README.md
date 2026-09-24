@@ -16,7 +16,7 @@ Singularity images are. Treat conda as "the machine's tooling", not "the pipelin
 
 | File | Purpose |
 | :--- | :--- |
-| `analysis.yml` | R 4.5.3 + the R packages used by `cotanisoform/`, `analysis/` and `scripts/`. |
+| `analysis.yml` | R 4.5.3 + the R packages used by `src/cotanisoform/`, `src/analysis/` and `scripts/`. |
 | `pipeline.yml` | Nextflow (the launcher only) + a JDK + `pigz`. |
 
 `COTAN` itself is deliberately **not** in `analysis.yml`: it is installed from a pinned
@@ -32,7 +32,7 @@ conda env create -f envs/pipeline.yml
 
 conda activate cotanisoform-analysis
 Rscript scripts/install_deps.R         # installs COTAN at the pinned commit
-R CMD INSTALL cotanisoform             # this repository's package
+R CMD INSTALL src/cotanisoform        # this repository's package
 ```
 
 Environments are created under `/data/lorenzo_delitala/.conda/envs/`. conda also reports
@@ -42,8 +42,8 @@ that path as `/home/lorenzo_delitala/.conda/envs/` — the two are the **same di
 Call the interpreter explicitly when not activating:
 
 ```bash
-/data/lorenzo_delitala/.conda/envs/cotanisoform-analysis/bin/Rscript analysis/run_all.R \
-  --config analysis/config/arrigoni.yaml
+/data/lorenzo_delitala/.conda/envs/cotanisoform-analysis/bin/Rscript src/analysis/run_all.R \
+  --config src/analysis/config/arrigoni.yaml
 ```
 
 ## What the pipeline does *not* get from here
@@ -76,7 +76,7 @@ recreated env without them cannot load COTAN. They are now explicit conda depend
 comes from `r-dendextend` on conda-forge.
 
 `conflicted`, `zeallot` and `parallelly` are also used directly by `cotanisoform`
-(see `cotanisoform/DESCRIPTION`).
+(see `src/cotanisoform/DESCRIPTION`).
 
 ## Versions
 

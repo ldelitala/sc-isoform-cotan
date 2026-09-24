@@ -35,8 +35,8 @@ Large intermediate objects: `calculated.*.cotan.rds` (~3–5.5 GB),
 
 ## Provenance
 
-Produced on Athena by the `analysis/` driver steps (`analysis/run_all.R`) using the
-`cotanisoform` R package. Files were copied verbatim; no post-processing.
+Produced on Athena by the `src/analysis/` driver steps (`src/analysis/run_all.R`) using the
+`src/cotanisoform` R package. Files were copied verbatim; no post-processing.
 
 ## Refreshing
 

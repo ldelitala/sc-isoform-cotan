@@ -8,8 +8,8 @@
 
 ## Checklist
 
-- [ ] Lint clean: `Rscript -e 'lintr::lint_dir("cotanisoform"); lintr::lint_dir("analysis")'`
-- [ ] Unit tests pass: `Rscript -e 'devtools::test("cotanisoform")'`
+- [ ] Lint clean: `Rscript -e 'lintr::lint_dir("src/cotanisoform"); lintr::lint_dir("src/analysis")'`
+- [ ] Unit tests pass: `Rscript -e 'devtools::test("src/cotanisoform")'`
 - [ ] DTU parity still holds if the analysis or stored objects were touched:
       `Rscript scripts/verify_dtu_parity.R` → `3/3 cases reproduced exactly`
 - [ ] No hardcoded absolute paths in tracked code

@@ -1,7 +1,7 @@
 # Deprecated DTU implementations
 
 Superseded code, kept for provenance only. **Nothing in the repository sources these
-files**, and `analysis/run_all.R` never sees them (it globs `analysis/R/` only,
+files**, and `src/analysis/run_all.R` never sees them (it globs `src/analysis/R/` only,
 non-recursively).
 
 | File | Function | Original home |
