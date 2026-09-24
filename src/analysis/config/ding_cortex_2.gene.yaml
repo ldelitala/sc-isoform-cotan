@@ -27,11 +27,12 @@ paths:
   logs: work/ding_cortex_2/analysis/logs
   objects: work/ding_cortex_2/analysis/objects
   plots: work/ding_cortex_2/analysis/plots
+  tables: work/ding_cortex_2/analysis/tables
 
   # this run starts from the GEO count matrix, not from a Seurat object
-  input_matrix: inputs/geo_metadata/ding_cortex_2/GSE132044_cortex_mm10_count_matrix.mtx.gz
-  input_matrix_genes: inputs/geo_metadata/ding_cortex_2/GSE132044_cortex_mm10_gene.tsv.gz
-  input_matrix_cells: inputs/geo_metadata/ding_cortex_2/GSE132044_cortex_mm10_cell.tsv.gz.1
+  input_matrix: data/inputs/geo_metadata/ding_cortex_2/GSE132044_cortex_mm10_count_matrix.mtx.gz
+  input_matrix_genes: data/inputs/geo_metadata/ding_cortex_2/GSE132044_cortex_mm10_gene.tsv.gz
+  input_matrix_cells: data/inputs/geo_metadata/ding_cortex_2/GSE132044_cortex_mm10_cell.tsv.gz.1
 
 # File names inside paths.objects. `initialized` is the cleaned COTAN object the
 # gene-level driver called cleaned.gene.cotan.rds.

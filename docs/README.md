@@ -20,6 +20,7 @@ documents** — when they disagree, trust `src/pipeline/`, `src/analysis/` and
 | [`reproducibility.md`](reproducibility.md) | End-to-end rerun, where outputs land, how to skip expensive steps |
 | [`software_versions.md`](software_versions.md) | R / COTAN / Nextflow / container version pins |
 | [`cotan_pvalue_segfault.md`](cotan_pvalue_segfault.md) | COTAN `calculatePValue()` segfault at ≥46,341 features and the workaround |
+| [`TODO.md`](TODO.md) | Open backlog items (currently: per-cluster isoform-proportion plots for the headline candidates) |
 
 ## Notes
 

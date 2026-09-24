@@ -196,8 +196,8 @@ To get a **cell-by-isoform** matrix, `2.3_index_apply_cheat.sh`:
 - **COTAN p-value segfault.** `COTAN::calculatePValue()` segfaults at ≥46,341
   features (32-bit overflow when subsetting `dspMatrix`); keep features < ~41,000.
   See [`docs/cotan_pvalue_segfault.md`](docs/cotan_pvalue_segfault.md).
-- **`inputs/`, `built/`, `work/` and all data are gitignored** (`.conda/`,
-  `.cache/`, `COTAN/`, `logs/`, `scratch/`). Only code and docs are versioned.
+- **`data/`, `work/` and all bulk data are gitignored** (`.conda/`, `.cache/`,
+  `COTAN/`, `logs/`, `scratch/`). Only code and docs are versioned.
 - **RAM-disk policy.** Downloads stage in `/dev/shm` (`scratch '/dev/shm'`);
   never write raw SRA/BAM to persistent disk.
 - **Resource overrides.** The per-run `nextflow.config` (`-c`) plus `custom.config`

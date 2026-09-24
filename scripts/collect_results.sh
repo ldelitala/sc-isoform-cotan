@@ -15,20 +15,17 @@ SRC=work
 OUT=scratch/publish_results
 
 rm -rf "$OUT"
-mkdir -p "$OUT/arrigoni" "$OUT/ding_cortex_2"
+mkdir -p "$OUT/arrigoni/tables" "$OUT/arrigoni/plots" "$OUT/arrigoni/logs" \
+         "$OUT/ding_cortex_2/tables" "$OUT/ding_cortex_2/plots" "$OUT/ding_cortex_2/logs"
 
 # arrigoni — human cell lines (GSE243665), transcript level
-cp "$SRC/arrigoni/analysis/dtu_candidates.csv"                 "$OUT/arrigoni/" 2>/dev/null || true
-cp "$SRC/arrigoni/analysis/t2gene_name.tsv"                    "$OUT/arrigoni/" 2>/dev/null || true
-cp "$SRC/arrigoni/analysis/GSE243665_combined_QC_barcodes.tsv" "$OUT/arrigoni/" 2>/dev/null || true
-cp -rL "$SRC/arrigoni/analysis/plots"    "$OUT/arrigoni/plots"    2>/dev/null || true
-cp -rL "$SRC/arrigoni/analysis/logs"     "$OUT/arrigoni/logs"     2>/dev/null || true
+cp "$SRC/arrigoni/analysis/tables/"*                           "$OUT/arrigoni/tables/" 2>/dev/null || true
+cp -rL "$SRC/arrigoni/analysis/plots/."    "$OUT/arrigoni/plots/"    2>/dev/null || true
+cp -rL "$SRC/arrigoni/analysis/logs/."     "$OUT/arrigoni/logs/"     2>/dev/null || true
 
 # ding cortex_2 — mouse cortex, gene vs transcript comparison
-cp "$SRC"/ding_cortex_2/analysis/dtu_*.csv                 "$OUT/ding_cortex_2/" 2>/dev/null || true
-cp "$SRC"/ding_cortex_2/analysis/dtu_*.rds                 "$OUT/ding_cortex_2/" 2>/dev/null || true
-cp "$SRC/ding_cortex_2/analysis/objects/t2gene_name.tsv"   "$OUT/ding_cortex_2/" 2>/dev/null || true
-cp -rL "$SRC/ding_cortex_2/analysis/plots"    "$OUT/ding_cortex_2/plots"    2>/dev/null || true
-cp -rL "$SRC/ding_cortex_2/analysis/logs"     "$OUT/ding_cortex_2/logs"     2>/dev/null || true
+cp "$SRC/ding_cortex_2/analysis/tables/"*                       "$OUT/ding_cortex_2/tables/" 2>/dev/null || true
+cp -rL "$SRC/ding_cortex_2/analysis/plots/."    "$OUT/ding_cortex_2/plots/"    2>/dev/null || true
+cp -rL "$SRC/ding_cortex_2/analysis/logs/."     "$OUT/ding_cortex_2/logs/"     2>/dev/null || true
 
 echo "Staged $(find "$OUT" -type f | wc -l) files, $(du -sh "$OUT" | cut -f1) into $OUT"

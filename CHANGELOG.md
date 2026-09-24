@@ -13,6 +13,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `work/<dataset>/{pipeline,analysis}/` (computed). Dataset names unified to
   `ding_cortex_2`. Configs, `verify_dtu_parity.R`, `collect_results.sh` and `.gitignore`
   updated.
+- Refined the layout: `inputs/`+`built/` → `data/inputs/`+`data/built/` (work separated);
+  `work/<dataset>/analysis/` grouped into `objects/ plots/ logs/ tables/` with the
+  handoff `raw_matrix.seurat.rds` at the root; `results/<dataset>/` reshaped to
+  `tables/ plots/ logs/`.
+- Removed the duplicate `combined_raw_matrix.seurat.rds` (and unused `.h5ad`/`.sce.rds`)
+  under the Nextflow `mtx_conversions/` (~33G) after checksum-verifying it against the
+  pipeline handoff, plus the superseded `work/**/Rscripts/` snapshots and the contents
+  of `scratch/`.
 
 ### Added
 - Step `09_sweep_tau.R` in `src/analysis/`: config-driven `tau` (`min_dea_contrast`)

@@ -22,16 +22,16 @@ paths:
   logs: work/ding_cortex_2/analysis/logs
   objects: work/ding_cortex_2/analysis/objects
   plots: work/ding_cortex_2/analysis/plots
+  tables: work/ding_cortex_2/analysis/tables
 
-  t2g: built/GRCm39/gene_index/index/t2g_3col.tsv
-  gene_id_to_name: built/GRCm39/gene_index/index/gene_id_to_name.tsv
-  # the released transcript run kept its map inside objects/
-  t2gene_name: work/ding_cortex_2/analysis/objects/t2gene_name.tsv
+  t2g: data/built/GRCm39/gene_index/index/t2g_3col.tsv
+  gene_id_to_name: data/built/GRCm39/gene_index/index/gene_id_to_name.tsv
+  t2gene_name: work/ding_cortex_2/analysis/tables/t2gene_name.tsv
 
   input_seurat: work/ding_cortex_2/analysis/raw_matrix.seurat.rds
 
   # the cortex_2 cells were already QC-filtered upstream
-  valid_cells_tsv: inputs/geo_metadata/ding_cortex_2/clean_Cortex2_QC_barcodes.tsv.gz
+  valid_cells_tsv: data/inputs/geo_metadata/ding_cortex_2/clean_Cortex2_QC_barcodes.tsv.gz
 
 objects:
   ready_seurat: ready_to_cotan.transcript.seurat.rds

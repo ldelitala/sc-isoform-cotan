@@ -39,13 +39,13 @@ required_outputs <- c("shared", "exclusive1", "exclusive2")
 if (!all(required_outputs %in% names(compare_cfg$outputs))) {
   die("compare_dtu: outputs must define ", paste(required_outputs, collapse = ", "))
 }
-require_paths(p, "workdir")
+require_paths(p, "tables")
 
 inputs <- vapply(compare_cfg$files, function(file_name) {
-  in_file(p, cfg_path(p, "workdir", file_name))
+  in_file(p, cfg_path(p, "tables", file_name))
 }, character(1L))
 targets <- vapply(compare_cfg$outputs, function(file_name) {
-  out_path(p, "workdir", file_name)
+  out_path(p, "tables", file_name)
 }, character(1L))
 
 check_io(

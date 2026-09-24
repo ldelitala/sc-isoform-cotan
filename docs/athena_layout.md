@@ -36,58 +36,63 @@ athena has **no `sudo`** and `/data` is root-owned, so scratch checkouts go unde
 ## Directory layout
 
 The tree is split by **provenance**: downloaded inputs, built references, computed
-work, published results. Root: `/data/lorenzo_delitala` (~450 GB total).
+work, published results. Root: `/data/lorenzo_delitala` (~430 GB total).
 
 | Path | Size | Holds | Regenerable? |
 | :--- | ---: | :--- | :--- |
 | `src/` | 3.6 MB | the git working tree (this repo: code + configs) | no |
-| `results/` | 158 MB | curated published outputs (tracked) | no |
+| `results/` | 159 MB | curated published outputs (tracked); see below | no |
 | `docs/`, `scripts/`, `envs/` | <1 MB | tracked code + docs | no |
-| `inputs/` | ~250 GB | downloaded external data (see below) | re-download |
-| `built/` | ~18 GB | indices made from `inputs/reference` | rebuild (hours) |
-| `work/` | ~158 GB | computed pipeline + analysis output (see below) | re-run |
+| `data/inputs/` | ~250 GB | downloaded external data (see below) | re-download |
+| `data/built/` | ~18 GB | indices made from `data/inputs/reference` | rebuild (hours) |
+| `work/` | ~125 GB | computed pipeline + analysis output (see below) | re-run |
 | `COTAN/` | 138 MB | COTAN source clone (pinned commit) | re-clonable, but keep |
 | `.conda/` | 19 GB | the `cotanisoform-*` conda envs | recreate with `conda env create` — keep |
 | `.cache/` | 3.1 GB | `ncbi/refseq` 635 MB, `singularity/` 2.4 GB | — |
-| `scratch/` | small | obsolete leftovers kept this session | yes |
+| `scratch/` | empty | gitignored staging area for `collect_results.sh` | — |
 
-### `inputs/` — downloaded, not computed
+### `data/inputs/` — downloaded, not computed
 
 | Path | Size | Contents |
 | :--- | ---: | :--- |
-| `inputs/fastqs/<dataset>/` | 248 GB | per-dataset FASTQs (re-downloadable from SRA) |
-| `inputs/geo_metadata/<dataset>/` | 345 MB | GEO barcode files for QC and cell types |
-| `inputs/reference/{GRCh38,GRCm39}/` | 1.7 GB | Ensembl 102 `genome.fa.gz` + `annotation.gtf.gz` |
+| `data/inputs/fastqs/<dataset>/` | 248 GB | per-dataset FASTQs (re-downloadable from SRA) |
+| `data/inputs/geo_metadata/<dataset>/` | 345 MB | GEO barcode files for QC and cell types |
+| `data/inputs/reference/{GRCh38,GRCm39}/` | 1.7 GB | Ensembl 102 `genome.fa.gz` + `annotation.gtf.gz` |
 
-### `built/` — made from `inputs/reference`
+### `data/built/` — made from `data/inputs/reference`
 
 | Path | Size | Made by |
 | :--- | ---: | :--- |
-| `built/<asm>/gene_index/` | 8.8 GB | `simpleaf index` (pipeline `2.2`, hours); holds the real `t2g_3col.tsv` + `gene_id_to_name.tsv` used by step 00 |
-| `built/<asm>/transcript_index/` | 8.8 GB | `2.3_index_apply_cheat.sh` — copy of `gene_index` with `t2g` rewritten to identity + `mt_transcripts.txt` (minutes); the index alignment uses |
+| `data/built/<asm>/gene_index/` | 8.8 GB | `simpleaf index` (pipeline `2.2`, hours); holds the real `t2g_3col.tsv` + `gene_id_to_name.tsv` used by step 00 |
+| `data/built/<asm>/transcript_index/` | 8.8 GB | `2.3_index_apply_cheat.sh` — copy of `gene_index` with `t2g` rewritten to identity + `mt_transcripts.txt` (minutes); the index alignment uses |
 
 ### `work/` — computed, dataset-centric
 
 `work/<dataset>/{pipeline,analysis}/` for `arrigoni` and `ding_cortex_2`.
 
 - `work/<dataset>/pipeline/` — the Nextflow run: `run_pipeline.sh`, `samplesheet.csv`,
-  `nextflow.config`, `custom.config`, `.nextflow.log`, and `results/` (alevin quant +
-  preprocessed matrices). Was `runs/<dataset>/`.
-- `work/<dataset>/analysis/` — the R analysis workspace: `raw_matrix.seurat.rds` (the
-  pipeline→analysis handoff, written by `unfiltered_dir`), `objects/`, `plots/`, `logs/`
-  and the DTU tables. Was `data/project_files/<dataset>/`.
+  `nextflow.config`, `custom.config`, `.nextflow.log`, and `results/` (alevin quant).
+- `work/<dataset>/analysis/` — the R analysis workspace, grouped by role:
+  `raw_matrix.seurat.rds` (the pipeline→analysis handoff), `objects/` (COTAN/Seurat
+  chain), `plots/`, `logs/`, `tables/` (DTU tables + feature/barcode maps).
 
 `work/` is gitignored and exists only on athena; `rm -rf work/<dataset>` reclaims all
 regenerable space for one dataset.
 
+### `results/` — published (tracked)
+
+`results/<dataset>/{tables,plots,logs}/`, mirrored from `work/<dataset>/analysis/` by
+`scripts/collect_results.sh`. The `logs/` are the **immutable** record of the released
+runs (the working logs under `work/` are overwritten by re-runs). See
+[`../results/README.md`](../results/README.md).
+
 ### `scratch/`
 
-Obsolete leftovers kept for now (`tau_sweep/` from the removed standalone script,
-`publish_results/` staging for `scripts/collect_results.sh`). Gitignored.
+Empty, gitignored. `scripts/collect_results.sh` stages its curated copy under
+`scratch/publish_results/` before it is rsynced to `results/`.
 
-> Two further Ding runs (`runs/ding/pbmc1/`, `runs/ding/brain1/`) produced no reported
-> table and were deleted 2026-09-22; re-create them from the ingest instructions if
-> ever needed.
+> Two further Ding runs (`pbmc1`, `brain1`) produced no reported table and were deleted
+> 2026-09-22; re-create them from the ingest instructions if ever needed.
 
 ## Disk pressure
 

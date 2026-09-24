@@ -1,7 +1,6 @@
 # Bulk data / caches / generated trees — machine-local, never versioned.
 # Anchored to the repo root so they do not match paths inside results/.
-/inputs/
-/built/
+/data/
 /work/
 /scratch/
 /.cache/

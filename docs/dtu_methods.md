@@ -82,12 +82,12 @@ of each config, so one COTAN object can yield several tables:
 
 | Dataset | Clusterization | Published table | Rows |
 | :--- | :--- | :--- | ---: |
-| arrigoni | `Known_Cell_Types` | `results/arrigoni/dtu_candidates.csv` | 21 |
-| ding cortex_2 | `local_gene_cluster` | `results/ding_cortex_2/dtu_candidates.gene_cluster.csv` | 46 |
-| ding cortex_2 | `merged` | `results/ding_cortex_2/dtu_candidates.transcript_cluster.csv` | 46 |
+| arrigoni | `Known_Cell_Types` | `results/arrigoni/tables/dtu_candidates.csv` | 21 |
+| ding cortex_2 | `local_gene_cluster` | `results/ding_cortex_2/tables/dtu_candidates.gene_cluster.csv` | 46 |
+| ding cortex_2 | `merged` | `results/ding_cortex_2/tables/dtu_candidates.transcript_cluster.csv` | 46 |
 
 Step `08_compare_dtu.R` intersects the two ding tables into `dtu_shared.csv` and
-`dtu_exclusive_file{1,2}.csv`. The three files in `results/ding_cortex_2/` are the
+`dtu_exclusive_file{1,2}.csv`. The three files in `results/ding_cortex_2/tables/` are the
 **released** comparison: produced 2026-07-24 from an earlier 40/38 candidate pair, they
 hold 39 shared / 3 + 4 exclusive events, and the three shared-and-exclusive tables of the
 thesis appendix are built from them. Recomputing from the final 46/46 tables gives

@@ -113,7 +113,7 @@ resolve_paths <- function(cfg) {
   p <- list(root = cfg$root, cfg = cfg, dry_run = isTRUE(cfg$dry_run))
 
   for (key in c(
-    "workdir", "logs", "objects", "plots", "t2g", "gene_id_to_name", "t2gene_name",
+    "workdir", "logs", "objects", "plots", "tables", "t2g", "gene_id_to_name", "t2gene_name",
     "input_seurat", "input_matrix", "input_matrix_genes", "input_matrix_cells",
     "mt_transcripts", "part_qc_tsv", "valid_cells_tsv"
   )) {

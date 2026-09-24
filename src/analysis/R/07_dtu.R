@@ -42,12 +42,12 @@ dtu <- step_cfg(p, "dtu")
 if (is.null(dtu) || length(dtu$outputs) == 0L) {
   die("this config has no 'steps: dtu: outputs' list")
 }
-require_paths(p, "workdir")
+require_paths(p, "tables")
 
 input <- in_file(p, object_path(p, dtu$input_object %||% "calculated"))
 file_names <- vapply(dtu$outputs, function(output) output$file_name, character(1L))
 targets <- vapply(dtu$outputs, function(output) {
-  out_path(p, "workdir", output$file_name)
+  out_path(p, "tables", output$file_name)
 }, character(1L))
 
 check_io(

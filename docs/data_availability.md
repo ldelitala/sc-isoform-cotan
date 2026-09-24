@@ -35,7 +35,7 @@ those same barcodes are the `Known_Cell_Types` clusterization used for DEA.
 The cortex run is the gene-vs-transcript comparison: the same cells are analysed
 at both levels and the DTU candidate tables are intersected (step `08`). The
 cortex_2 cells arrive already QC-filtered; the barcode list is
-`inputs/geo_metadata/ding_cortex_2/clean_Cortex2_QC_barcodes.tsv.gz`.
+`data/inputs/geo_metadata/ding_cortex_2/clean_Cortex2_QC_barcodes.tsv.gz`.
 
 Two further Ding runs (`brain1`, `pbmc1`) were completed but produced no reported
 table; both were removed before submission (2026-09-22).

@@ -99,7 +99,7 @@ logging_level: 3
 run: ["00", "01", "02", "03", "04", "05", "07"]     # steps this dataset uses
 
 paths:            # every input path and output directory, relative to root
-  workdir, logs, objects, plots, t2g, gene_id_to_name, t2gene_name,
+  workdir, logs, objects, plots, tables, t2g, gene_id_to_name, t2gene_name,
   input_seurat (or input_matrix + input_matrix_genes + input_matrix_cells),
   valid_cells_tsv (or cell_type_files: {cell line: barcode file})
 
@@ -162,15 +162,15 @@ The `COEX <= 0` rule of the DTU step is hard-coded inside
 
 | Step | Writes | Published copy |
 | :--- | :--- | :--- |
-| 00 | `paths.t2gene_name` | `results/<dataset>/t2gene_name.tsv` |
+| 00 | `paths.t2gene_name` | `results/<dataset>/tables/t2gene_name.tsv` |
 | 01 | `objects.ready_seurat` | — (intermediate) |
-| 02 | `objects.initialized`, combined QC TSV | `results/arrigoni/GSE243665_combined_QC_barcodes.tsv` |
+| 02 | `objects.initialized`, combined QC TSV | `results/arrigoni/tables/GSE243665_combined_QC_barcodes.tsv` |
 | 03 | `objects.calculated` | — (multi-GB intermediate) |
 | 04 | `plots/<gdi file_name>` | `results/<dataset>/plots/` |
 | 05 | `objects.clustered` | — (intermediate) |
 | 06 | `clustered.*.with_gene_labels.rds` | — (intermediate) |
-| 07 | one CSV per `dtu.outputs` entry | `results/<dataset>/dtu_candidates*.csv` |
-| 08 | `dtu_shared.csv`, `dtu_exclusive_file{1,2}.csv` | `results/ding_cortex_2/` |
+| 07 | one CSV per `dtu.outputs` entry | `results/<dataset>/tables/dtu_candidates*.csv` |
+| 08 | `dtu_shared.csv`, `dtu_exclusive_file{1,2}.csv` | `results/ding_cortex_2/tables/` |
 | 09 | `sweep_tau.<cluster>.csv` + `.png` per `dtu.outputs` clusterization | `plots/` (tuning aid; not published) |
 
 `pipeline/scripts/collect_results.sh` copies these into `results/`.
@@ -186,8 +186,8 @@ Kept on athena, not in git (too large):
 
 * `work/<dataset>/analysis/raw_matrix.seurat.rds` — the pipeline's Seurat output with
   spliced/unspliced/ambiguous layers (step 01 input).
-* `inputs/geo_metadata/**` — GEO barcode files used for QC flags and cell types.
-* `built/{GRCh38,GRCm39}/gene_index/index/` — `t2g_3col.tsv` and
+* `data/inputs/geo_metadata/**` — GEO barcode files used for QC flags and cell types.
+* `data/built/{GRCh38,GRCm39}/gene_index/index/` — `t2g_3col.tsv` and
   `gene_id_to_name.tsv` from the aligner run (step 00 input).
 * for the gene-level cortex run: `GSE132044_cortex_mm10_{count_matrix.mtx,gene.tsv,cell.tsv}.gz`.
 
