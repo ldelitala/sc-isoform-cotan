@@ -20,7 +20,7 @@ meta:
 logging_level: 3
 
 # Steps to run, in order, for this dataset (see analysis/run_all.R).
-run: ["00", "01", "02", "03", "04", "05", "07"]
+run: ["00", "01", "02", "03", "04", "05", "07", "09"]
 
 paths:
   workdir: data/project_files/arrigoni
@@ -102,3 +102,8 @@ steps:
     outputs:
       - clusterization: Known_Cell_Types
         file_name: dtu_candidates.csv
+
+  sweep_tau:
+    # well-separated cell lines: strong contrasts, sweep the high range
+    tau_range: [0.02, 0.5]
+    tau_step: 0.02

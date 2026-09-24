@@ -97,7 +97,9 @@ Rscript src/analysis/run_all.R --config src/analysis/config/arrigoni.yaml --dry-
 
 Add `--out-dir /tmp/scratch` to write to scratch and shadow configured inputs —
 the published tables are never overwritten. Only step `07_dtu.R` produces the
-reported DTU tables. Full option reference in
+reported DTU tables. Step `09_sweep_tau.R` sweeps the contrast threshold `tau`
+(`min_dea_contrast`) over a grid and reports the stable threshold (see
+[`src/analysis/README.md`](src/analysis/README.md)). Full option reference in
 [`src/analysis/README.md`](src/analysis/README.md).
 
 ## Results

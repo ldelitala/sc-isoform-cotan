@@ -38,7 +38,8 @@ src/analysis/
     ├── 05_cluster.R             cell clustering (guided or unguided)
     ├── 06_transfer_cluster.R    copy gene-level cluster labels onto the transcript object
     ├── 07_dtu.R                 DTU candidate extraction                     (the result)
-    └── 08_compare_dtu.R         shared / exclusive tables between two candidate tables
+    ├── 08_compare_dtu.R         shared / exclusive tables between two candidate tables
+    └── 09_sweep_tau.R           tau (min_dea_contrast) sensitivity sweep      (tuning aid)
 ```
 
 ## Running
@@ -106,7 +107,7 @@ objects:          # file names inside paths.objects, i.e. the chain between step
   ready_seurat, initialized, calculated, clustered, ...
 
 steps:            # per-step parameters
-  prepare_seurat, init_cotan, calc, gdi, clustering, transfer_cluster, dtu, compare_dtu
+  prepare_seurat, init_cotan, calc, gdi, clustering, transfer_cluster, dtu, compare_dtu, sweep_tau
 ```
 
 Two shapes exist, and a step refuses a config that lacks its inputs (it says which key is
@@ -138,6 +139,22 @@ present *and finite*, and runs `dea_on_clusters()` otherwise. This matters becau
 `06_transfer_cluster.R` injects a clusterization with an **empty** DEA frame — a stored but
 useless matrix — so "the clusterization exists" is not a sufficient test.
 
+Step `09_sweep_tau.R` (a tuning aid, not a published result) re-runs the DTU extraction over
+a `tau` grid for each clusterization listed in `steps.dtu.outputs`, using the same object
+and DEA as the DTU step. Config keys:
+
+```yaml
+steps:
+  sweep_tau:
+    tau_range: [0.02, 0.5]   # [lo, hi] sweep interval
+    tau_step: 0.02           # grid resolution
+    frac_stable: 0.9         # robust-core agreement to call a tau stable
+    min_events: 10           # minimum accepted events for a stable call
+```
+
+The published `min_dea_contrast` is forced onto the grid as an anchor; the strictest tau in
+the range defines the robust core. Outputs `sweep_tau.<cluster>.csv` + `.png` to `paths.plots`.
+
 The `COEX <= 0` rule of the DTU step is hard-coded inside
 `cotanisoform::extract_dtu_candidates()`; there is no config key for it.
 
@@ -154,6 +171,7 @@ The `COEX <= 0` rule of the DTU step is hard-coded inside
 | 06 | `clustered.*.with_gene_labels.rds` | — (intermediate) |
 | 07 | one CSV per `dtu.outputs` entry | `results/<dataset>/dtu_candidates*.csv` |
 | 08 | `dtu_shared.csv`, `dtu_exclusive_file{1,2}.csv` | `results/ding_cortex_2/` |
+| 09 | `sweep_tau.<cluster>.csv` + `.png` per `dtu.outputs` clusterization | `plots/` (tuning aid; not published) |
 
 `pipeline/scripts/collect_results.sh` copies these into `results/`.
 

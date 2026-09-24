@@ -9,6 +9,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Moved `cotanisoform/` and `analysis/` under `src/` (`src/cotanisoform/`, `src/analysis/`);
   all references (README, docs, CI, lintr, CONTRIBUTING) updated to the new paths.
 
+### Added
+- Step `09_sweep_tau.R` in `src/analysis/`: config-driven `tau` (`min_dea_contrast`)
+  sensitivity sweep reusing the stored COTAN objects and cached DEA/p-values.
+
+### Removed
+- `scripts/sweep_tau.R` standalone script — superseded by step `09_sweep_tau.R`.
+
 ## [0.2.0] - 2026-09-22
 
 ### Added
