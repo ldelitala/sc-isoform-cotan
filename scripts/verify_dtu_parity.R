@@ -48,8 +48,8 @@ cases <- list(
     list(
         name = "arrigoni",
         objects = c(
-            "data/project_files/arrigoni/objects/calculated.cotan.rds",
-            "data/project_files/arrigoni/objects/calculated.transcript.cotan.rds"
+            "work/arrigoni/analysis/objects/calculated.cotan.rds",
+            "work/arrigoni/analysis/objects/calculated.transcript.cotan.rds"
         ),
         reference = "results/arrigoni/dtu_candidates.csv",
         sha256 = "ebcae20ada28e0271b2ca3908d1a86ebdc7b42b638cec9b13cb206a2145afffb",
@@ -65,7 +65,7 @@ cases <- list(
     ),
     list(
         name = "ding_merged",
-        objects = "data/project_files/ding/cortex_2/objects/clustered.transcript.with_gene_labels.rds",
+        objects = "work/ding_cortex_2/analysis/objects/clustered.transcript.with_gene_labels.rds",
         reference = "results/ding_cortex_2/dtu_candidates.transcript_cluster.csv",
         sha256 = "e9defe97c676bb1ee3870f702b50d1f0d32b1708925e7b560f2c1e82198a2185",
         clusterization = "merged",
@@ -80,7 +80,7 @@ cases <- list(
     ),
     list(
         name = "ding_gene_cluster",
-        objects = "data/project_files/ding/cortex_2/objects/clustered.transcript.with_gene_labels.rds",
+        objects = "work/ding_cortex_2/analysis/objects/clustered.transcript.with_gene_labels.rds",
         reference = "results/ding_cortex_2/dtu_candidates.gene_cluster.csv",
         sha256 = "ded06ace744e49c7b829d44e615d9a66f89dd318b8201d1e3d3eb288e2b23d99",
         clusterization = "local_gene_cluster",

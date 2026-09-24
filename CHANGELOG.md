@@ -8,6 +8,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - Moved `cotanisoform/` and `analysis/` under `src/` (`src/cotanisoform/`, `src/analysis/`);
   all references (README, docs, CI, lintr, CONTRIBUTING) updated to the new paths.
+- Restructured the athena data tree by provenance: `data/` + `runs/` → `inputs/`
+  (downloaded), `built/` (indices made from `inputs/reference`), and
+  `work/<dataset>/{pipeline,analysis}/` (computed). Dataset names unified to
+  `ding_cortex_2`. Configs, `verify_dtu_parity.R`, `collect_results.sh` and `.gitignore`
+  updated.
 
 ### Added
 - Step `09_sweep_tau.R` in `src/analysis/`: config-driven `tau` (`min_dea_contrast`)
@@ -15,6 +20,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Removed
 - `scripts/sweep_tau.R` standalone script — superseded by step `09_sweep_tau.R`.
+- `data/test/cotan_coex.rds` (2.78 GB, not a parity input) and the duplicate
+  `data/test/gdi_distribution.pdf`; `b2sample.tsv` moved to `scratch/`.
 
 ## [0.2.0] - 2026-09-22
 

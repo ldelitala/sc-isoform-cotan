@@ -2,7 +2,7 @@
 #
 # GSE243665 — eight human lung-cancer cell lines plus PBMCs, transcript level.
 # Every value below was transcribed from
-# data/project_files/arrigoni/Rscripts/transcript/*.R (July 2026 runs); the source
+# work/arrigoni/analysis/Rscripts/transcript/*.R (July 2026 runs); the source
 # script is named in a comment wherever the value is not self-evident.
 #
 # root: is the only machine-specific value in this file — override it with
@@ -23,30 +23,30 @@ logging_level: 3
 run: ["00", "01", "02", "03", "04", "05", "07", "09"]
 
 paths:
-  workdir: data/project_files/arrigoni
-  logs: data/project_files/arrigoni/logs
-  objects: data/project_files/arrigoni/objects
-  plots: data/project_files/arrigoni/plots
+  workdir: work/arrigoni/analysis
+  logs: work/arrigoni/analysis/logs
+  objects: work/arrigoni/analysis/objects
+  plots: work/arrigoni/analysis/plots
 
   # genome index of the aligner run (used to rebuild t2gene_name.tsv)
-  t2g: data/genomes/GRCh38/gene_index/index/t2g_3col.tsv
-  gene_id_to_name: data/genomes/GRCh38/gene_index/index/gene_id_to_name.tsv
-  t2gene_name: data/project_files/arrigoni/t2gene_name.tsv
+  t2g: built/GRCh38/gene_index/index/t2g_3col.tsv
+  gene_id_to_name: built/GRCh38/gene_index/index/gene_id_to_name.tsv
+  t2gene_name: work/arrigoni/analysis/t2gene_name.tsv
 
-  input_seurat: data/project_files/arrigoni/raw_matrix.seurat.rds
+  input_seurat: work/arrigoni/analysis/raw_matrix.seurat.rds
 
   # 8 GEO barcode files; they are also the cell-type annotation of
   # "Known_Cell_Types", and are combined into part_qc_tsv before use.
-  part_qc_tsv: data/project_files/arrigoni/GSE243665_combined_QC_barcodes.tsv
+  part_qc_tsv: work/arrigoni/analysis/GSE243665_combined_QC_barcodes.tsv
   cell_type_files:
-    A549: data/geo_metadata/arrigoni/GSE243665_A549_barcodes.tsv.gz
-    CCL-185-IG: data/geo_metadata/arrigoni/GSE243665_CCL-185-IG_barcodes.tsv.gz
-    CRL5868: data/geo_metadata/arrigoni/GSE243665_CRL5868_barcodes.tsv.gz
-    DV90: data/geo_metadata/arrigoni/GSE243665_DV90_barcodes.tsv.gz
-    HCC78: data/geo_metadata/arrigoni/GSE243665_HCC78_barcodes.tsv.gz
-    HTB178: data/geo_metadata/arrigoni/GSE243665_HTB178_barcodes.tsv.gz
-    PBMCs: data/geo_metadata/arrigoni/GSE243665_PBMCs_barcodes.tsv.gz
-    PC9: data/geo_metadata/arrigoni/GSE243665_PC9_barcodes.tsv.gz
+    A549: inputs/geo_metadata/arrigoni/GSE243665_A549_barcodes.tsv.gz
+    CCL-185-IG: inputs/geo_metadata/arrigoni/GSE243665_CCL-185-IG_barcodes.tsv.gz
+    CRL5868: inputs/geo_metadata/arrigoni/GSE243665_CRL5868_barcodes.tsv.gz
+    DV90: inputs/geo_metadata/arrigoni/GSE243665_DV90_barcodes.tsv.gz
+    HCC78: inputs/geo_metadata/arrigoni/GSE243665_HCC78_barcodes.tsv.gz
+    HTB178: inputs/geo_metadata/arrigoni/GSE243665_HTB178_barcodes.tsv.gz
+    PBMCs: inputs/geo_metadata/arrigoni/GSE243665_PBMCs_barcodes.tsv.gz
+    PC9: inputs/geo_metadata/arrigoni/GSE243665_PC9_barcodes.tsv.gz
 
 # File names inside paths.objects.
 # NOTE: step 03 wrote calculated.transcript.cotan.rds on 2026-07-28, but the

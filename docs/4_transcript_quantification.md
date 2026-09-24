@@ -33,7 +33,7 @@ Standard scRNA-seq mapping pipelines group reads by gene to build a cell-by-gene
 The alignment pipeline is executed within the [main.nf](../src/pipeline/main.nf) workflow via the `ALIGN_SIMPLEAF` process.
 
 ### Configuration (`nextflow.config`)
-Parameters are declared in the `scrnaseq_params` map in [nextflow.config](../src/pipeline/nextflow.config) (per-run overrides live in `runs/<dataset>/nextflow.config`):
+Parameters are declared in the `scrnaseq_params` map in [nextflow.config](../src/pipeline/nextflow.config) (per-run overrides live in `work/<dataset>/pipeline/nextflow.config`):
 ```groovy
 params {
     scrnaseq_params = [
@@ -58,7 +58,7 @@ params {
          }
      }
      ```
-     The per-run `runs/<dataset>/custom.config` is what carries the child's cpus/memory (via `child_config = "custom.config"`).
+     The per-run `work/<dataset>/pipeline/custom.config` is what carries the child's cpus/memory (via `child_config = "custom.config"`).
    * **Execution**: Natively unsets `NXF_OPTS` and `NXF_CONFIG_FILES`, exports `NXF_SYNTAX_PARSER=v1` (forces parser compatibility with nf-core/scrnaseq 4.1.0 under Nextflow 26+), and starts the child pipeline:
      ```bash
      nextflow run nf-core/scrnaseq \

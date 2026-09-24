@@ -22,15 +22,15 @@ On athena, one run per dataset. The script must be launched **from inside the ru
 directory** so `launchDir` resolves the output paths:
 
 ```bash
-cd /data/lorenzo_delitala/runs/arrigoni
+cd /data/lorenzo_delitala/work/arrigoni/pipeline
 ./run_pipeline.sh          # -> nextflow run /data/lorenzo_delitala/src/pipeline/main.nf \
                            #      -c nextflow.config -profile singularity -resume
 ```
 
-Repeat for `runs/ding/cortex_2`. `--step align` (the default) downloads, builds the
-index, aligns with `nf-core/scrnaseq` 4.1.0, and QC-filters. Bulk data lands under
-`runs/<dataset>/results/`; the handoff Seurat object is copied to
-`data/project_files/<dataset>/raw_matrix.seurat.rds`.
+Repeat for `work/ding_cortex_2/pipeline`. `--step align` (the default) downloads, builds
+the index, aligns with `nf-core/scrnaseq` 4.1.0, and QC-filters. Bulk data lands under
+`work/<dataset>/pipeline/results/`; the handoff Seurat object is written to
+`work/<dataset>/analysis/raw_matrix.seurat.rds`.
 
 Datasets, accessions and assemblies: [`data_availability.md`](data_availability.md).
 
@@ -66,7 +66,7 @@ own.
 
 ## 3. Where outputs land
 
-Per dataset, under the config's `paths:` (`data/project_files/<dataset>/`):
+Per dataset, under the config's `paths:` (`work/<dataset>/analysis/`):
 `objects/` (chained `.rds`), `plots/` (GDI, UMAP, cluster), `logs/`
 (`<step>.<level>.log`), and the DTU CSVs. `scripts/collect_results.sh` stages the
 curated subset into `results/` (tracked).
@@ -78,10 +78,10 @@ Only step `07_dtu.R` produces the reported tables. The rest are upstream.
 - **`03_calc`** (COEX) costs hours. If `objects.calculated` already exists, skip it:
   `run_all.R --from 04`, or run `07_dtu.R` directly.
 - **`05_cluster`** is a guided optimisation whose outcome is not fixed in advance.
-- The stored final COTAN object is `data/test/cotan_coex.rds` (2.78 GB) — **never
-  delete it**. It is **not** an input to the parity check (`verify_dtu_parity.R`
-  reads the per-dataset objects below); it is kept as the last checkpoint of the
-  coexistence state.
+
+> The old checkpoint `data/test/cotan_coex.rds` (2.78 GB) was removed in the
+> 2026-09 restructure; it was **not** an input to the parity check
+> (`verify_dtu_parity.R` reads the per-dataset objects below).
 
 ### Parity check
 

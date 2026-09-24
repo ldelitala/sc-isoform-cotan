@@ -2,7 +2,7 @@
 #
 # GSE132044 — mouse cortex, "Cortex2 10x-Chromium-v2" cells, transcript level.
 # Values transcribed from
-# data/project_files/ding/cortex_2/Rscripts/transcript/*.R and confront_dtu.R.
+# work/ding_cortex_2/analysis/Rscripts/transcript/*.R and confront_dtu.R.
 
 root: /data/lorenzo_delitala
 dataset: ding_cortex_2
@@ -18,20 +18,20 @@ logging_level: 3
 run: ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"]
 
 paths:
-  workdir: data/project_files/ding/cortex_2
-  logs: data/project_files/ding/cortex_2/logs
-  objects: data/project_files/ding/cortex_2/objects
-  plots: data/project_files/ding/cortex_2/plots
+  workdir: work/ding_cortex_2/analysis
+  logs: work/ding_cortex_2/analysis/logs
+  objects: work/ding_cortex_2/analysis/objects
+  plots: work/ding_cortex_2/analysis/plots
 
-  t2g: data/genomes/GRCm39/gene_index/index/t2g_3col.tsv
-  gene_id_to_name: data/genomes/GRCm39/gene_index/index/gene_id_to_name.tsv
+  t2g: built/GRCm39/gene_index/index/t2g_3col.tsv
+  gene_id_to_name: built/GRCm39/gene_index/index/gene_id_to_name.tsv
   # the released transcript run kept its map inside objects/
-  t2gene_name: data/project_files/ding/cortex_2/objects/t2gene_name.tsv
+  t2gene_name: work/ding_cortex_2/analysis/objects/t2gene_name.tsv
 
-  input_seurat: data/project_files/ding/cortex_2/raw_matrix.seurat.rds
+  input_seurat: work/ding_cortex_2/analysis/raw_matrix.seurat.rds
 
   # the cortex_2 cells were already QC-filtered upstream
-  valid_cells_tsv: data/geo_metadata/ding/cortex_2/clean_Cortex2_QC_barcodes.tsv.gz
+  valid_cells_tsv: inputs/geo_metadata/ding_cortex_2/clean_Cortex2_QC_barcodes.tsv.gz
 
 objects:
   ready_seurat: ready_to_cotan.transcript.seurat.rds

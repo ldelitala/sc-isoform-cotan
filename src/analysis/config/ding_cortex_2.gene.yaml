@@ -2,7 +2,7 @@
 #
 # GSE132044 — mouse cortex, "Cortex2 10x-Chromium-v2" cells, GENE level.
 # Values transcribed from
-# data/project_files/ding/cortex_2/Rscripts/gene/{01_init,02_calc,03_plot_gdi,04_cluster}.R
+# work/ding_cortex_2/analysis/Rscripts/gene/{01_init,02_calc,03_plot_gdi,04_cluster}.R
 #
 # This run exists for one reason: its `local_gene_cluster` labels are transferred
 # onto the transcript object (step 06 of the transcript config) so that
@@ -23,15 +23,15 @@ logging_level: 3
 run: ["02", "03", "04", "05"]
 
 paths:
-  workdir: data/project_files/ding/cortex_2
-  logs: data/project_files/ding/cortex_2/logs
-  objects: data/project_files/ding/cortex_2/objects
-  plots: data/project_files/ding/cortex_2/plots
+  workdir: work/ding_cortex_2/analysis
+  logs: work/ding_cortex_2/analysis/logs
+  objects: work/ding_cortex_2/analysis/objects
+  plots: work/ding_cortex_2/analysis/plots
 
   # this run starts from the GEO count matrix, not from a Seurat object
-  input_matrix: data/geo_metadata/ding/cortex_2/GSE132044_cortex_mm10_count_matrix.mtx.gz
-  input_matrix_genes: data/geo_metadata/ding/cortex_2/GSE132044_cortex_mm10_gene.tsv.gz
-  input_matrix_cells: data/geo_metadata/ding/cortex_2/GSE132044_cortex_mm10_cell.tsv.gz.1
+  input_matrix: inputs/geo_metadata/ding_cortex_2/GSE132044_cortex_mm10_count_matrix.mtx.gz
+  input_matrix_genes: inputs/geo_metadata/ding_cortex_2/GSE132044_cortex_mm10_gene.tsv.gz
+  input_matrix_cells: inputs/geo_metadata/ding_cortex_2/GSE132044_cortex_mm10_cell.tsv.gz.1
 
 # File names inside paths.objects. `initialized` is the cleaned COTAN object the
 # gene-level driver called cleaned.gene.cotan.rds.

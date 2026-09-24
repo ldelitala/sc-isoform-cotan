@@ -7,7 +7,7 @@ It sits between two other pieces of the repository:
 
 ```
 src/pipeline/            Nextflow: SRA -> simpleaf index -> align -> QC filter
-   |                     (last artefact: runs/<dataset>/results/sample_filtered.rds)
+   |                     (last artefact: work/<dataset>/pipeline/results/sample_filtered.rds)
    v
 src/analysis/            this layer: Seurat clean-up -> COTAN -> COEX -> GDI -> clustering
    |                     -> DTU candidates -> gene/transcript comparison
@@ -16,7 +16,7 @@ src/cotanisoform/        the R package with the actual algorithms, used by every
 ```
 
 `src/analysis/` is **not** invoked by Nextflow. The hand-off is a Seurat object placed under
-`data/project_files/<dataset>/`; `src/pipeline/bin/5.1_downstream_cotan.R` is an empty
+`work/<dataset>/analysis/`; `src/pipeline/bin/5.1_downstream_cotan.R` is an empty
 placeholder and is handled separately (see the cleanup plan S7).
 
 ## Layout
@@ -184,10 +184,10 @@ called `cotan_calc*.log`.
 
 Kept on athena, not in git (too large):
 
-* `data/project_files/<dataset>/raw_matrix.seurat.rds` — the pipeline's Seurat output with
+* `work/<dataset>/analysis/raw_matrix.seurat.rds` — the pipeline's Seurat output with
   spliced/unspliced/ambiguous layers (step 01 input).
-* `data/geo_metadata/**` — GEO barcode files used for QC flags and cell types.
-* `data/genomes/{GRCh38,GRCm39}/gene_index/index/` — `t2g_3col.tsv` and
+* `inputs/geo_metadata/**` — GEO barcode files used for QC flags and cell types.
+* `built/{GRCh38,GRCm39}/gene_index/index/` — `t2g_3col.tsv` and
   `gene_id_to_name.tsv` from the aligner run (step 00 input).
 * for the gene-level cortex run: `GSE132044_cortex_mm10_{count_matrix.mtx,gene.tsv,cell.tsv}.gz`.
 

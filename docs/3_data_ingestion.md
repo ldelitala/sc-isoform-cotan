@@ -56,6 +56,6 @@ are in [`data_availability.md`](data_availability.md):
 2. **Ding cortex_2** (GEO `GSE132044`) — mouse cortex, GRCm39, gene and
 transcript levels. SRA runs `SRR9170683`…`SRR9170886` (8).
 
-Samplesheets live on athena at `runs/<dataset>/samplesheet.csv`. The other
+Samplesheets live on athena at `work/<dataset>/pipeline/samplesheet.csv`. The other
 datasets once considered for evaluation (La Manno 2021, Yuzwa 2017, Loo 2019)
 were not used.

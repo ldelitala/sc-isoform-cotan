@@ -70,14 +70,14 @@ R CMD INSTALL src/cotanisoform            # this repository's package
 
 ### Nextflow half — produce a filtered matrix
 
-Each dataset has a run directory **on athena** under `runs/<dataset>/`
+Each dataset has a run directory **on athena** under `work/<dataset>/pipeline/`
 containing `run_pipeline.sh`, `samplesheet.csv`, `nextflow.config` and
 `custom.config`. The script is run **from inside that directory** so
-`launchDir` resolves the output paths (`runs/` is gitignored and exists only on
+`launchDir` resolves the output paths (`work/` is gitignored and exists only on
 athena):
 
 ```bash
-cd runs/<dataset>
+cd work/<dataset>/pipeline
 ./run_pipeline.sh        # -> nextflow run .../src/pipeline/main.nf \
                          #      -c nextflow.config -profile singularity -resume
 ```
@@ -196,8 +196,8 @@ To get a **cell-by-isoform** matrix, `2.3_index_apply_cheat.sh`:
 - **COTAN p-value segfault.** `COTAN::calculatePValue()` segfaults at ≥46,341
   features (32-bit overflow when subsetting `dspMatrix`); keep features < ~41,000.
   See [`docs/cotan_pvalue_segfault.md`](docs/cotan_pvalue_segfault.md).
-- **`runs/` and all data are gitignored** (`data/`, `runs/`, `.conda/`,
-  `.cache/`, `COTAN/`, `logs/`). Only code and docs are versioned.
+- **`inputs/`, `built/`, `work/` and all data are gitignored** (`.conda/`,
+  `.cache/`, `COTAN/`, `logs/`, `scratch/`). Only code and docs are versioned.
 - **RAM-disk policy.** Downloads stage in `/dev/shm` (`scratch '/dev/shm'`);
   never write raw SRA/BAM to persistent disk.
 - **Resource overrides.** The per-run `nextflow.config` (`-c`) plus `custom.config`

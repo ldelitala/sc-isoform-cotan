@@ -30,8 +30,8 @@ they are Git-unfriendly and stay on the machine.
 
 Large intermediate objects: `calculated.*.cotan.rds` (~3–5.5 GB),
 `clustered.*.rds` (~1–3 GB), `raw_matrix.seurat.rds` (~0.2–2.5 GB),
-`ready_to_coex.seurat.rds` (676 MB), plus all raw data (`data/fastqs`,
-`data/genomes`) and Nextflow run trees (`runs/`).
+`ready_to_coex.seurat.rds` (676 MB), plus all raw data (`inputs/fastqs`,
+`inputs/reference`, `built/`) and computed work trees (`work/`).
 
 ## Provenance
 
@@ -42,9 +42,9 @@ Produced on Athena by the `src/analysis/` driver steps (`src/analysis/run_all.R`
 
 ```bash
 # on Athena
-./scripts/collect_results.sh                 # stages data/publish_results (gitignored)
+./scripts/collect_results.sh                 # stages scratch/publish_results (gitignored)
 # on the Mac
-rsync -a athena:/data/lorenzo_delitala/data/publish_results/ results/
+rsync -a athena:/data/lorenzo_delitala/scratch/publish_results/ results/
 git add results && git commit -m "Update results"
 git push github HEAD    # push the branch you are working on
 ```

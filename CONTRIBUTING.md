@@ -45,7 +45,7 @@ released runs and have not been re-executed (hours of COEX).
 Run from the per-dataset directory, so `launchDir` resolves correctly:
 
 ```bash
-cd runs/<dataset>          # only exists on athena; runs/ is gitignored
+cd work/<dataset>/pipeline   # only exists on athena; work/ is gitignored
 ./run_pipeline.sh
 ```
 
@@ -95,8 +95,8 @@ why CI lints `src/cotanisoform` and `src/analysis` only.
 
 - Imperative subject line; prefix with the workstream when it helps (`S1:`, `analysis:`,
   `envs:`).
-- Keep data out of git: `runs/`, `data/`, `*.rds`, agent files (`AGENTS.md`, `plans/`) are
-  gitignored — never force-add them.
+- Keep data out of git: `inputs/`, `built/`, `work/`, `*.rds`, agent files (`AGENTS.md`,
+  `plans/`) are gitignored — never force-add them.
 - Update `CHANGELOG.md` when a change is user-visible.
 - In a pull request, state what was tested; the checklist in
   `.github/pull_request_template.md` is the minimum.

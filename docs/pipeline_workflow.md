@@ -26,10 +26,10 @@ graph TD
     I -->|Generate nf-params.json| H
     
     H -->|Run nf-core/scrnaseq| J["combined_raw_matrix.seurat.rds"]
-    J -->|Publish Matrix Copy| K["data/unfiltered/"]
+    J -->|Publish Matrix Copy| K["work/<dataset>/analysis/"]
     
     J -->|Input RDS| L["Process: QC_FILTER"]
-    L -->|Execute filter_matrix.R| M["data/filtered/"]
+    L -->|Execute filter_matrix.R| M["work/<dataset>/pipeline/results/"]
     M -->|QC-Filtered RDS Matrix| N["Final Preprocessed Output"]
 ```
 
@@ -46,9 +46,9 @@ graph TD
 - **`createParamsFile()`**: Generates `nf-params.json` for child nextflow configuration containing parameters like cellranger indexes, protocols, etc.
 
 ### Stage 3: Alignment (`align.nf`)
-- **`ALIGN_SIMPLEAF`**: Spawns a child `nf-core/scrnaseq` pipeline run inside `runs/<dataset>/preprocessing/`.
-- **Publish raw matrix**: Copies the expensive-to-compute alignment matrix from preprocessing output to `data/unfiltered/<dataset>_raw_matrix.seurat.rds` for safekeeping.
+- **`ALIGN_SIMPLEAF`**: Spawns a child `nf-core/scrnaseq` pipeline run inside `work/<dataset>/pipeline/results/preprocessing/`.
+- **Publish raw matrix**: Writes the unfiltered concatenated matrix to `work/<dataset>/analysis/raw_matrix.seurat.rds` (the `unfiltered_dir`), which is the handoff to the R analysis.
 
 ### Stage 4: Quality Control (`filter.nf`)
 - **`QC_FILTER`**: Executes the modular `filter_matrix.R` script using criteria (mitochondrial transcripts, UMI counts, feature ranges) set in `src/nextflow.config`.
-- **Publish filtered matrix**: Writes the final cleaned Seurat/SingleCellExperiment RDS matrix to `data/filtered/` as the starting point for COTAN analysis.
+- **Publish filtered matrix**: Writes the final filtered matrix to `work/<dataset>/pipeline/results/sample_filtered.rds` as the starting point for COTAN analysis.
