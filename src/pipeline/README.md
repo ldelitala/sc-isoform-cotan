@@ -181,6 +181,14 @@ shared resources) and stage intermediate files entirely in RAM
 
 ## The `align` child-run mechanics
 
+The `align` step runs the three phases in order — download, index, then
+preprocessing. The two resource-overridden processes are `BUILD_INDEX` (when the
+index is missing) and `ALIGN_SIMPLEAF`, both at 8 cpus / 16 GB; the default
+2 cpus / 4 GB only touches downloads and light bookkeeping. The actual
+alignment/quantification happens inside the child `nf-core/scrnaseq` run
+launched by `ALIGN_SIMPLEAF`, which carries its own cpus/memory from the
+per-run `custom.config` (the `child_config` param).
+
 `ALIGN_SIMPLEAF` runs **natively on the head node** in an `exec:` block,
 bypassing containerized worker-node staging (this also works around the
 nested-work-directory bug). It:
