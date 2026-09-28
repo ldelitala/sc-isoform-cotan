@@ -24,24 +24,35 @@ stage to run.
 `filter` step. QC filtering is not part of this half — it happens later, in the
 R analysis.
 
-Running the full pipeline from a per-dataset run directory:
+## Running the pipeline
+
+The entry point is `nextflow run .../src/pipeline/main.nf`. It takes a per-run
+config file, the Singularity profile, and a `--step` flag selecting the stage:
+
+```bash
+nextflow run .../src/pipeline/main.nf \
+    -c nextflow.config -profile singularity --step align
+```
+
+`-c nextflow.config` supplies the per-dataset resource overrides,
+`-profile singularity` runs every process in a Singularity container, and
+`--step` selects `download`, `index` or `align`. The `align` step (the default)
+is the full chain: it downloads any missing data, builds the index if needed,
+runs `nf-core/scrnaseq`, and stages the raw cell-by-isoform matrix as
+`raw_matrix.seurat.rds`.
+
+For convenience there is also a quick wrapper, `run_pipeline.sh`, which lives in
+the per-dataset run directory and fills in the boilerplate above — the config,
+the profile, and `-resume` (so a rerun continues from where it left off). Run it
+from that directory with no flags to get the whole pipeline:
 
 ```bash
 cd work/<dataset>/pipeline
 ./run_pipeline.sh
 ```
 
-`run_pipeline.sh` wraps the Nextflow invocation, adding the per-run config and
-the Singularity profile and enabling `-resume`:
-
-```bash
-nextflow run .../src/pipeline/main.nf \
-    -c nextflow.config -profile singularity -resume
-```
-
-To run a single step instead, pass `--step download`, `--step index`, or
-`--step align`. `align` is the default, so the no-flag command above runs the
-whole chain from accessions to the matrix.
+To run just one step through the wrapper, pass the same flag through:
+`--step download`, `--step index`, or `--step align`.
 
 ## The samplesheet
 
