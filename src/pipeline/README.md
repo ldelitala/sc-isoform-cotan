@@ -56,12 +56,24 @@ To run just one step through the wrapper, pass the same flag through:
 
 ## The samplesheet
 
-The samplesheet is a CSV with two columns, `sample` and `sra`, one row per run:
+The samplesheet lives next to the wrapper, in the per-dataset run directory at
+`work/<dataset>/pipeline/samplesheet.csv`. It is attached to the pipeline as the
+mandatory `params.input` — a CSV with two columns, `sample` and `sra`, one row
+per run:
 
 ```csv
 sample,sra
 banchmark_mix,SRR26127904
 banchmark_mix,SRR26127905
+```
+
+The per-run `nextflow.config` points `input` at that file, so the plain
+`./run_pipeline.sh` invocation picks it up automatically. To point the pipeline
+at a different sheet, pass its path explicitly:
+
+```bash
+nextflow run .../src/pipeline/main.nf \
+    -c nextflow.config -profile singularity --step align --input samplesheet.csv
 ```
 
 For each accession the pipeline queries the ENA API to detect the run layout and
