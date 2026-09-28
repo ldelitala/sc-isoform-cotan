@@ -11,20 +11,33 @@ a high-RAM head node is the main requirement.
 
 ## Quick start
 
-Each dataset keeps its own run directory, `work/<dataset>/pipeline/`, holding a
-wrapper script, the samplesheet, and a customized config file. The whole
-pipeline runs with a single command from that directory:
+The entry point is `nextflow run .../src/pipeline/main.nf`, taking the config
+file, the Singularity profile, and a `--step` flag:
+
+```bash
+nextflow run .../src/pipeline/main.nf \
+    -c nextflow.config -profile singularity --step align
+```
+
+`-c nextflow.config` supplies the per-dataset settings, `-profile singularity`
+runs every process in a Singularity container, and `--step align` runs the full
+chain — download any missing data, build the index if needed, run
+`nf-core/scrnaseq`, and stage the raw cell-by-isoform matrix as
+`raw_matrix.seurat.rds`.
+
+To spare repeating that invocation, each dataset keeps a quick wrapper,
+`run_pipeline.sh`, in its run directory `work/<dataset>/pipeline/`. It supplies
+the same boilerplate flags — the per-run config (`-c nextflow.config`), the
+Singularity profile, and `-resume` (so a rerun continues where it left off) —
+so the whole pipeline runs with a single command:
 
 ```bash
 cd work/<dataset>/pipeline
 ./run_pipeline.sh
 ```
 
-`run_pipeline.sh` just supplies the boilerplate flags — the per-run config
-(`-c nextflow.config`), the Singularity profile, and `-resume` (so a rerun
-continues where it left off). It does **not** generate the config; editing
-`nextflow.config` is always required, at minimum for `genome_species` and
-`genome_assembly`.
+The wrapper does **not** generate the config; editing `nextflow.config` is
+always required, at minimum for `genome_species` and `genome_assembly`.
 
 ## The three steps
 
