@@ -43,28 +43,52 @@ if needed, runs `nf-core/scrnaseq`, and stages the raw cell-by-isoform matrix as
 
 ### The configuration file
 
-`nextflow.config` is a single file holding every setting the pipeline needs. It
-is split into three blocks:
+`nextflow.config` is a single file holding every setting the pipeline needs.
+It is split into three blocks: `params` (pipeline parameters), `executor`/
+`process` (resource limits), and `profiles` (container profiles). A minimal
+working config looks like this:
 
-**Pipeline parameters** (`params`). The workflow-control and data-path settings:
-`step`, the mandatory samplesheet `input`, the dataset/reference/index output
-dirs, the reference species (`genome_assembly` like `GRCh38`, `genome_species`
-like `homo_sapiens`, `ensembl_release` = 102), `transcript_level` (true for
-isoform-level, false for gene-level), `skip_simpleaf`, and the child
-`nf-core/scrnaseq` parameters (`protocol`, `simpleaf_umi_resolution`, and the
-`skip_multiqc`/`skip_fastqc` toggles).
+```groovy
+params {
+    step            = "align"     // which step: download, index, align
+    input           = "samplesheet.csv" // mandatory: CSV (sample, sra)
 
-**Executor and resource limits** (`executor`/`process`). The default CPU/memory
-per process, plus overrides for the heavy stages: `ALIGN_SIMPLEAF` and
-`BUILD_INDEX` get 8 cpus / 16 GB, and `DOWNLOAD_BAM`/`DOWNLOAD_FASTQ` are limited
-to 4 concurrent forks with a 2-retry error strategy.
+    genome_species  = "homo_sapiens"    // species for the Ensembl download
+    genome_assembly = "GRCh38"          // assembly, e.g. GRCh38 / GRCm38
+    ensembl_release = 102
 
-**Container profiles** (`profiles`). The `singularity` profile (used in the
-command above) and an alternative `docker` profile.
+    transcript_level = true     // true = isoform-level, false = gene-level
+    skip_simpleaf    = false
+}
 
-This is the file the per-dataset run directory customizes — each dataset keeps
-its own `nextflow.config` with its species, assembly, and resource settings, and
-the plain `./run_pipeline.sh` invocation picks that file up automatically.
+executor {
+    name = 'local'
+}
+
+process {
+    cpus   = 2
+    memory = 4.GB
+
+    withName: 'ALIGN_SIMPLEAF|BUILD_INDEX' { cpus = 8; memory = 16.GB }
+    withName: 'DOWNLOAD_BAM|DOWNLOAD_FASTQ' {
+        maxForks = 4; errorStrategy = 'retry'; maxRetries = 2
+    }
+}
+
+profiles {
+    singularity { singularity.enabled = true; singularity.autoMounts = true }
+}
+```
+
+The key values to set for a new dataset are the **mandatory** `input` (the
+samplesheet path) and the **reference** settings `genome_species` and
+`genome_assembly` — everything else has a working default. `transcript_level`
+must stay `true` for this thesis's isoform-level goal. The per-dataset run
+directory keeps its own customized `nextflow.config`, so the plain
+`./run_pipeline.sh` invocation picks it up automatically.
+
+Every parameter, the resource blocks, and the container profiles are documented
+in full in [`CONFIG.md`](CONFIG.md).
 
 For convenience there is also a quick wrapper, `run_pipeline.sh`, which lives in
 the per-dataset run directory and fills in the boilerplate above — the config,
