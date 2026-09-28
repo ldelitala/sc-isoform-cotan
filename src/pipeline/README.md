@@ -16,17 +16,25 @@ so a high-RAM head node is the main requirement.
 | `index` | Download Ensembl FASTA/GTF and build a simpleaf (Piscem) index | index missing |
 | `align` | `download` + `index` as needed, then run `nf-core/scrnaseq` and stage the raw matrix | **default; the full chain** |
 
-`main.nf` accepts only these three (`valid_steps`); there is no `all`/`filter` step.
-`align` runs `PREPROCESSING` = `ALIGN_SIMPLEAF`, which stages
-`raw_matrix.seurat.rds`; the R analysis does its own QC. Run:
+`main.nf` accepts only these three steps (`valid_steps`); there is no `all` or
+`filter` step — QC filtering happens later, in the R analysis.
+
+The default `align` step does the whole chain: it downloads any missing data,
+builds the index if needed, runs `nf-core/scrnaseq`, and stages the raw
+cell-by-isoform matrix as `raw_matrix.seurat.rds`.
+
+To run the full pipeline:
 
 ```bash
 cd work/<dataset>/pipeline
-./run_pipeline.sh        # -> nextflow run .../src/pipeline/main.nf \
-                         #      -c nextflow.config -profile singularity -resume
+./run_pipeline.sh
 ```
 
-`--step` selects `download`, `index` or `align`; `align` is the default.
+(`run_pipeline.sh` just invokes `nextflow run .../src/pipeline/main.nf
+-c nextflow.config -profile singularity -resume`.)
+
+If you only need one step, pass `--step download`, `--step index`, or
+`--step align`. `align` is the default.
 
 ## The samplesheet
 
