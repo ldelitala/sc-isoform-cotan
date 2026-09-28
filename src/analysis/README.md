@@ -151,8 +151,10 @@ steps:
     min_events: 10           # minimum accepted events for a stable call
 ```
 
-The published `min_dea_contrast` is forced onto the grid as an anchor; the strictest tau in
-the range defines the robust core. Outputs `sweep_tau.<cluster>.csv` + `.png` to `paths.plots`.
+The published `min_dea_contrast` is forced onto the grid as an anchor. The robust core is
+the set accepted at the strictest grid tau that still has >= `min_events` events (so the
+stability signal is not empty when the range's upper end passes the extinction point).
+Outputs `sweep_tau.<cluster>.csv` + `.png` to `paths.plots`.
 
 The `COEX <= 0` rule of the DTU step is hard-coded inside
 `cotanisoform::extract_dtu_candidates()`; there is no config key for it.

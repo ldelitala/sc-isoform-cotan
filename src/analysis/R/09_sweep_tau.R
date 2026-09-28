@@ -94,7 +94,21 @@ for (i in seq_along(dtu$outputs)) {
 
   tau_grid <- sort(unique(c(seq(tau_range[1], tau_range[2], by = tau_step),
                             published_tau)))
-  tau_ref <- max(tau_grid)  # strict end of the range -> the robust core
+
+  # Robust core = events that survive the strictest tau that still has enough
+  # events. Anchoring at max(tau_grid) past extinction gives an empty core and a
+  # dead stability signal (frac_in_core all 0, "stable tau none" for every
+  # dataset), so pick the strictest grid tau with >= min_events events instead.
+  tau_ref <- max(tau_grid)
+  n_events <- vapply(tau_grid, function(tau) {
+    nrow(extract_dtu_candidates(
+      cotan_obj, clusterization_name = cluster_name,
+      p_value_threshold = p_value_threshold, min_dea_contrast = tau,
+      gene_name_col = dtu$gene_name_col, output_directory = NULL
+    ))
+  }, integer(1L))
+  ok <- tau_grid[n_events >= min_events]
+  if (length(ok) > 0L) tau_ref <- max(ok)
 
   core_df <- extract_dtu_candidates(
     cotan_obj, clusterization_name = cluster_name,
