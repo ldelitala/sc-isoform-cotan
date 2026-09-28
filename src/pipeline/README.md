@@ -1,9 +1,12 @@
 # `src/pipeline/` — Nextflow half
 
 Turns SRA accessions into a cell-by-isoform Seurat matrix. Three steps, each a
-self-contained Nextflow stage. Run it on athena from inside a per-dataset run
-directory (`work/<dataset>/pipeline/`, gitignored, exists only on athena) so
-`launchDir` resolves the output paths.
+self-contained Nextflow stage. Run it from inside a per-dataset run directory
+(`work/<dataset>/pipeline/`) so `launchDir` resolves the output paths.
+
+Advised hardware: ~88 cores / ~2 TB RAM. The `align` step runs the child
+`nf-core/scrnaseq` natively on the head node and stages downloads in `/dev/shm`,
+so a high-RAM head node is the main requirement.
 
 ## Steps — and when to use each
 
