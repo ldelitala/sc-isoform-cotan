@@ -34,12 +34,37 @@ nextflow run .../src/pipeline/main.nf \
     -c nextflow.config -profile singularity --step align
 ```
 
-`-c nextflow.config` supplies the per-dataset resource overrides,
-`-profile singularity` runs every process in a Singularity container, and
-`--step` selects `download`, `index` or `align`. The `align` step (the default)
-is the full chain: it downloads any missing data, builds the index if needed,
-runs `nf-core/scrnaseq`, and stages the raw cell-by-isoform matrix as
+`-c nextflow.config` supplies the configuration file with all the settings the
+pipeline needs, `-profile singularity` runs every process in a Singularity
+container, and `--step` selects `download`, `index` or `align`. The `align` step
+(the default) is the full chain: it downloads any missing data, builds the index
+if needed, runs `nf-core/scrnaseq`, and stages the raw cell-by-isoform matrix as
 `raw_matrix.seurat.rds`.
+
+### The configuration file
+
+`nextflow.config` is a single file holding every setting the pipeline needs. It
+is split into three blocks:
+
+**Pipeline parameters** (`params`). The workflow-control and data-path settings:
+`step`, the mandatory samplesheet `input`, the dataset/reference/index output
+dirs, the reference species (`genome_assembly` like `GRCh38`, `genome_species`
+like `homo_sapiens`, `ensembl_release` = 102), `transcript_level` (true for
+isoform-level, false for gene-level), `skip_simpleaf`, and the child
+`nf-core/scrnaseq` parameters (`protocol`, `simpleaf_umi_resolution`, and the
+`skip_multiqc`/`skip_fastqc` toggles).
+
+**Executor and resource limits** (`executor`/`process`). The default CPU/memory
+per process, plus overrides for the heavy stages: `ALIGN_SIMPLEAF` and
+`BUILD_INDEX` get 8 cpus / 16 GB, and `DOWNLOAD_BAM`/`DOWNLOAD_FASTQ` are limited
+to 4 concurrent forks with a 2-retry error strategy.
+
+**Container profiles** (`profiles`). The `singularity` profile (used in the
+command above) and an alternative `docker` profile.
+
+This is the file the per-dataset run directory customizes — each dataset keeps
+its own `nextflow.config` with its species, assembly, and resource settings, and
+the plain `./run_pipeline.sh` invocation picks that file up automatically.
 
 For convenience there is also a quick wrapper, `run_pipeline.sh`, which lives in
 the per-dataset run directory and fills in the boilerplate above — the config,
