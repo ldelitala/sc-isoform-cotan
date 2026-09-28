@@ -1,15 +1,32 @@
 # `src/pipeline/` — Nextflow half
 
-This half turns SRA accessions into a raw cell-by-isoform Seurat matrix. It is
-a small Nextflow pipeline with three steps — `download`, `index` and `align` —
-run from inside a per-dataset run directory, with all output paths resolved
-relative to the launch directory.
+This half turns SRA accessions into a raw cell-by-isoform Seurat matrix. It is a
+small Nextflow pipeline with three steps — `download`, `index` and `align` — run
+from inside a per-dataset run directory, with all output paths resolved relative
+to the launch directory.
 
 Advised hardware: roughly 88 cores and 2 TB of RAM. The heaviest step runs the
 alignment natively on the head node and stages downloads in RAM (`/dev/shm`), so
 a high-RAM head node is the main requirement.
 
-## The interface
+## Quick start
+
+Each dataset keeps its own run directory, `work/<dataset>/pipeline/`, holding a
+wrapper script, the samplesheet, and a customized config file. The whole
+pipeline runs with a single command from that directory:
+
+```bash
+cd work/<dataset>/pipeline
+./run_pipeline.sh
+```
+
+`run_pipeline.sh` just supplies the boilerplate flags — the per-run config
+(`-c nextflow.config`), the Singularity profile, and `-resume` (so a rerun
+continues where it left off). It does **not** generate the config; editing
+`nextflow.config` is always required, at minimum for `genome_species` and
+`genome_assembly`.
+
+## The three steps
 
 The pipeline has a single entry point and a `--step` flag that selects which
 stage to run.
@@ -20,33 +37,27 @@ stage to run.
 | `index` | Download the Ensembl reference (FASTA/GTF) and build the `simpleaf` (Piscem) index | index missing |
 | `align` | Full chain: `download` + `index` as needed, then `nf-core/scrnaseq`; stages `raw_matrix.seurat.rds` | **default; run this to go end-to-end** |
 
-`main.nf` accepts only these three steps (`valid_steps`); there is no `all` or
-`filter` step. QC filtering is not part of this half — it happens later, in the
-R analysis.
+There are only these three steps — no `all` or `filter`. QC filtering is not
+part of this half; it happens later, in the R analysis.
 
-## Running the pipeline
-
-The entry point is `nextflow run .../src/pipeline/main.nf`. It takes a per-run
-config file, the Singularity profile, and a `--step` flag selecting the stage:
+The entry point is `nextflow run .../src/pipeline/main.nf`. To run a single
+step directly:
 
 ```bash
 nextflow run .../src/pipeline/main.nf \
     -c nextflow.config -profile singularity --step align
 ```
 
-`-c nextflow.config` supplies the configuration file with all the settings the
-pipeline needs, `-profile singularity` runs every process in a Singularity
-container, and `--step` selects `download`, `index` or `align`. The `align` step
-(the default) is the full chain: it downloads any missing data, builds the index
-if needed, runs `nf-core/scrnaseq`, and stages the raw cell-by-isoform matrix as
-`raw_matrix.seurat.rds`.
+`align` is the default, so a bare wrapper invocation runs the whole chain from
+accessions to the matrix. Pass `--step download`, `--step index`, or
+`--step align` through the wrapper to run just one step.
 
-### The configuration file
+## Configuration
 
-`nextflow.config` is a single file holding every setting the pipeline needs.
-It is split into three blocks: `params` (pipeline parameters), `executor`/
-`process` (resource limits), and `profiles` (container profiles). A minimal
-working config looks like this:
+`nextflow.config` is a single file holding every setting the pipeline needs,
+split into three blocks: `params` (pipeline parameters), `executor`/`process`
+(resource limits), and `profiles` (container profiles). A minimal working config
+looks like this:
 
 ```groovy
 params {
@@ -82,39 +93,16 @@ profiles {
 
 The key values to set for a new dataset are the **mandatory** `input` (the
 samplesheet path) and the **reference** settings `genome_species` and
-`genome_assembly` — everything else has a working default. `transcript_level`
-must stay `true` for this thesis's isoform-level goal. The per-dataset run
-directory keeps its own customized `nextflow.config`, so the plain
-`./run_pipeline.sh` invocation picks it up automatically.
+`genome_assembly`; everything else has a working default. `transcript_level`
+must stay `true` for this thesis's isoform-level goal. Each parameter, the
+resource blocks, and the container profiles are documented in full in
+[`CONFIG.md`](CONFIG.md).
 
-Every parameter, the resource blocks, and the container profiles are documented
-in full in [`CONFIG.md`](CONFIG.md).
+## Input: the samplesheet
 
-For convenience there is also a quick wrapper, `run_pipeline.sh`, which lives in
-the per-dataset run directory and supplies the boilerplate flags — the
-`-c nextflow.config` config file, the `singularity` profile, and `-resume` (so a
-rerun continues from where it left off). Run it from that directory with no
-flags to get the whole pipeline:
-
-```bash
-cd work/<dataset>/pipeline
-./run_pipeline.sh
-```
-
-The wrapper does not generate the config — it only points the pipeline at the
-`nextflow.config` in the same directory. Editing that file is always required to
-set the per-dataset reference, at minimum the `genome_species` and
-`genome_assembly` values.
-
-To run just one step through the wrapper, pass the same flag through:
-`--step download`, `--step index`, or `--step align`.
-
-## The samplesheet
-
-The samplesheet lives next to the wrapper, in the per-dataset run directory at
-`work/<dataset>/pipeline/samplesheet.csv`. It is attached to the pipeline as the
-mandatory `params.input` — a CSV with two columns, `sample` and `sra`, one row
-per run:
+The samplesheet lives next to the wrapper at `work/<dataset>/pipeline/samplesheet.csv`
+and is attached to the pipeline as the mandatory `params.input`. It is a CSV
+with two columns, `sample` and `sra`, one row per run:
 
 ```csv
 sample,sra
@@ -122,14 +110,9 @@ banchmark_mix,SRR26127904
 banchmark_mix,SRR26127905
 ```
 
-The per-run `nextflow.config` points `input` at that file, so the plain
-`./run_pipeline.sh` invocation picks it up automatically. To point the pipeline
-at a different sheet, pass its path explicitly:
-
-```bash
-nextflow run .../src/pipeline/main.nf \
-    -c nextflow.config -profile singularity --step align --input samplesheet.csv
-```
+The per-run `nextflow.config` points `input` at that file, so the wrapper picks
+it up automatically. To use a different sheet, pass its path explicitly with
+`--input`.
 
 For each accession the pipeline queries the ENA API to detect the run layout and
 branches accordingly:
@@ -140,22 +123,9 @@ branches accordingly:
   through the BAM download path (`prefetch --type TenX` + `bamtofastq`), because
   plain `fasterq-dump` would discard the barcode/UMI tags.
 
-## The transcript "cheat"
+## How it works
 
-Standard scRNA-seq pipelines group reads by gene. This pipeline instead wants a
-**cell-by-isoform** matrix, so after the index is built it modifies it so that
-every transcript is treated as an independent entity:
-
-1. The `t2g_3col.tsv` mapping is rewritten so each transcript maps to **itself** —
-   a transcript ID becomes its own gene ID, so `simpleaf`/`Alevin` treat every
-   isoform as an independent entity and isoforms stop collapsing into genes.
-2. The `gene_id_to_name.tsv` file is deleted, so the gene-symbol annotation step
-   fails on transcript IDs and is skipped — keeping Ensembl transcript IDs
-   (`ENSMUST…`/`ENST…`) as the matrix rows.
-3. A `mt_transcripts.txt` list of mitochondrial transcript IDs is written into
-   the index, so the downstream QC can filter them.
-
-## Processes
+### Processes
 
 | Process | Stage script (`bin/`) | Notes |
 | :--- | :--- | :--- |
@@ -170,16 +140,22 @@ every transcript is treated as an independent entity:
 shared resources) and stage intermediate files entirely in RAM
 (`scratch '/dev/shm'`).
 
-## Containers
+### The transcript "cheat"
 
-- Index build: `simpleaf:0.24.0--hd612981_1` (`modules/index.nf`)
-- Child alignment/quant: `simpleaf:0.24.1--hd612981_0` (`modules/align.nf`)
-- `nf-core/scrnaseq` pinned to **4.1.0**, launched as a child Nextflow run inside
-  an `exec:` block with `NXF_SYNTAX_PARSER=v1` (forces parser compatibility with
-  nf-core/scrnaseq 4.1.0 under Nextflow 26+).
-- Ensembl reference release **102**.
+Standard scRNA-seq pipelines group reads by gene. This pipeline instead wants a
+**cell-by-isoform** matrix, so after the index is built it modifies it so that
+every transcript is treated as an independent entity:
 
-## The `align` child-run mechanics
+1. The `t2g_3col.tsv` mapping is rewritten so each transcript maps to **itself** —
+   a transcript ID becomes its own gene ID, so `simpleaf`/`Alevin` treat every
+   isoform as an independent entity and isoforms stop collapsing into genes.
+2. The `gene_id_to_name.tsv` file is deleted, so the gene-symbol annotation step
+   fails on transcript IDs and is skipped — keeping Ensembl transcript IDs
+   (`ENSMUST…`/`ENST…`) as the matrix rows.
+3. A `mt_transcripts.txt` list of mitochondrial transcript IDs is written into
+   the index, so the downstream QC can filter them.
+
+### The `align` step
 
 The `align` step runs the three phases in order — download, index, then
 preprocessing. The two resource-overridden processes are `BUILD_INDEX` (when the
@@ -213,6 +189,15 @@ nested-work-directory bug). It:
 5. Stages `raw_matrix.seurat.rds` to the target `unfiltered_dir` (the handoff to
    `src/analysis/`), and deletes the child workflow's temporary `work/` folder on
    success to save disk space.
+
+### Containers
+
+- Index build: `simpleaf:0.24.0--hd612981_1` (`modules/index.nf`)
+- Child alignment/quant: `simpleaf:0.24.1--hd612981_0` (`modules/align.nf`)
+- `nf-core/scrnaseq` pinned to **4.1.0**, launched as a child Nextflow run inside
+  an `exec:` block with `NXF_SYNTAX_PARSER=v1` (forces parser compatibility with
+  nf-core/scrnaseq 4.1.0 under Nextflow 26+).
+- Ensembl reference release **102**.
 
 ## Operational notes
 
