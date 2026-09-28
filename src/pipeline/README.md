@@ -91,14 +91,20 @@ Every parameter, the resource blocks, and the container profiles are documented
 in full in [`CONFIG.md`](CONFIG.md).
 
 For convenience there is also a quick wrapper, `run_pipeline.sh`, which lives in
-the per-dataset run directory and fills in the boilerplate above — the config,
-the profile, and `-resume` (so a rerun continues from where it left off). Run it
-from that directory with no flags to get the whole pipeline:
+the per-dataset run directory and supplies the boilerplate flags — the
+`-c nextflow.config` config file, the `singularity` profile, and `-resume` (so a
+rerun continues from where it left off). Run it from that directory with no
+flags to get the whole pipeline:
 
 ```bash
 cd work/<dataset>/pipeline
 ./run_pipeline.sh
 ```
+
+The wrapper does not generate the config — it only points the pipeline at the
+`nextflow.config` in the same directory. Editing that file is always required to
+set the per-dataset reference, at minimum the `genome_species` and
+`genome_assembly` values.
 
 To run just one step through the wrapper, pass the same flag through:
 `--step download`, `--step index`, or `--step align`.
