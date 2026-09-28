@@ -3,6 +3,12 @@
 [![lint](https://github.com/ldelitala/sc-isoform-cotan/actions/workflows/lint.yaml/badge.svg)](https://github.com/ldelitala/sc-isoform-cotan/actions/workflows/lint.yaml)
 [![Licence: GPL-3](https://img.shields.io/badge/licence-GPL--3-blue.svg)](LICENSE)
 
+## A note to users
+
+I would love to make every tool here accessible and usable for everyone, but
+right now the main focus is the thesis goal, so user experience is not thought
+out at all and the tools can be hard to navigate.
+
 ## What this is
 
 This repository is the code behind a bachelor's thesis that asks whether
