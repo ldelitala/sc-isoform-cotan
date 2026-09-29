@@ -5,22 +5,23 @@ clarifications, but any change follows the workflow below.
 
 ## Where things run
 
-- **athena** (the university server, `/data/lorenzo_delitala`) is where anything
-  computes: 88 cores, the conda environments, the datasets and the Nextflow run
-  directories live there. There is **no sudo**, which is why the tooling lives in
-  conda. Set up the environment and run the pipeline/analysis on athena exactly as
-  documented in `envs/README.md`, `src/nextflow/README.md` and `src/analysis/README.md`.
-- **The Mac** is where the repository is edited and pushed from.
+- **The compute server** hosts the conda environments, the datasets and the
+  Nextflow run directories; heavy pipeline/analysis runs happen there. There is
+  **no sudo**, which is why the tooling lives in conda. Set up the environment and
+  run the pipeline/analysis exactly as documented in `envs/README.md`,
+  `src/nextflow/README.md` and `src/analysis/README.md`.
+- **A development machine** is where the repository is edited and pushed from.
 
 ## Style
 
 - R: 2-space indent, 120-column limit, styler `tidyverse_style` (see `.lintr.R`, `.Rprofile`).
 - roxygen2 for documentation. New exported function ⇒ `@export`, regenerated `NAMESPACE`, and
   a committed `man/*.Rd`.
-- No absolute paths in tracked code. The only allowed occurrences of `/data/lorenzo_delitala` are
-  documentation examples, the two athena-facing scripts (`scripts/collect_results.sh` sync
-  example, `scripts/verify_dtu_parity.R` default `--root`), and the released run logs under
-  `results/**/logs/` — those logs are the parity evidence and are never edited.
+- No absolute paths in tracked code. The only allowed occurrences of the server's
+  home path are documentation examples, the two server-facing scripts
+  (`scripts/collect_results.sh` sync example, `scripts/verify_dtu_parity.R` default
+  `--root`), and the released run logs under `results/**/logs/` — those logs are
+  the parity evidence and are never edited.
 - Shell/Nextflow: `.editorconfig` wins (4-space indent for `.nf` / `.config`).
 - Before changing a stage script, check its Nextflow caller for the exact argument order
   (`src/nextflow/modules/*.nf`).
