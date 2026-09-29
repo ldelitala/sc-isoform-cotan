@@ -6,6 +6,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- Renamed the Nextflow source dir `src/pipeline/` → `src/nextflow/`; all references
+  (READMEs, docs, CHANGELOG, CONTRIBUTING) updated.
+- Dropped machine-specific names and paths from `CONTRIBUTING.md` (athena,
+  `/data/lorenzo_delitala`, the Mac): the server is now referred to generically as
+  "the compute server", the editor as "a development machine"; the no-absolute-paths
+  rule keeps the two server-facing scripts as allowed exceptions.
 - Rewrote documentation around the reader: `README.md` is the single entry point
   (thesis framing, three tools in one, data flow, quick start, layout, results,
   docs index). New `src/nextflow/README.md`, `src/cotanisoform/README.md`,
