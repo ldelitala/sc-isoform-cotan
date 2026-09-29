@@ -1,4 +1,4 @@
-# `src/pipeline/` — Nextflow half
+# `src/nextflow/` — Nextflow half
 
 This half turns SRA accessions into a raw cell-by-isoform Seurat matrix. It is a
 small Nextflow pipeline with three steps — `download`, `index` and `align` — run
@@ -11,11 +11,11 @@ a high-RAM head node is the main requirement.
 
 ## Quick start
 
-The entry point is `nextflow run .../src/pipeline/main.nf`, taking the config
+The entry point is `nextflow run .../src/nextflow/main.nf`, taking the config
 file, the Singularity profile, and a `--step` flag:
 
 ```bash
-nextflow run .../src/pipeline/main.nf \
+nextflow run .../src/nextflow/main.nf \
     -c nextflow.config -profile singularity --step align
 ```
 
@@ -53,11 +53,11 @@ stage to run.
 There are only these three steps — no `all` or `filter`. QC filtering is not
 part of this half; it happens later, in the R analysis.
 
-The entry point is `nextflow run .../src/pipeline/main.nf`. To run a single
+The entry point is `nextflow run .../src/nextflow/main.nf`. To run a single
 step directly:
 
 ```bash
-nextflow run .../src/pipeline/main.nf \
+nextflow run .../src/nextflow/main.nf \
     -c nextflow.config -profile singularity --step align
 ```
 

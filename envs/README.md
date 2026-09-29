@@ -49,7 +49,7 @@ Call the interpreter explicitly when not activating:
 ## What the pipeline does *not* get from here
 
 `simpleaf`, `piscem`, `salmon`, `alevin-fry` and `10x_bamtofastq` are provided by the
-Singularity containers declared in `src/pipeline/nextflow.config` (nf-core/scrnaseq).
+Singularity containers declared in `src/nextflow/nextflow.config` (nf-core/scrnaseq).
 They must never be added to `pipeline.yml`. `sra-tools` is likewise absent — the ingest
 step also runs in a container.
 
@@ -113,7 +113,7 @@ Pipeline launcher (`envs/pipeline.yml`): Nextflow **26.04.4**, OpenJDK 21, pigz
 Alignment (Singularity containers): simpleaf (index build)
 `0.24.0--hd612981_1`, simpleaf (align / quant) `0.24.1--hd612981_0`, `nf-core/scrnaseq`
 **4.1.0**, Ensembl reference release **102**. Tags are hard-coded in
-`src/pipeline/modules/index.nf` and `src/pipeline/modules/align.nf`; `nf-core/scrnaseq`
+`src/nextflow/modules/index.nf` and `src/nextflow/modules/align.nf`; `nf-core/scrnaseq`
 is launched as a child run with `NXF_SYNTAX_PARSER=v1`.
 
 ## Verifying a change to these files

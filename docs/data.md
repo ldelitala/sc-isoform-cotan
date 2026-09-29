@@ -46,7 +46,7 @@ inside a run directory (`work/` is gitignored and exists only there):
 
 ```bash
 cd /data/lorenzo_delitala/work/<dataset>/pipeline
-./run_pipeline.sh          # nextflow run .../src/pipeline/main.nf -c nextflow.config \
+./run_pipeline.sh          # nextflow run .../src/nextflow/main.nf -c nextflow.config \
                            #   -profile singularity -resume
 ```
 

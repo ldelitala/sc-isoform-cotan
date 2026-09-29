@@ -4,7 +4,7 @@ This file is the single configuration source for the Nextflow half. It holds
 every setting the pipeline needs, split into three blocks: **`params`**
 (pipeline parameters), **`executor`/`process`** (resource limits), and
 **`profiles`** (container profiles). The reference lives at
-`src/pipeline/nextflow.config`; each per-dataset run directory keeps a
+`src/nextflow/nextflow.config`; each per-dataset run directory keeps a
 customized copy that the `run_pipeline.sh` wrapper picks up.
 
 ## The full file

@@ -6,7 +6,7 @@ the differential transcript usage (DTU) candidate tables that the thesis reports
 It sits between two other pieces of the repository:
 
 ```
-src/pipeline/            Nextflow: SRA -> simpleaf index -> align
+src/nextflow/            Nextflow: SRA -> simpleaf index -> align
    |                     (last artefact: work/<dataset>/analysis/raw_matrix.seurat.rds)
    v
 src/analysis/            this layer: Seurat clean-up -> COTAN -> COEX -> GDI -> clustering
@@ -241,7 +241,7 @@ unquoted after production).
   from an earlier 40/38 candidate pair and is kept for the thesis appendix — see
   [`../../docs/dtu_methods.md`](../../docs/dtu_methods.md).
 - The child `nf-core/scrnaseq` run honours a user-supplied `custom.config`
-  (`child_config` → `custom.config`, `src/pipeline/modules/align.nf`), but the
+  (`child_config` → `custom.config`, `src/nextflow/modules/align.nf`), but the
   in-repo default only overrides the simpleaf container — it does not scale the
   child's cpus/memory automatically.
 

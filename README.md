@@ -31,7 +31,7 @@ matches what you want to do.
 
 | Tool | What it is | Read |
 | :--- | :--- | :--- |
-| `src/pipeline/` | Nextflow: SRA accessions → cell-by-isoform Seurat matrix. The transcript "cheat" lives here. | [`src/pipeline/README.md`](src/pipeline/README.md) |
+| `src/nextflow/` | Nextflow: SRA accessions → cell-by-isoform Seurat matrix. The transcript "cheat" lives here. | [`src/nextflow/README.md`](src/nextflow/README.md) |
 | `src/cotanisoform/` | The R package: every analysis stage as a documented function, plus the logging layer. | [`src/cotanisoform/README.md`](src/cotanisoform/README.md) |
 | `src/analysis/` | The R drivers that compose the package into per-dataset runs and produce the DTU tables. | [`src/analysis/README.md`](src/analysis/README.md) |
 
@@ -39,14 +39,14 @@ matches what you want to do.
 
 ```mermaid
 graph LR
-  A["SRA accessions (.csv)"] --> B["src/pipeline/<br/>download, index, align"]
+  A["SRA accessions (.csv)"] --> B["src/nextflow/<br/>download, index, align"]
   B --> C["raw_matrix.seurat.rds"]
   C --> D["src/analysis/<br/>COTAN -> coex -> GDI -> clustering -> DEA"]
   D --> E["DTU candidates"]
 ```
 
 Two independent units meet at one artifact, an **unfiltered** transcript-level
-Seurat matrix (`raw_matrix.seurat.rds`): `src/pipeline/` produces it, `src/analysis/`
+Seurat matrix (`raw_matrix.seurat.rds`): `src/nextflow/` produces it, `src/analysis/`
 consumes it and does its own QC clean-up.
 
 ## Quick start
@@ -81,7 +81,7 @@ reported DTU tables.
 
 | Path | Role |
 | :--- | :--- |
-| `src/pipeline/` | Nextflow half: `main.nf`, `nextflow.config`, `modules/`, `subworkflows/`, `bin/` stage scripts. |
+| `src/nextflow/` | Nextflow half: `main.nf`, `nextflow.config`, `modules/`, `subworkflows/`, `bin/` stage scripts. |
 | `src/cotanisoform/` | The R package with the COTAN/Seurat/logging algorithms. Source of truth. |
 | `src/analysis/` | Config-driven driver steps (`00`–`09`), one YAML per dataset + level. |
 | `envs/` | Conda environments for athena (`analysis.yml`, `pipeline.yml`). |
@@ -115,7 +115,7 @@ Three cross-cutting docs, one line each:
 | [`docs/dtu_methods.md`](docs/dtu_methods.md) | The exact DTU definition, the p-value model, the mapping to the published tables. |
 | [`docs/TODO.md`](docs/TODO.md) | Open backlog (currently: per-cluster isoform-proportion plots for the headline candidates). |
 
-Everything else sits next to the tool it documents: `src/pipeline/README.md`,
+Everything else sits next to the tool it documents: `src/nextflow/README.md`,
 `src/cotanisoform/README.md`, `src/analysis/README.md`, `envs/README.md`,
 `results/README.md`, `CONTRIBUTING.md` (dev workflow).
 

@@ -8,7 +8,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - Rewrote documentation around the reader: `README.md` is the single entry point
   (thesis framing, three tools in one, data flow, quick start, layout, results,
-  docs index). New `src/pipeline/README.md`, `src/cotanisoform/README.md`,
+  docs index). New `src/nextflow/README.md`, `src/cotanisoform/README.md`,
   `docs/data.md`; `src/analysis/README.md` absorbs `docs/reproducibility.md` and
   the COTAN p-value ceiling; `envs/README.md` absorbs `docs/software_versions.md`;
   `docs/dtu_methods.md` trimmed, deprecated-script detail moved to
@@ -38,7 +38,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   sensitivity sweep reusing the stored COTAN objects and cached DEA/p-values.
 
 ### Removed
-- The `QC_FILTER` Nextflow stage (`src/pipeline/modules/filter.nf`) whose output
+- The `QC_FILTER` Nextflow stage (`src/nextflow/modules/filter.nf`) whose output
   (`*_filtered.rds`) nothing read; the analysis handoff is the **unfiltered**
   `raw_matrix.seurat.rds` staged by `ALIGN_SIMPLEAF`. Dropped the QC stage scripts
   (`bin/{filter_matrix.R,lib_qc.R,lib_io.R,4.1_filter_seurat_qc.R,5.1_downstream_cotan.R}`),

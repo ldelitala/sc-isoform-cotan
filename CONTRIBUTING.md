@@ -9,7 +9,7 @@ clarifications, but any change follows the workflow below.
   computes: 88 cores, the conda environments, the datasets and the Nextflow run
   directories live there. There is **no sudo**, which is why the tooling lives in
   conda. Set up the environment and run the pipeline/analysis on athena exactly as
-  documented in `envs/README.md`, `src/pipeline/README.md` and `src/analysis/README.md`.
+  documented in `envs/README.md`, `src/nextflow/README.md` and `src/analysis/README.md`.
 - **The Mac** is where the repository is edited and pushed from.
 
 ## Style
@@ -23,7 +23,7 @@ clarifications, but any change follows the workflow below.
   `results/**/logs/` — those logs are the parity evidence and are never edited.
 - Shell/Nextflow: `.editorconfig` wins (4-space indent for `.nf` / `.config`).
 - Before changing a stage script, check its Nextflow caller for the exact argument order
-  (`src/pipeline/modules/*.nf`).
+  (`src/nextflow/modules/*.nf`).
 
 ## Before committing
 
