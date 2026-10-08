@@ -126,7 +126,7 @@ steps:
     input_object: with_gene_labels
     recompute_dea: auto        # auto | always | never
     p_value_threshold: 0.05
-    min_dea_contrast: 0.05
+    min_dea_contrast: 0.09
     gene_name_col: gene_name
     outputs:
       - {clusterization: merged,             file_name: dtu_candidates.transcript_cluster.csv}
@@ -285,7 +285,7 @@ Deliberate deviations from the released drivers, all documented in the configs:
   (`calc.gdi_cores` exists for runs that used more cores for the GDI step).
 * `objects.calculated` for arrigoni names `calculated.cotan.rds`, the object the released
   DTU step actually read, not the later re-run `calculated.transcript.cotan.rds`.
-* No `coex_threshold` parameter, and `min_dea_contrast` is 0.2 (arrigoni) / 0.05 (ding) —
+* No `coex_threshold` parameter, and `min_dea_contrast` is 0.2 (arrigoni) / 0.09 (ding) —
   the values that produced the published tables. `-0.1 / 0.5` belonged to an abandoned
   scratch variant that never produced a published table.
 

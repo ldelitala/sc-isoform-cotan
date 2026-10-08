@@ -18,11 +18,10 @@ Each dataset dir has the same shape: `tables/` (the thesis deliverables), `plots
 - `tables/dtu_candidates*.csv` / `.rds` — DTU candidate tables (the thesis deliverable).
   arrigoni writes `dtu_candidates.csv`; ding cortex_2 writes
   `dtu_candidates.gene_cluster.csv` and `dtu_candidates.transcript_cluster.csv`.
-- `tables/dtu_shared.csv` (39 rows), `dtu_exclusive_file1.csv` (3), `dtu_exclusive_file2.csv` (4)
-  — the **released** gene-vs-transcript DTU comparison of 2026-07-24, kept because the
-  thesis appendix tables are built from it. Step `08_compare_dtu.R` on the final 46/46
-  tables yields 45 / 1 + 1, so re-running that step does not reproduce these files; see
-  [`../docs/dtu_methods.md`](../docs/dtu_methods.md).
+- `tables/dtu_shared.csv` (38 rows), `dtu_exclusive_file1.csv` (3), `dtu_exclusive_file2.csv` (0)
+  — the gene-vs-transcript DTU comparison at the published $\tau = 0.09$, kept because the
+  thesis appendix tables are built from it. Step `08_compare_dtu.R` reproduces these files
+  exactly; see [`../docs/dtu_methods.md`](../docs/dtu_methods.md).
 - `plots/` — COTAN diagnostics: GDI plots, UMAPs, cluster/dendrogram plots. Includes
   the `*_tau_sweep.{csv,png}` contrast-threshold sensitivity sweep.
 - `logs/` — per-step run logs (`init_cotan`, `cotan_calc`, `cluster`, `plot_gdi`, …).

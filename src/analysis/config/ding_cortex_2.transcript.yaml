@@ -86,7 +86,7 @@ steps:
     input_object: with_gene_labels
     recompute_dea: auto
     p_value_threshold: 0.05
-    min_dea_contrast: 0.05
+    min_dea_contrast: 0.09
     gene_name_col: gene_name
     # The released clusterization names are the COTAN defaults: "merged" holds the
     # DEA of the clustering itself, "local_gene_cluster" the transferred labels.

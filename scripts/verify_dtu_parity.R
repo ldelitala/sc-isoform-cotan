@@ -67,12 +67,12 @@ cases <- list(
         name = "ding_merged",
         objects = "work/ding_cortex_2/analysis/objects/clustered.transcript.with_gene_labels.rds",
         reference = "results/ding_cortex_2/tables/dtu_candidates.transcript_cluster.csv",
-        sha256 = "e9defe97c676bb1ee3870f702b50d1f0d32b1708925e7b560f2c1e82198a2185",
+        sha256 = "3d5e8faf0d17eff8941689cc7f9faa724a1ba229c99c9bb4033fcf1f3578e581",
         clusterization = "merged",
-        min_dea_contrast = 0.05,
+        min_dea_contrast = 0.09,
         stats = list(
-            multi_genes = 2122, zero_pairs = 2108, pairs = 53, filtered = 7,
-            events = 46, genes = 8,
+            multi_genes = 2122, zero_pairs = 2108, pairs = 53, filtered = 12,
+            events = 41, genes = 5,
             coex = c(-0.1735, -0.0386, -0.0441, -0.0308),
             p_value = c(1.5848e-28, 1.3600e-02, 2.1863e-02, 4.8888e-02),
             contrast = c(0.0447, 0.3272, 0.2853, 0.6631)
@@ -82,12 +82,12 @@ cases <- list(
         name = "ding_gene_cluster",
         objects = "work/ding_cortex_2/analysis/objects/clustered.transcript.with_gene_labels.rds",
         reference = "results/ding_cortex_2/tables/dtu_candidates.gene_cluster.csv",
-        sha256 = "ded06ace744e49c7b829d44e615d9a66f89dd318b8201d1e3d3eb288e2b23d99",
+        sha256 = "ec59adec790de07951a36149af17a85a5bf01dadbcc30855b413a571e9082013",
         clusterization = "local_gene_cluster",
-        min_dea_contrast = 0.05,
+        min_dea_contrast = 0.09,
         stats = list(
-            multi_genes = 2122, zero_pairs = 2108, pairs = 53, filtered = 7,
-            events = 46, genes = 8,
+            multi_genes = 2122, zero_pairs = 2108, pairs = 53, filtered = 15,
+            events = 38, genes = 3,
             coex = c(-0.1735, -0.0386, -0.0441, -0.0308),
             p_value = c(1.5848e-28, 1.3600e-02, 2.1863e-02, 4.8888e-02),
             contrast = c(0.0384, 0.4375, 0.3394, 0.7852)
